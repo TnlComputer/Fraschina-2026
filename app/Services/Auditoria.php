@@ -40,6 +40,7 @@ class Auditoria
     'roles' => 'Usuarios y permisos',
     'permissions' => 'Usuarios y permisos',
     'aux' => 'Tablas auxiliares',
+    'configuraciones' => 'Configuración',
     'productos_c_d_a' => 'Tablas auxiliares',
   ];
 

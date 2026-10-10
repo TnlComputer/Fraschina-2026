@@ -10,6 +10,11 @@ use Illuminate\Support\Facades\Schedule;
 // Central de Pedidos: respaldo diario en Excel (por si no hay acceso al sistema)
 Schedule::command('expedicion:respaldo')->dailyAt('06:30')->withoutOverlapping();
 
-// Consultas a molinos: mañana (entregas del día) y tarde (cargas del día siguiente), de lunes a sábado
-Schedule::command('expedicion:consultas manana')->days([1, 2, 3, 4, 5, 6])->at(config('expedicion.consulta_manana'));
-Schedule::command('expedicion:consultas tarde')->days([1, 2, 3, 4, 5, 6])->at(config('expedicion.consulta_tarde'));
+// Consultas a molinos: mañana (entregas del día) y tarde (cargas del día siguiente).
+// Horarios, días y si están activas se definen en Herramientas → Configuración.
+foreach (['manana' => 'expedicion.consulta_manana', 'tarde' => 'expedicion.consulta_tarde'] as $turno => $hora) {
+  Schedule::command("expedicion:consultas $turno")
+    ->days(config('expedicion.consulta_dias') ?: [1, 2, 3, 4, 5, 6])
+    ->at(config($hora))
+    ->when(fn() => (bool) config('expedicion.consultas_activas'));
+}

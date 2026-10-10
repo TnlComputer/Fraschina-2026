@@ -50,19 +50,24 @@ class PermisosTest extends TestCase
             ->assertSessionHasErrors('table');
     }
 
-    public function test_roles_y_permisos_se_eliminan_logicamente(): void
+    public function test_roles_se_eliminan_logicamente_y_los_permisos_no_se_borran_ni_se_renombran(): void
     {
         $admin = User::factory()->create();
         $admin->givePermissionTo('permiso_99');
-        \App\Models\Role::create(['name' => 'predeterminado', 'guard_name' => 'web']);
         $rol = \App\Models\Role::create(['name' => 'temporal', 'guard_name' => 'web']);
-        $permiso = Permission::create(['name' => 'permiso_temporal', 'guard_name' => 'web']);
+        $permiso = Permission::where('name', 'permiso_2')->first();
 
         $this->actingAs($admin)->delete("/tools/roles/{$rol->id}")->assertRedirect();
-        $this->actingAs($admin)->delete("/tools/permissions/{$permiso->id}")->assertRedirect();
-
         $this->assertSoftDeleted('roles', ['id' => $rol->id]);
-        $this->assertSoftDeleted('permissions', ['id' => $permiso->id]);
+
+        // Los permisos los define el sistema: no se eliminan ni cambia su código, solo el nombre visible
+        $this->actingAs($admin)->delete("/tools/permissions/{$permiso->id}")->assertStatus(405);
+        $this->actingAs($admin)->get('/tools/permissions')->assertOk()->assertSee('permiso_2');
+        $this->actingAs($admin)->put("/tools/permissions/{$permiso->id}", ['name' => 'otro', 'description' => 'Distribución y reparto'])
+            ->assertRedirect('/tools/permissions');
+        $this->assertSame('permiso_2', $permiso->fresh()->name);
+        $this->assertSame('Distribución y reparto', $permiso->fresh()->description);
+        $this->assertNull($permiso->fresh()->deleted_at);
     }
 
     public function test_super_usuario_pasa_todos_los_permisos(): void

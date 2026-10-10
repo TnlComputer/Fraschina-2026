@@ -10,6 +10,7 @@ use App\Http\Controllers\BarrioController;
 use App\Http\Controllers\CalleController;
 use App\Http\Controllers\CargoController;
 use App\Http\Controllers\Contacto_inicialController;
+use App\Http\Controllers\ConfiguracionController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DistribucionAgendaController;
 use App\Http\Controllers\DistribucionController;
@@ -257,9 +258,15 @@ Route::middleware(['auth', 'permission:permiso_9', 'accion'])->group(function ()
 
 // PERMISOS Y AUDITORIA (solo Super Usuario)
 Route::middleware(['auth', 'permission:permiso_99'])->group(function () {
-  Route::resource('/tools/permissions', PermissionController::class);
+  Route::resource('/tools/permissions', PermissionController::class)->only(['index', 'edit', 'update']);
   Route::get('/tools/auditoria', [AuditoriaController::class, 'index'])->name('auditoria.index');
   Route::get('/tools/auditoria/export', [AuditoriaController::class, 'export'])->name('auditoria.export');
+});
+
+// CONFIGURACION (Administrador y Supervisor: permiso_10)
+Route::middleware(['auth', 'permission:permiso_10'])->group(function () {
+  Route::get('/tools/configuracion', [ConfiguracionController::class, 'index'])->name('configuracion.index');
+  Route::put('/tools/configuracion', [ConfiguracionController::class, 'update'])->name('configuracion.update');
 });
 
 require __DIR__ . '/auth.php';

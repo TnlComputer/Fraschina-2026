@@ -174,20 +174,22 @@ class UsuarioController extends Controller
   }
 
   /**
-   * Roles que puede asignar quien está usando la pantalla: los de Super Usuario (permiso_99) solo otro Super Usuario.
+   * Roles que puede asignar quien está usando la pantalla: los que tienen permisos reservados
+   * (Super Usuario, Configuración) solo el Super Usuario.
    */
   private function rolesAsignables(Request $request)
   {
     return Role::with('permissions')->orderBy('name')->get()
-      ->filter(fn($rol) => $request->user()->can('permiso_99') || !$rol->permissions->contains('name', 'permiso_99'))
+      ->filter(fn($rol) => $request->user()->can('permiso_99') || !RoleController::esReservado($rol))
       ->values();
   }
 
-  /** Al Super Usuario solo lo modifica otro Super Usuario. */
+  /** A los usuarios con roles reservados (admin, supervisor) solo los modifica el Super Usuario. */
   private function usuarioModificable(Request $request, $id): User
   {
     $usuario = User::findOrFail($id);
-    abort_if($usuario->checkPermissionTo('permiso_99') && !$request->user()->can('permiso_99'), 403, 'Solo el Super Usuario puede modificar este usuario.');
+    $reservado = $usuario->roles->contains(fn($rol) => RoleController::esReservado($rol)) || $usuario->checkPermissionTo('permiso_99');
+    abort_if($reservado && !$request->user()->can('permiso_99'), 403, 'Este usuario solo lo modifica el Super Usuario.');
     return $usuario;
   }
 }

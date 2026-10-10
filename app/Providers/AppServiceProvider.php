@@ -30,6 +30,9 @@ class AppServiceProvider extends ServiceProvider
   {
     Paginator::useBootstrap();
 
+    // Parámetros editables desde Herramientas → Configuración (modo de envío de correos, consultas, etc.)
+    app(\App\Services\Configuraciones::class)->aplicar();
+
     // permiso_99 (Super Usuario) pasa todos los chequeos de permisos
     Gate::before(fn($user) => $user->checkPermissionTo('permiso_99') ? true : null);
 

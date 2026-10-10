@@ -450,6 +450,12 @@ return [
               'url' => 'tools/auditoria',
               'can' => ['permiso_99'],
             ],
+            [
+              'text' => 'Configuración',
+              'icon' => 'fas fa-fw fa-sliders-h',
+              'url' => 'tools/configuracion',
+              'can' => ['permiso_10'],
+            ],
           ],
         ],
         [

@@ -10,11 +10,18 @@ use Illuminate\Validation\Rule;
 /**
  * Roles: cada rol define a qué secciones entra el usuario y qué puede hacer (alta / editar / eliminar).
  * El acceso de cada usuario lo define solo su rol.
- * Los roles con el permiso Super Usuario (permiso_99) solo los ve y modifica otro Super Usuario.
+ * Los roles con permisos reservados (Super Usuario, Configuración) solo los administra el Super Usuario.
  */
 class RoleController extends Controller
 {
   public const SUPER = 'permiso_99';
+  public const CONFIGURACION = 'permiso_10';
+
+  /**
+   * Permisos reservados: no se asignan desde el formulario y los roles que los tienen (admin, supervisor)
+   * solo los ve, modifica y asigna el Super Usuario.
+   */
+  public const RESERVADOS = [self::SUPER, self::CONFIGURACION];
 
   /** Permisos de sección (a qué pantallas entra) y de acción (qué puede hacer con los registros). */
   public const SECCIONES = ['permiso_1', 'permiso_2', 'permiso_3', 'permiso_4', 'permiso_5', 'permiso_6', 'permiso_7', 'permiso_8', 'permiso_9'];
@@ -50,13 +57,13 @@ class RoleController extends Controller
 
   public function edit(Request $request, Role $role)
   {
-    abort_unless($this->puedeVer($request, $role), 403, 'Solo el Super Usuario puede modificar este rol.');
+    abort_unless($this->puedeVer($request, $role), 403, 'Este rol solo lo administra el Super Usuario.');
     return $this->formulario($role);
   }
 
   public function update(Request $request, Role $role)
   {
-    abort_unless($this->puedeVer($request, $role), 403, 'Solo el Super Usuario puede modificar este rol.');
+    abort_unless($this->puedeVer($request, $role), 403, 'Este rol solo lo administra el Super Usuario.');
     $datos = $this->validar($request, $role);
     $role->update(['name' => $datos['name']]);
     $role->syncPermissions($this->permisosElegidos($request, $role));
@@ -66,7 +73,7 @@ class RoleController extends Controller
 
   public function destroy(Request $request, Role $role)
   {
-    abort_unless($this->puedeVer($request, $role), 403, 'Solo el Super Usuario puede eliminar este rol.');
+    abort_unless($this->puedeVer($request, $role), 403, 'Este rol solo lo administra el Super Usuario.');
     if ($role->checkPermissionTo(self::SUPER)) {
       return back()->with('error', 'El rol del Super Usuario no se puede eliminar.');
     }
@@ -109,14 +116,22 @@ class RoleController extends Controller
     $nombres = Permission::whereIn('id', (array) $request->input('permissions', []))
       ->whereIn('name', array_merge(self::SECCIONES, self::ACCIONES))
       ->pluck('name')->all();
-    if ($role->exists && $role->checkPermissionTo(self::SUPER)) {
-      $nombres[] = self::SUPER;
+    // Los permisos reservados que el rol ya tenía se conservan
+    foreach (self::RESERVADOS as $reservado) {
+      if ($role->exists && $role->checkPermissionTo($reservado)) {
+        $nombres[] = $reservado;
+      }
     }
     return $nombres;
   }
 
   private function puedeVer(Request $request, Role $role): bool
   {
-    return !$role->checkPermissionTo(self::SUPER) || $request->user()->can(self::SUPER);
+    return $request->user()->can(self::SUPER) || !self::esReservado($role);
+  }
+
+  public static function esReservado(Role $role): bool
+  {
+    return $role->permissions->pluck('name')->intersect(self::RESERVADOS)->isNotEmpty();
   }
 }
