@@ -79,7 +79,7 @@ class AgendaGralController extends Controller
     ]);
 
     // Crear el nuevo registro con el status en true
-    DB::table('agendas')->insert([
+    (new AgendaGral())->forceFill([
       'nombre' => $request->input('Nombre'),
       'apellido' => $request->input('Apellido'),
       'empresa_institucion' => $request->input('Empresa_Institucion'),
@@ -94,7 +94,7 @@ class AgendaGralController extends Controller
       'status' => true, // Establecer status como true
       'created_at' => now(),
       'updated_at' => now(),
-    ]);
+    ])->save();
 
     // $name = $data['Nombre'];
 
@@ -151,7 +151,7 @@ class AgendaGralController extends Controller
     ]);
 
     // Actualizar el registro
-    DB::table('agendas')->where('id', $id)->update([
+    AgendaGral::findOrFail($id)->forceFill([
       'nombre' => $request->input('Nombre'),
       'apellido' => $request->input('Apellido'),
       'empresa_institucion' => $request->input('Empresa_Institucion'),
@@ -164,7 +164,7 @@ class AgendaGralController extends Controller
       'direccion' => $request->input('Direccion'),
       'observaciones' => $request->input('Observaciones'),
       'updated_at' => now(),
-    ]);
+    ])->save();
 
     return redirect()->route('AgendaGral.index', ['name' => $data['Nombre']])
       ->with('success', 'Registro actualizado con éxito.');

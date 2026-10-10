@@ -10,6 +10,7 @@ use App\Models\AuxCobrar;
 use App\Models\AuxBarrios;
 use App\Models\AuxContacto;
 use App\Models\AuxTipoPagos;
+use App\Models\Transporte;
 use Illuminate\Http\Request;
 use App\Models\AuxMunicipios;
 use App\Models\AuxLocalidades;
@@ -102,7 +103,7 @@ class TransporteController extends Controller
 
     $validated['status'] = 'A';
 
-    DB::table('transportes')->insert($validated);
+    (new Transporte())->forceFill($validated)->save();
 
     return redirect()->route('transporte.index')->with('success', 'Transporte creado exitosamente.');
   }
@@ -139,7 +140,7 @@ class TransporteController extends Controller
       'marcas'        => 'nullable|string|max:255',
     ]);
 
-    DB::table('transportes')->where('id', $id)->update($validated);
+    Transporte::findOrFail($id)->forceFill($validated)->save();
 
     return redirect()->route('transporte.index', ['name' => $request->razonsocial])->with('success', 'Transporte actualizado exitosamente.');
   }
@@ -192,7 +193,7 @@ class TransporteController extends Controller
 
   public function destroy($id)
   {
-    DB::table('transportes')->where('id', $id)->update(['status' => 'D']);
+    Transporte::findOrFail($id)->forceFill(['status' => 'D'])->save();
 
     return redirect()->route('transporte.index')->with('success', 'Transporte eliminado exitosamente.');
   }

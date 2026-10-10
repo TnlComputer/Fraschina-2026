@@ -444,6 +444,12 @@ return [
               'url' => 'tools/permissions',
               'can' => ['permiso_99'],
             ],
+            [
+              'text' => 'Auditoría',
+              'icon' => 'fas fa-fw fa-clipboard-check',
+              'url' => 'tools/auditoria',
+              'can' => ['permiso_99'],
+            ],
           ],
         ],
         [

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Services\Auditoria;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -84,6 +85,8 @@ class UsuarioController extends Controller
       }
 
       $user->assignRole($role->name); // Asigna el rol usando el nombre
+      app(Auditoria::class)->manual('alta', 'Usuarios y permisos', 'model_has_roles', (string) $user->id,
+        "Rol asignado a {$user->name}", ['rol' => [null, $role->name]]);
 
       return redirect()->route('usuarios.index')->with('success', 'Usuario creado exitosamente.');
     } catch (\Exception $e) {
@@ -132,7 +135,12 @@ class UsuarioController extends Controller
     // Actualiza el rol del usuario
     $role = Role::find($request->role);
     if ($role) {
+      $rolesAntes = $usuario->getRoleNames()->implode(', ');
       $usuario->syncRoles([$role->name]); // Sincroniza los roles del usuario
+      if ($rolesAntes !== $role->name) {
+        app(Auditoria::class)->manual('modificacion', 'Usuarios y permisos', 'model_has_roles', (string) $usuario->id,
+          "Cambio de rol de {$usuario->name}", ['rol' => [$rolesAntes ?: null, $role->name]]);
+      }
     }
 
     // Actualiza el estado activo del usuario

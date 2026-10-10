@@ -5,6 +5,7 @@ use App\Http\Controllers\AgendaGralController;
 use App\Http\Controllers\AgroController;
 use App\Http\Controllers\AgroPersonalController;
 use App\Http\Controllers\AreaController;
+use App\Http\Controllers\AuditoriaController;
 use App\Http\Controllers\BarrioController;
 use App\Http\Controllers\CalleController;
 use App\Http\Controllers\CargoController;
@@ -252,7 +253,11 @@ Route::middleware(['auth', 'permission:permiso_9'])->group(function () {
   Route::post('/export/generate', [ExportarController::class, 'generate'])->name('export.generate');
 });
 
-// PERMISOS (solo Super Usuario)
-Route::middleware(['auth', 'permission:permiso_99'])->resource('/tools/permissions', PermissionController::class);
+// PERMISOS Y AUDITORIA (solo Super Usuario)
+Route::middleware(['auth', 'permission:permiso_99'])->group(function () {
+  Route::resource('/tools/permissions', PermissionController::class);
+  Route::get('/tools/auditoria', [AuditoriaController::class, 'index'])->name('auditoria.index');
+  Route::get('/tools/auditoria/export', [AuditoriaController::class, 'export'])->name('auditoria.export');
+});
 
 require __DIR__ . '/auth.php';

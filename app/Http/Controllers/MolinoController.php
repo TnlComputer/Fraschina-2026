@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Molino;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -64,7 +65,7 @@ class MolinoController extends Controller
 
     $validated['status'] = 'A';
 
-    DB::table('molinos')->insert($validated);
+    (new Molino())->forceFill($validated)->save();
 
     return redirect()->route('molino.index')->with('success', 'Molino creado exitosamente.');
   }
@@ -101,7 +102,7 @@ class MolinoController extends Controller
       'marcas'        => 'nullable|string|max:255',
     ]);
 
-    DB::table('molinos')->where('id', $id)->update($validated);
+    Molino::findOrFail($id)->forceFill($validated)->save();
 
     return redirect()->route('molino.index')->with('success', 'Molino actualizado exitosamente.');
   }
@@ -151,7 +152,7 @@ class MolinoController extends Controller
 
   public function destroy($id)
   {
-    DB::table('molinos')->where('id', $id)->update(['status' => 'D']);
+    Molino::findOrFail($id)->forceFill(['status' => 'D'])->save();
 
     return redirect()->route('molino.index')->with('success', 'Molino eliminado exitosamente.');
   }
