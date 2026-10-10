@@ -43,7 +43,7 @@
                   </thead>
                   @forelse($rubros as $rubro)
                   <tr>
-                    <td>{{ $rubro->nombre }}</td>
+                    <td>{{ sin_dato($rubro->nombre) }}</td>
                     <td class="text-center">{{ $rubro->representacion }}</td>
                     <td class="text-center">{{ $rubro->distribucion }}</td>
                     <td class="text-center">{{ $rubro->molinos }}</td>

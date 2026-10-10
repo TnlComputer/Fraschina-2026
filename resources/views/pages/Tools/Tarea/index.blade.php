@@ -36,7 +36,7 @@
                   </thead>
                   @forelse($tareas as $tarea)
                   <tr>
-                    <td>{{ $tarea->tarea }}</td>
+                    <td>{{ sin_dato($tarea->tarea) }}</td>
                     <td class="d-flex gap-1 justify-content-center">
                       <a href="{{ route('tareas.edit', $tarea->id) }}" class="btn btn-warning btn-xs" title="Editar">
                         <i class="fa-solid fa-pen-to-square fa-xs"></i>

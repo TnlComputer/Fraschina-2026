@@ -33,6 +33,6 @@ class AgendaGral extends Model
 
   public function profesion()
   {
-    return $this->belongsTo(AuxProfesion::class, 'cod_prof');
+    return $this->belongsTo(AuxProfesion::class, 'cod_prof')->withTrashed();
   }
 }

@@ -30,6 +30,6 @@ class ProveedorPersonal extends Model
 
   public function profesion()
   {
-    return $this->belongsTo(AuxProfesion::class, 'profesion_id');
+    return $this->belongsTo(AuxProfesion::class, 'profesion_id')->withTrashed();
   }
 }

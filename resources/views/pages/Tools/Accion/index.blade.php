@@ -39,7 +39,7 @@
                   </thead>
                   @forelse($acciones as $accion)
                   <tr>
-                    <td>{{ $accion->accion }}</td>
+                    <td>{{ sin_dato($accion->accion) }}</td>
                     <td class="text-center">{{ $accion->colorAcc }}</td>
                     <td class="text-center">{{ $accion->colorCod }}</td>
                     <td class="text-center">{{ $accion->status }}</td>

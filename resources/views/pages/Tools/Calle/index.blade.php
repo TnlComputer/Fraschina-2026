@@ -39,7 +39,7 @@
                   </thead>
                   @forelse($calles as $calle)
                   <tr>
-                    <td>{{ $calle->calle }}</td>
+                    <td>{{ sin_dato($calle->calle) }}</td>
                     {{-- <td>{{ $calle->email }}</td>
                     <td>{{ $calle->permiso }}</td>
                     <td>{{ $calle->status }}</td> --}}

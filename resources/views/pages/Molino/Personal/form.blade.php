@@ -43,7 +43,7 @@
       @foreach ($areas as $area)
       <option value="{{ $area->id }}" {{ old('area_id', $personal->area_id ?? '') == $area->id ? 'selected'
         : '' }}>
-        {{ $area->area }}
+        {{ sin_dato($area->area) }}
       </option>
       @endforeach
     </select>
@@ -62,7 +62,7 @@
       @foreach ($cargos as $cargo)
       <option value="{{ $cargo->id }}" {{ old('cargo_id', $personal->cargo_id ?? '') == $cargo->id ?
         'selected' : '' }}>
-        {{ $cargo->cargo }}
+        {{ sin_dato($cargo->cargo) }}
       </option>
       @endforeach
     </select>
@@ -79,7 +79,7 @@
       @foreach ($profesiones as $profesion)
       <option value="{{ $profesion->id }}" {{ old('profesion_id', $personal->profesion_id ?? '') ==
         $profesion->id ? 'selected' : '' }}>
-        {{ $profesion->nombreprofesion }}
+        {{ sin_dato($profesion->nombreprofesion) }}
       </option>
       @endforeach
     </select>

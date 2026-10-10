@@ -43,7 +43,7 @@
                   </thead>
                   @forelse($zonas as $zona)
                   <tr>
-                    <td>{{ $zona->nombre }}</td>
+                    <td>{{ sin_dato($zona->nombre) }}</td>
                     <td class="text-center">{{ $zona->representacion }}</td>
                     <td class="text-center">{{ $zona->distribucion }}</td>
                     <td class="text-center">{{ $zona->molinos }}</td>

@@ -38,7 +38,7 @@
           @foreach ($calles as $calle)
           <option value="{{ $calle->id }}" {{ old('dire_calle_id', $distribucion->dire_calle_id ?? '') == $calle->id ?
             'selected' : '' }}>
-            {{ $calle->calle }}
+            {{ sin_dato($calle->calle) }}
           </option>
           @endforeach
         </select>
@@ -86,7 +86,7 @@
           @foreach ($barrios as $barrio)
           <option value="{{ $barrio->id }}" {{ old('barrio_id', $distribucion->barrio_id ?? '') == $barrio->id ?
             'selected' : '' }}>
-            {{ $barrio->nombrebarrio }}
+            {{ sin_dato($barrio->nombrebarrio) }}
           </option>
           @endforeach
         </select>
@@ -100,7 +100,7 @@
           @foreach ($municipios as $municipio)
           <option value="{{ $municipio->id }}" {{ old('municipio_id', $distribucion->municipio_id ?? '') ==
             $municipio->id ? 'selected' : '' }}>
-            {{ $municipio->ciudadmunicipio }}
+            {{ sin_dato($municipio->ciudadmunicipio) }}
           </option>
           @endforeach
         </select>
@@ -114,7 +114,7 @@
           @foreach ($localidades as $localidad)
           <option value="{{ $localidad->id }}" {{ old('localidad_id', $distribucion->localidad_id ?? '') ==
             $localidad->id ? 'selected' : '' }}>
-            {{ $localidad->localidad }}
+            {{ sin_dato($localidad->localidad) }}
           </option>
           @endforeach
         </select>
@@ -128,7 +128,7 @@
           @foreach ($zonas as $zona)
           <option value="{{ $zona->id }}" {{ old('zona_id', $distribucion->zona_id ?? '') == $zona->id ? 'selected' : ''
             }}>
-            {{ $zona->nombre }}
+            {{ sin_dato($zona->nombre) }}
           </option>
           @endforeach
         </select>
@@ -176,7 +176,7 @@
           <option value="{{ $rubro->id }}" {{ old('rubro_id', $distribucion->rubro_id ?? '') == $rubro->id ?
             'selected'
             : '' }}>
-            {{ $rubro->nombre }}
+            {{ sin_dato($rubro->nombre) }}
           </option>
           @endforeach
         </select>
@@ -190,7 +190,7 @@
           @foreach ($tamanos as $tamanio)
           <option value="{{ $tamanio->id }}" {{ old('tamanio_id', $distribucion->tamanio_id ?? '') == $tamanio->id ?
             'selected' : '' }}>
-            {{ $tamanio->nombre }}
+            {{ sin_dato($tamanio->nombre) }}
           </option>
           @endforeach
         </select>
@@ -207,7 +207,7 @@
           <option value="{{ $modo->id }}" {{ old('modo_id', $distribucion->modo_id ?? '') == $modo->id ? 'selected' :
             ''
             }}>
-            {{ $modo->nombre }}
+            {{ sin_dato($modo->nombre) }}
           </option>
           @endforeach
         </select>
@@ -233,7 +233,7 @@
           <option value="{{ $contacto->id }}" {{ old('contacto_id', $distribucion->contacto_id ?? '') == $contacto->id
             ?
             'selected' : '' }}>
-            {{ $contacto->contacto }}
+            {{ sin_dato($contacto->contacto) }}
           </option>
           @endforeach
         </select>
@@ -261,7 +261,7 @@
           :
           ''
           }}>
-          {{ $veraz->estado }}
+          {{ sin_dato($veraz->estado) }}
         </option>
         @endforeach
       </select>
@@ -275,7 +275,7 @@
           'selected'
           :
           '' }}>
-          {{ $estado->nomEstado }}
+          {{ sin_dato($estado->nomEstado) }}
         </option>
         @endforeach
       </select>
@@ -379,7 +379,7 @@
         'selected'
         :
         '' }}>
-        {{ $cobrar->accion }}
+        {{ sin_dato($cobrar->accion) }}
       </option>
       @endforeach
     </select>
@@ -393,7 +393,7 @@
       <option value="{{ $cobro->id }}" {{ old('cobro_id', $distribucion->cobro_id ?? '') == $cobro->id ?
         'selected'
         : '' }}>
-        {{ $cobro->nombre }}
+        {{ sin_dato($cobro->nombre) }}
       </option>
       @endforeach
     </select>
@@ -408,7 +408,7 @@
         'selected' :
         ''
         }}>
-        {{ $tpago->nombre }}
+        {{ sin_dato($tpago->nombre) }}
       </option>
       @endforeach
     </select>

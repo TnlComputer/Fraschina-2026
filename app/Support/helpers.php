@@ -117,3 +117,15 @@ if (!function_exists('tabla_aux')) {
     });
   }
 }
+
+if (!function_exists('sin_dato')) {
+  /**
+   * Nombre para mostrar de un valor auxiliar: la fila con nombre vacío es la opción "sin dato"
+   * (sirve para cargar un registro sin ese dato o para quitárselo).
+   */
+  function sin_dato($valor, string $texto = '(sin dato)'): string
+  {
+    $valor = trim((string) $valor);
+    return $valor === '' ? $texto : $valor;
+  }
+}

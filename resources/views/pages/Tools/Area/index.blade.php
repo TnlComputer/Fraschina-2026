@@ -39,7 +39,7 @@
                   </thead>
                   @forelse($areas as $area)
                   <tr>
-                    <td>{{ $area->area }}</td>
+                    <td>{{ sin_dato($area->area) }}</td>
                     {{-- <td class="text-center">{{ $area->colorAcc }}</td>
                     <td class="text-center">{{ $area->colorCod }}</td>
                     <td class="text-center">{{ $area->status }}</td> --}}

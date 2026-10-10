@@ -39,7 +39,7 @@
                   </thead>
                   @forelse($cargos as $cargo)
                   <tr>
-                    <td>{{ $cargo->cargo }}</td>
+                    <td>{{ sin_dato($cargo->cargo) }}</td>
                     {{-- <td class="text-center">{{ $cargo->colorAcc }}</td>
                     <td class="text-center">{{ $cargo->colorCod }}</td>
                     <td class="text-center">{{ $cargo->status }}</td> --}}

@@ -71,4 +71,18 @@ class AuxiliaresTest extends TestCase
     $this->assertSame('Centro', unir('', 'Centro'));
     $this->assertSame('', unir(null, ''));
   }
+
+  public function test_la_opcion_sin_dato_no_se_modifica_ni_se_elimina(): void
+  {
+    $sinDato = AuxBarrios::create(['nombrebarrio' => '']);
+
+    $this->actingAs($this->user)->get("/tools/barrios/{$sinDato->id}/edit")->assertRedirect('/tools/barrios')->assertSessionHas('info');
+    $this->actingAs($this->user)->put("/tools/barrios/{$sinDato->id}", ['nombrebarrio' => 'Otro'])->assertSessionHas('info');
+    $this->actingAs($this->user)->delete("/tools/barrios/{$sinDato->id}")->assertSessionHas('info');
+    $this->assertSame('', $sinDato->fresh()->nombrebarrio);
+    $this->assertNull($sinDato->fresh()->deleted_at);
+
+    $this->actingAs($this->user)->get('/tools/barrios')->assertSee('(sin dato)');
+    $this->assertSame('(sin dato)', sin_dato('  '));
+  }
 }

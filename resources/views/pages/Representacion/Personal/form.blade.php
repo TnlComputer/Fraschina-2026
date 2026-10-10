@@ -21,7 +21,7 @@
     <select name="area_id" id="area_id" class="form-control @error('area_id') is-invalid @enderror">
       <option value="">Seleccione un área</option>
       @foreach ($areas as $area)
-      <option value="{{ $area->id }}" @selected(old('area_id', $personal->area_id) == $area->id)>{{ $area->area }}</option>
+      <option value="{{ $area->id }}" @selected(old('area_id', $personal->area_id) == $area->id)>{{ sin_dato($area->area) }}</option>
       @endforeach
     </select>
     @error('area_id')<div class="invalid-feedback">{{ $message }}</div>@enderror
@@ -31,7 +31,7 @@
     <select name="cargo_id" id="cargo_id" class="form-control @error('cargo_id') is-invalid @enderror">
       <option value="">Seleccione un cargo</option>
       @foreach ($cargos as $cargo)
-      <option value="{{ $cargo->id }}" @selected(old('cargo_id', $personal->cargo_id) == $cargo->id)>{{ $cargo->cargo }}</option>
+      <option value="{{ $cargo->id }}" @selected(old('cargo_id', $personal->cargo_id) == $cargo->id)>{{ sin_dato($cargo->cargo) }}</option>
       @endforeach
     </select>
     @error('cargo_id')<div class="invalid-feedback">{{ $message }}</div>@enderror
@@ -41,7 +41,7 @@
     <select name="profesion_id" id="profesion_id" class="form-control @error('profesion_id') is-invalid @enderror">
       <option value="">Seleccione una profesión</option>
       @foreach ($profesiones as $profesion)
-      <option value="{{ $profesion->id }}" @selected(old('profesion_id', $personal->profesion_id) == $profesion->id)>{{ $profesion->nombreprofesion }}</option>
+      <option value="{{ $profesion->id }}" @selected(old('profesion_id', $personal->profesion_id) == $profesion->id)>{{ sin_dato($profesion->nombreprofesion) }}</option>
       @endforeach
     </select>
     @error('profesion_id')<div class="invalid-feedback">{{ $message }}</div>@enderror

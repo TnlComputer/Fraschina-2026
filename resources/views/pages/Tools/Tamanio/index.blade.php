@@ -37,7 +37,7 @@
                   </thead>
                   @forelse($tamanios as $tamanio)
                   <tr>
-                    <td>{{ $tamanio->nombre }}</td>
+                    <td>{{ sin_dato($tamanio->nombre) }}</td>
                     <td class="text-center max-w-10 gap-2">
                       <div class="btn-group" role="group" aria-label="Acciones">
                         <a href="{{ route('tamanios.edit', $tamanio->id) }}" class="btn btn-warning btn-xs"

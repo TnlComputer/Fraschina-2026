@@ -43,7 +43,7 @@
                   </thead>
                   @forelse($municipios as $municipio)
                   <tr>
-                    <td>{{ $municipio->ciudadmunicipio }}</td>
+                    <td>{{ sin_dato($municipio->ciudadmunicipio) }}</td>
                     <td class="text-center">{{ $municipio->representacion }}</td>
                     <td class="text-center">{{ $municipio->distribucion }}</td>
                     <td class="text-center">{{ $municipio->molinos }}</td>

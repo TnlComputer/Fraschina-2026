@@ -91,7 +91,7 @@
       <option value="{{ $barrio->id }}" {{ old('barrio_id', $proveedor->barrio_id ?? '') == $barrio->id ? 'selected' :
         ''
         }}>
-        {{ $barrio->nombrebarrio }}
+        {{ sin_dato($barrio->nombrebarrio) }}
       </option>
       @endforeach
     </select>
@@ -110,7 +110,7 @@
       @foreach($municipios as $municipio)
       <option value="{{ $municipio->id }}" {{ old('municipio_id', $proveedor->municipio_id ?? '') == $municipio->id ?
         'selected' : '' }}>
-        {{ $municipio->ciudadmunicipio }}
+        {{ sin_dato($municipio->ciudadmunicipio) }}
       </option>
       @endforeach
     </select>
@@ -129,7 +129,7 @@
       @foreach($localidades as $localidad)
       <option value="{{ $localidad->id }}" {{ old('localidad_id', $proveedor->localidad_id ?? '') == $localidad->id ?
         'selected' : '' }}>
-        {{ $localidad->localidad }}
+        {{ sin_dato($localidad->localidad) }}
       </option>
       @endforeach
     </select>
@@ -208,7 +208,7 @@
       @foreach($rubros as $rubro)
       <option value="{{ $rubro->id }}" {{ old('rubro_id', $proveedor->rubro_id ?? '') == $rubro->id ?
         'selected' : '' }}>
-        {{ $rubro->nombre }}
+        {{ sin_dato($rubro->nombre) }}
       </option>
       @endforeach
     </select>

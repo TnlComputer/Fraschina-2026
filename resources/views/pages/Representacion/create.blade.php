@@ -87,8 +87,7 @@
                 <select name="barrio_id" id="barrio_id" class="form-select @error('barrio_id') is-invalid @enderror">
                   <option value="">Seleccione un barrio</option>
                   @foreach ($barrios as $barrio)
-                  <option value="{{ $barrio->id }}" @if (old('barrio_id')==$barrio->id) selected @endif>{{
-                    $barrio->nombrebarrio }}</option>
+                  <option value="{{ $barrio->id }}" @if (old('barrio_id')==$barrio->id) selected @endif>{{ sin_dato($barrio->nombrebarrio) }}</option>
                   @endforeach
                 </select>
                 @error('barrio_id')
@@ -101,8 +100,7 @@
                   class="form-select @error('municipio_id') is-invalid @enderror">
                   <option value="">Seleccione un municipio</option>
                   @foreach ($municipios as $municipio)
-                  <option value="{{ $municipio->id }}" @if (old('municipio_id')==$municipio->id) selected @endif>{{
-                    $municipio->ciudadmunicipio }}</option>
+                  <option value="{{ $municipio->id }}" @if (old('municipio_id')==$municipio->id) selected @endif>{{ sin_dato($municipio->ciudadmunicipio) }}</option>
                   @endforeach
                 </select>
                 @error('municipio_id')
@@ -115,8 +113,7 @@
                   class="form-select @error('localidad_id') is-invalid @enderror">
                   <option value="">Seleccione una localidad</option>
                   @foreach ($localidades as $localidad)
-                  <option value="{{ $localidad->id }}" @if (old('localidad_id')==$localidad->id) selected @endif>{{
-                    $localidad->localidad }}</option>
+                  <option value="{{ $localidad->id }}" @if (old('localidad_id')==$localidad->id) selected @endif>{{ sin_dato($localidad->localidad) }}</option>
                   @endforeach
                 </select>
                 @error('localidad_id')
@@ -128,7 +125,7 @@
                 <select name="zona_id" id="zona_id" class="form-select @error('zona_id') is-invalid @enderror">
                   <option value="">Seleccione una zona</option>
                   @foreach ($zonas as $zona)
-                  <option value="{{ $zona->id }}" @if (old('zona_id')==$zona->id) selected @endif>{{ $zona->nombre }}
+                  <option value="{{ $zona->id }}" @if (old('zona_id')==$zona->id) selected @endif>{{ sin_dato($zona->nombre) }}
                   </option>
                   @endforeach
                 </select>

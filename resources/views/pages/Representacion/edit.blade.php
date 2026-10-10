@@ -94,7 +94,7 @@
                   <option value="">Seleccione un barrio</option>
                   @foreach ($barrios as $barrio)
                   <option value="{{ $barrio->id }}" @if (old('barrio_id', $representacion->barrio_id) == $barrio->id)
-                    selected @endif>{{ $barrio->nombrebarrio }}</option>
+                    selected @endif>{{ sin_dato($barrio->nombrebarrio) }}</option>
                   @endforeach
                 </select>
                 @error('barrio_id')
@@ -108,7 +108,7 @@
                   <option value="">Seleccione un municipio</option>
                   @foreach ($municipios as $municipio)
                   <option value="{{ $municipio->id }}" @if (old('municipio_id', $representacion->municipio_id) ==
-                    $municipio->id) selected @endif>{{ $municipio->ciudadmunicipio }}</option>
+                    $municipio->id) selected @endif>{{ sin_dato($municipio->ciudadmunicipio) }}</option>
                   @endforeach
                 </select>
                 @error('municipio_id')
@@ -122,7 +122,7 @@
                   <option value="">Seleccione una localidad</option>
                   @foreach ($localidades as $localidad)
                   <option value="{{ $localidad->id }}" @if (old('localidad_id', $representacion->localidad_id) ==
-                    $localidad->id) selected @endif>{{ $localidad->localidad }}</option>
+                    $localidad->id) selected @endif>{{ sin_dato($localidad->localidad) }}</option>
                   @endforeach
                 </select>
                 @error('localidad_id')
@@ -135,7 +135,7 @@
                   <option value="">Seleccione una zona</option>
                   @foreach ($zonas as $zona)
                   <option value="{{ $zona->id }}" @if (old('zona_id', $representacion->zona_id) == $zona->id) selected
-                    @endif>{{ $zona->nombre }}</option>
+                    @endif>{{ sin_dato($zona->nombre) }}</option>
                   @endforeach
                 </select>
                 @error('zona_id')

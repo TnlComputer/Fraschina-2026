@@ -1,4 +1,4 @@
-@foreach (['success' => 'success', 'warning' => 'warning', 'error' => 'danger'] as $clave => $clase)
+@foreach (['success' => 'success', 'info' => 'info', 'warning' => 'warning', 'error' => 'danger'] as $clave => $clase)
 @if (session($clave))
 <div class="alert alert-{{ $clase }} alert-dismissible fade show mt-2" role="alert">
   {{ session($clave) }}

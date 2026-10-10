@@ -39,7 +39,7 @@
                   </thead>
                   @forelse($modos as $modo)
                   <tr>
-                    <td>{{ $modo->nombre }}</td>
+                    <td>{{ sin_dato($modo->nombre) }}</td>
                     {{-- <td class="text-center">{{ $modo->colorAcc }}</td>
                     <td class="text-center">{{ $modo->colorCod }}</td>
                     <td class="text-center">{{ $modo->status }}</td> --}}

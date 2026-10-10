@@ -39,7 +39,7 @@
                   </thead>
                   @forelse($barrios as $barrio)
                   <tr>
-                    <td>{{ $barrio->nombrebarrio }}</td>
+                    <td>{{ sin_dato($barrio->nombrebarrio) }}</td>
                     {{-- <td>{{ $barrio->email }}</td>
                     <td>{{ $barrio->permiso }}</td>
                     <td>{{ $barrio->status }}</td> --}}

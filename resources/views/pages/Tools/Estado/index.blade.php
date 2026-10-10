@@ -39,7 +39,7 @@
                   </thead>
                   @forelse($estados as $estado)
                   <tr>
-                    <td>{{ $estado->nomEstado }}</td>
+                    <td>{{ sin_dato($estado->nomEstado) }}</td>
                     {{-- <td class="text-center">{{ $estado->colorAcc }}</td>
                     <td class="text-center">{{ $estado->colorCod }}</td>
                     <td class="text-center">{{ $estado->status }}</td> --}}

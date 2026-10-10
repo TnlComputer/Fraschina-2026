@@ -52,6 +52,7 @@ class AgendaGralController extends Controller
   public function create()
   {
     $profesiones = DB::table('auxprofesiones as auxProf')
+      ->whereNull('auxProf.deleted_at')
       ->where('auxProf.agendas', '=', 'SI')
       ->orderBy('nombreprofesion', 'asc')
       ->get();
@@ -120,7 +121,7 @@ class AgendaGralController extends Controller
   public function edit($id)
   {
     $agenda = DB::table('agendas')->where('id', $id)->first();
-    $profesiones = DB::table('auxprofesiones')->get();
+    $profesiones = tabla_aux('auxprofesiones', $agenda->cod_prof ?? null)->orderBy('nombreprofesion')->get();
 
     if (!$agenda) {
       return redirect()->route('AgendaGral.index')->with('error', 'Registro no encontrado.');

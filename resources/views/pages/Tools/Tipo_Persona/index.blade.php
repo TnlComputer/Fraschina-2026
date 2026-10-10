@@ -36,7 +36,7 @@
                   </thead>
                   @forelse($tipo_personas as $tipo_persona)
                   <tr>
-                    <td>{{ $tipo_persona->tipo }}</td>
+                    <td>{{ sin_dato($tipo_persona->tipo) }}</td>
                     <td class="d-flex gap-1 justify-content-center">
                       <a href="{{ route('tipo_persona.edit', $tipo_persona->id) }}" class="btn btn-warning btn-xs"
                         title="Editar">

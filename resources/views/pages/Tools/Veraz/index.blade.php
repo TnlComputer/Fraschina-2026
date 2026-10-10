@@ -37,7 +37,7 @@
                   </thead>
                   @forelse($verazes as $veraz)
                   <tr>
-                    <td>{{ $veraz->estado }}</td>
+                    <td>{{ sin_dato($veraz->estado) }}</td>
                     <td class="text-center">{{ $veraz->color }}</td>
                     <td class="d-flex gap-1 justify-content-center">
                       <a href="{{ route('veraz.edit', $veraz->id) }}" class="btn btn-warning btn-xs" title="Editar">

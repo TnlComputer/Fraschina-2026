@@ -39,7 +39,7 @@
                   </thead>
                   @forelse($familias as $familia)
                   <tr>
-                    <td>{{ $familia->familia }}</td>
+                    <td>{{ sin_dato($familia->familia) }}</td>
                     {{-- <td class="text-center">{{ $familia->colorAcc }}</td>
                     <td class="text-center">{{ $familia->colorCod }}</td>
                     <td class="text-center">{{ $familia->status }}</td> --}}

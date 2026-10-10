@@ -39,7 +39,7 @@
                   </thead>
                   @forelse($contactos as $contacto)
                   <tr>
-                    <td>{{ $contacto->contacto }}</td>
+                    <td>{{ sin_dato($contacto->contacto) }}</td>
                     {{-- <td class="text-center">{{ $contacto->colorAcc }}</td>
                     <td class="text-center">{{ $contacto->colorCod }}</td>
                     <td class="text-center">{{ $contacto->status }}</td> --}}

@@ -39,7 +39,7 @@
                   </thead>
                   @forelse($prioridades as $prioridad)
                   <tr>
-                    <td>{{ $prioridad->nombre }}</td>
+                    <td>{{ sin_dato($prioridad->nombre) }}</td>
                     {{-- <td class="text-center">{{ $prioridad->colorAcc }}</td>
                     <td class="text-center">{{ $prioridad->colorCod }}</td>
                     <td class="text-center">{{ $prioridad->status }}</td> --}}
