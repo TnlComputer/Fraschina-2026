@@ -1,66 +1,110 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Fraschina — Sistema de gestión
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Sistema web de gestión para **Fraschina S.R.L.**, empresa dedicada a la comercialización y
+distribución de harinas y productos de molinería. Reemplaza al sistema anterior en PHP y a
+las planillas Excel que se usaban para la operación diaria.
 
-## About Laravel
+> **Software propietario.** Todos los derechos reservados — ver [LICENSE](LICENSE).
+> Que el código sea visible no otorga permiso de uso, copia ni distribución.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Qué hace el sistema
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### Distribución
+Venta y reparto a clientes propios (panaderías, comercios, industrias).
+- **Clientes:** datos comerciales, dirección, horarios de entrega, días que reciben, forma de
+  cobro, situación crediticia, productos y precios por cliente.
+- **Agenda:** registro de llamados y contactos con cada cliente, con prioridad, acción,
+  cotización y sus últimos pedidos a la vista.
+- **Pedidos:** alta y modificación de pedidos con productos y tareas (cambios, retiros). Los
+  totales se calculan con IVA (10,5 % o 21 % según el producto).
+- **Reparto:** planilla del día ordenada por chofer y orden de entrega, con datos de factura
+  (fecha, número, importe), aviso de factura impresa y calendario que resalta los días con
+  pedidos. Impresión de la planilla de reparto, de control y de recibos en PDF.
 
-## Learning Laravel
+### Expedición — Central de Pedidos
+Pedidos de clientes que se pasan a los molinos.
+- **Pedidos** con número correlativo único y revisiones (`1234-0`, `1234-1`, …) cuando se
+  modifican después de enviados. Pueden quedar *pendientes de confirmación* hasta que se
+  confirman. Cada línea admite su propia calidad, precio, condición, planta, fecha (también
+  tentativa), plazo y forma de pago. Incluye muestras sin cargo.
+- **Configuración cliente-molino:** condiciones habituales que se precargan en cada pedido y
+  qué incluye la planilla que se envía al molino.
+- **Planilla de pedido en PDF**, archivada con nombre en código y enviada por mail a los
+  destinatarios de cada molino.
+- **Tablero**, **planificación semanal** tipo almanaque, **control de entregas** (transporte,
+  horarios, kilos cargados y recibidos, remito, descarga y certificado) y **Diaria** (historial
+  de cada movimiento).
+- **Calidad (General):** parámetros de los certificados de calidad con filtros y exportación.
+- **Informes:** tolvas y bolsas por molino, certificados pendientes de recibir.
+- **Avisos** por mail (y WhatsApp, pendiente de proveedor) y **consultas automáticas** a los
+  molinos por la mañana y por la tarde.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### Otros módulos
+- **Molinos, Proveedores, Representación, Agro y Transporte:** fichas de empresas, personal de
+  contacto y productos.
+- **Agenda General:** contactos generales.
+- **Tools:** tablas auxiliares (calles, barrios, zonas, rubros, etc.), usuarios, roles y
+  permisos, exportación de tablas a Excel.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### Seguridad y trazabilidad
+- **Permisos por sección:** cada usuario ve y opera solo los módulos que su rol habilita.
+- **Nada se borra:** las bajas marcan el registro como eliminado y lo ocultan; la información
+  queda en la base.
+- **Auditoría:** cada alta, modificación y eliminación queda registrada con usuario, fecha,
+  sector y valores anteriores y nuevos, además de ingresos, salidas e intentos fallidos. El
+  administrador la consulta en *Tools → Auditoría* con filtros y exportación a Excel.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-## Laravel Sponsors
+## Tecnología
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+- PHP 8.2+ · Laravel 11 · MySQL 8
+- AdminLTE (Bootstrap 4) · Vite · Tailwind
+- spatie/laravel-permission (roles y permisos) · dompdf (PDF) · maatwebsite/excel (Excel)
+- Interfaz y mensajes en español; zona horaria America/Argentina/Buenos_Aires
 
-### Premium Partners
+## Puesta en marcha (desarrollo)
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+```bash
+composer install
+npm install
+cp .env.example .env        # completar base de datos, mail y variables EXPEDICION_*
+php artisan key:generate
+php artisan migrate
+npm run dev                 # frontend (Vite)
+php artisan serve           # backend en http://127.0.0.1:8000
+```
 
-## Contributing
+Los usuarios iniciales se crean con `database/seeders/UsersTableSeeder.php`, que no se
+versiona: copiar `UsersTableSeeder.php.example`, completarlo y definir `SEED_USER_PASSWORD`.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+> **Windows:** si en el usuario existen variables de entorno `DB_HOST`, `DB_PASSWORD` o
+> `DB_USER` (de otros proyectos), pisan al `.env`. Quitarlas de la sesión antes de usar
+> `php artisan`.
 
-## Code of Conduct
+### Tareas programadas
+Respaldo diario en Excel de la Central de Pedidos y consultas automáticas a molinos. En el
+servidor hace falta un cron cada minuto:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```
+* * * * * cd /ruta/al/sistema && php artisan schedule:run >> /dev/null 2>&1
+```
 
-## Security Vulnerabilities
+### Migración de datos desde el sistema anterior
+Los scripts de `conversion_tablas/` convierten la base del sistema anterior a la estructura
+nueva sin perder registros (clientes dados de baja, pedidos sin cliente, líneas sueltas y
+borradores se conservan como registros dados de baja). Se ejecutan en orden sobre una base
+recién migrada.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### Tests
+Los tests usan SQLite en memoria y nunca tocan la base real:
 
-## License
+```bash
+php vendor/phpunit/phpunit/phpunit
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+---
+
+© 2023-2026 TnlComputer — Jorge Martínez. Todos los derechos reservados.

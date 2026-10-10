@@ -1,10 +1,10 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "laravel/laravel",
+    "name": "tnlcomputer/fraschina",
     "type": "project",
-    "description": "The skeleton application for the Laravel framework.",
+    "description": "Sistema de gestión de Fraschina S.R.L. (software propietario)",
     "keywords": ["laravel", "framework"],
-    "license": "MIT",
+    "license": "proprietary",
     "require": {
         "php": "^8.2",
         "dompdf/dompdf": "^3.1",
