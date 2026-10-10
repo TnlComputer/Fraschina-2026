@@ -26,6 +26,7 @@ class DistribucionPedidoTest extends TestCase
         Permission::firstOrCreate(['name' => 'permiso_2', 'guard_name' => 'web']);
         $this->user = User::factory()->create();
         $this->user->givePermissionTo('permiso_2');
+        $this->conAcciones($this->user);
 
         $this->clienteId = DB::table('distribucions')->insertGetId(['razonsocial' => 'Panadería Test', 'nomfantasia' => 'La Test', 'status' => 'A']);
         $this->harina = DB::table('productos_c_d_a')->insertGetId(['productoCDA' => 'Harina 000', 'ivacda' => '10.5', 'status' => 'A']);

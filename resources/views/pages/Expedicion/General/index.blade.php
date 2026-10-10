@@ -25,9 +25,9 @@
         <form action="{{ route('expedicion_general.index') }}" method="GET">
           <table class="table table-sm table-striped table-bordered w-100">
             <div class="barra__index d-flex justify-content-between align-items-center mb-3">
-              <a href="{{ route('expedicion_general.create') }}" class="btn btn-success">
+              @can('permiso_11')<a href="{{ route('expedicion_general.create') }}" class="btn btn-success">
                 Nuevo
-              </a>
+              </a>@endcan
               <a href="{{ route('expedicion_general.export', request()->query()) }}" class="btn btn-info">
                 Exportar a Excel
               </a>

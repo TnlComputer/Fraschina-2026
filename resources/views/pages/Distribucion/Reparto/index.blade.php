@@ -24,9 +24,9 @@
   <div class="mb-3 d-flex justify-content-between align-items-center">
     <!-- Botón Nuevo Pedido a la Izquierda -->
     <div>
-      </a><a href="{{ route('distribucion_pedido.create') }}" class="btn btn-primary ml-3">
+      </a>@can('permiso_11')<a href="{{ route('distribucion_pedido.create') }}" class="btn btn-primary ml-3">
         <i class="fas fa-plus"></i> Nuevo Pedido
-      </a> <!-- Formulario de búsqueda -->
+      </a>@endcan <!-- Formulario de búsqueda -->
     </div>
     <!-- Botón Reparto Impresion -->
     <div>

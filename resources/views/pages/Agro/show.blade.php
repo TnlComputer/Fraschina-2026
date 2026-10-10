@@ -96,9 +96,9 @@
       <!-- Personal Asociado -->
       <h4 class="d-flex justify-content-between align-items-center">
         <span>Personal Asociado</span>
-        <a href="{{ route('agro_personal.create', ['agro' => $agro->id]) }}" class="btn btn-primary btn-sm">
+        @can('permiso_11')<a href="{{ route('agro_personal.create', ['agro' => $agro->id]) }}" class="btn btn-primary btn-sm">
           <i class="fas fa-user-plus"></i> Nuevo Personal
-        </a>
+        </a>@endcan
       </h4>
       <div class="table-responsive">
         <table class="table table-sm table-bordered">

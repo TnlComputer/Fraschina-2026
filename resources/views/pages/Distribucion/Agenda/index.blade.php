@@ -10,8 +10,8 @@
   $filtro = request('dia');
 @endphp
 <div class="barra__index">
-  <a href="{{ route('distribucion_agenda.create') }}" class="btn btn-success"><i class="fas fa-plus"></i> Nuevo contacto</a>
-  <a href="{{ route('distribucion_pedido.create') }}" class="btn btn-info"><i class="fas fa-plus"></i> Nuevo pedido</a>
+  @can('permiso_11')<a href="{{ route('distribucion_agenda.create') }}" class="btn btn-success"><i class="fas fa-plus"></i> Nuevo contacto</a>@endcan
+  @can('permiso_11')<a href="{{ route('distribucion_pedido.create') }}" class="btn btn-info"><i class="fas fa-plus"></i> Nuevo pedido</a>@endcan
 
   <div class="btn-group ml-2" role="group" aria-label="Filtrar por día">
     <a href="{{ route('distribucion_agenda.index', array_filter(['search' => request('search')])) }}" class="btn btn-outline-secondary {{ !$filtro ? 'active' : '' }}">Todos</a>

@@ -2,131 +2,121 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-
-use App\Models\Role;
 use App\Models\Permission;
+use App\Models\Role;
+use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
+/**
+ * Roles: cada rol define a qué secciones entra el usuario y qué puede hacer (alta / editar / eliminar).
+ * El acceso de cada usuario lo define solo su rol.
+ * Los roles con el permiso Super Usuario (permiso_99) solo los ve y modifica otro Super Usuario.
+ */
 class RoleController extends Controller
 {
-  public function index()
+  public const SUPER = 'permiso_99';
+
+  /** Permisos de sección (a qué pantallas entra) y de acción (qué puede hacer con los registros). */
+  public const SECCIONES = ['permiso_1', 'permiso_2', 'permiso_3', 'permiso_4', 'permiso_5', 'permiso_6', 'permiso_7', 'permiso_8', 'permiso_9'];
+  public const ACCIONES = ['permiso_11', 'permiso_12', 'permiso_13'];
+
+  public function index(Request $request)
   {
-    $roles = Role::where('name', '!=', 'Admin')->with('permissions')->paginate(10);
-    // $roles = Role::with('permissions')->paginate(10);
-    return view('pages.Tools.Role.index', compact('roles'));
+    $roles = Role::with('permissions')->withCount('users')->orderBy('name')->get()
+      ->filter(fn($rol) => $this->puedeVer($request, $rol));
+    $permisos = Permission::orderBy('id')->get()->keyBy('name');
 
-    //   $roles = Role::with('permissions')->paginate(10);
-    // $permissions = Permission::all();
-    // return view('pages.Tools.Role.index', compact('roles', 'permissions'));
+    return view('pages.Tools.Role.index', compact('roles', 'permisos'));
   }
-
 
   public function create()
   {
-    // $permissions = Permission::all();
-    $permissions = Permission::where('name', '!=', 'permiso_99')->get();
-    return view('pages.Tools.Role.create', compact('permissions'));
+    return $this->formulario(new Role());
   }
-
-  // public function store(Request $request)
-  // {
-  //   $request->validate([
-  //     'name' => 'required|unique:roles|max:255',
-  //     'permissions' => 'array',
-  //   ]);
-
-  //   $role = Role::create(['name' => $request->name]);
-  //   $role->syncPermissions($request->permissions);
-
-  //   return redirect()->route('roles.index')->with('success', 'Rol creado correctamente.');
-  // }
 
   public function store(Request $request)
   {
-    // Validar los datos de entrada
-    $request->validate([
-      'name' => 'required|string|max:255|unique:roles,name', // Nombre único para el rol
-      'permissions' => 'nullable|array', // Los permisos pueden ser opcionales
-      'permissions.*' => 'exists:permissions,id', // Cada permiso debe existir en la tabla
-    ]);
+    $datos = $this->validar($request);
+    $role = Role::create(['name' => $datos['name'], 'guard_name' => 'web']);
+    $role->syncPermissions($this->permisosElegidos($request, $role));
 
-    // Crear el rol con el nombre proporcionado
-    $role = Role::create(['name' => $request->name]);
-
-    // Convertir los IDs de permisos a nombres
-    $permissions = Permission::whereIn('id', $request->permissions)->pluck('name')->toArray();
-
-    // Asignar permisos al rol
-    $role->syncPermissions($permissions);
-
-    return redirect()->route('roles.index')->with('success', 'Rol creado correctamente.');
+    return redirect()->route('roles.index')->with('success', "Rol «{$role->name}» creado.");
   }
 
-  public function edit(Role $role)
+  public function show(Request $request, Role $role)
   {
-    // $permissions = Permission::all();
-    $permissions = Permission::where('name', '!=', 'permiso_99')->get();
-    // dd($permissions);
-    return view('pages.Tools.Role.edit', compact('role', 'permissions'));
+    return redirect()->route('roles.edit', $role);
   }
 
-  // public function update(Request $request, Role $role)
-  // {
-  //   $request->validate([
-  //     'name' => 'required|max:255|unique:roles,name,' . $role->id,
-  //     'permissions' => 'array',
-  //   ]);
-
-  //   $role->update(['name' => $request->name]);
-  //   $role->syncPermissions($request->permissions);
-
-  //   return redirect()->route('roles.index')->with('success', 'Rol actualizado correctamente.');
-  // }
-
-  public function update(Request $request, $id)
+  public function edit(Request $request, Role $role)
   {
-    // Validar los datos de entrada
-    $request->validate([
-      'name' => 'required|string|max:255|unique:roles,name,' . $id,
-      'permissions' => 'nullable|array', // Los permisos pueden ser nulos
-      'permissions.*' => 'exists:permissions,id', // Cada permiso debe existir en la tabla
-    ]);
-
-    // Buscar el rol por ID
-    $role = Role::findOrFail($id);
-
-    // Actualizar el nombre del rol
-    $role->update(['name' => $request->name]);
-
-    // Convertir los IDs de permisos a nombres
-    $permissions = Permission::whereIn('id', $request->permissions)->pluck('name')->toArray();
-
-    // Sincronizar los permisos del rol
-    $role->syncPermissions($permissions);
-
-    return redirect()->route('roles.index')->with('success', 'Rol actualizado correctamente.');
+    abort_unless($this->puedeVer($request, $role), 403, 'Solo el Super Usuario puede modificar este rol.');
+    return $this->formulario($role);
   }
 
-
-
-  // public function destroy(Role $role)
-  // {
-  //   $role->delete();
-  //   return redirect()->route('roles.index')->with('success', 'Rol eliminado correctamente.');
-  // }
-
-  public function destroy(Role $role)
+  public function update(Request $request, Role $role)
   {
-    // Verificar si el ID es 1 y evitar su eliminación
-    if ($role->id === 1) {
-      return redirect()->route('roles.index')->with('error', 'No se puede eliminar el rol predeterminado.');
+    abort_unless($this->puedeVer($request, $role), 403, 'Solo el Super Usuario puede modificar este rol.');
+    $datos = $this->validar($request, $role);
+    $role->update(['name' => $datos['name']]);
+    $role->syncPermissions($this->permisosElegidos($request, $role));
+
+    return redirect()->route('roles.index')->with('success', "Rol «{$role->name}» actualizado.");
+  }
+
+  public function destroy(Request $request, Role $role)
+  {
+    abort_unless($this->puedeVer($request, $role), 403, 'Solo el Super Usuario puede eliminar este rol.');
+    if ($role->checkPermissionTo(self::SUPER)) {
+      return back()->with('error', 'El rol del Super Usuario no se puede eliminar.');
     }
-    if ($role->id === 1) {
-      return redirect()->route('roles.index')->with('error', 'No se puede eliminar el rol predeterminado.');
+    if ($n = $role->users()->count()) {
+      return back()->with('error', "No se puede eliminar «{$role->name}»: lo tienen $n usuario(s). Asígneles otro rol primero.");
     }
 
-    // Eliminar el rol si no es el ID 1
-    $role->delete();
-    return redirect()->route('roles.index')->with('success', 'Rol eliminado correctamente.');
+    $role->delete();  // borrado lógico
+
+    return redirect()->route('roles.index')->with('success', "Rol «{$role->name}» eliminado.");
+  }
+
+  private function formulario(Role $role)
+  {
+    $permisos = Permission::whereIn('name', array_merge(self::SECCIONES, self::ACCIONES))->get()->keyBy('name');
+
+    return view('pages.Tools.Role.form', [
+      'role' => $role,
+      'secciones' => collect(self::SECCIONES)->map(fn($n) => $permisos[$n] ?? null)->filter(),
+      'acciones' => collect(self::ACCIONES)->map(fn($n) => $permisos[$n] ?? null)->filter(),
+      'esSuper' => $role->exists && $role->checkPermissionTo(self::SUPER),
+    ]);
+  }
+
+  private function validar(Request $request, ?Role $role = null): array
+  {
+    return $request->validate([
+      'name' => ['required', 'string', 'max:100', Rule::unique('roles', 'name')->ignore($role?->id)->whereNull('deleted_at')],
+      'permissions' => 'nullable|array',
+      'permissions.*' => 'integer|exists:permissions,id',
+    ], [], ['name' => 'nombre del rol']);
+  }
+
+  /**
+   * Permisos que se guardan: los tildados (nunca permiso_99 desde el formulario) y, si el rol ya era
+   * de Super Usuario, se le conserva.
+   */
+  private function permisosElegidos(Request $request, Role $role): array
+  {
+    $nombres = Permission::whereIn('id', (array) $request->input('permissions', []))
+      ->whereIn('name', array_merge(self::SECCIONES, self::ACCIONES))
+      ->pluck('name')->all();
+    if ($role->exists && $role->checkPermissionTo(self::SUPER)) {
+      $nombres[] = self::SUPER;
+    }
+    return $nombres;
+  }
+
+  private function puedeVer(Request $request, Role $role): bool
+  {
+    return !$role->checkPermissionTo(self::SUPER) || $request->user()->can(self::SUPER);
   }
 }

@@ -5,7 +5,7 @@
 @section('content_header')
 <div class="d-flex justify-content-between align-items-center">
   <h1>Molinos de Expedición</h1>
-  <a href="{{ route('expedicion_molino.create') }}" class="btn btn-primary"><i class="fas fa-plus"></i> Nuevo</a>
+  @can('permiso_11')<a href="{{ route('expedicion_molino.create') }}" class="btn btn-primary"><i class="fas fa-plus"></i> Nuevo</a>@endcan
 </div>
 @endsection
 

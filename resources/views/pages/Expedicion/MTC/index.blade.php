@@ -5,7 +5,7 @@
 @section('content_header')
 <div class="d-flex justify-content-between align-items-center">
   <h1>Configuración cliente-molino</h1>
-  <a href="{{ route('expedicion_MTC.create') }}" class="btn btn-primary"><i class="fas fa-plus"></i> Nueva</a>
+  @can('permiso_11')<a href="{{ route('expedicion_MTC.create') }}" class="btn btn-primary"><i class="fas fa-plus"></i> Nueva</a>@endcan
 </div>
 @endsection
 

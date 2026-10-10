@@ -18,7 +18,7 @@
                       style="width: 300px; display: inline;">
                     <button type="submit" class="btn btn-primary">Buscar</button>
                   </form>
-                  <a href="{{ route('AgendaGral.create') }}" class="btn btn-success">Nuevo</a>
+                  @can('permiso_11')<a href="{{ route('AgendaGral.create') }}" class="btn btn-success">Nuevo</a>@endcan
                 </div>
 
                 <div class="table-responsive">

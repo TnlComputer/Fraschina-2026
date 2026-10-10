@@ -21,6 +21,7 @@ class ExpedicionGeneralTest extends TestCase
         Permission::firstOrCreate(['name' => 'permiso_7', 'guard_name' => 'web']);
         $this->user = User::factory()->create();
         $this->user->givePermissionTo('permiso_7');
+        $this->conAcciones($this->user);
 
         DB::table('expedicion_general')->insert([
             ['fecha' => '2025-02-10', 'mo' => 'LUJ', 'cl' => 'ARG', 'particularidades' => 'febrero', 'status' => 'A'],

@@ -14,9 +14,9 @@
               <div class="p-2 text-gray-900 text-left text-xs">
                 <div class="barra__index d-flex justify-content-between align-items-center mb-3">
                   <div class="div__nuevo">
-                    <form action="{{ route('calles.create') }}">
+                    @can('permiso_11')<form action="{{ route('calles.create') }}">
                       <input class="btn btn-primary" type="submit" value="Nuevo">
-                    </form>
+                    </form>@endcan
                   </div>
                   <div class="div__buscar d-flex">
                     <form method="get" action="{{ route('calles.index') }}" class="form__buscar d-flex">

@@ -21,7 +21,7 @@ class UsuarioController extends Controller
   public function index(Request $request)
   {
     $name = trim($request->get('name'));
-    $sortField = $request->get('sort', 'name'); // Campo por defecto
+    $sortField = in_array($request->get('sort'), ['name', 'email', 'created_at'], true) ? $request->get('sort') : 'name';
 
     // Comienza la consulta con los usuarios activos
     $query = User::where('permiso', '!=', 99)
@@ -39,7 +39,7 @@ class UsuarioController extends Controller
 
     // Ejecuta la consulta y paginación
     $usuarios = $query->orderBy($sortField)->paginate(15);
-    $roles = Role::all(); // Obtiene todos los roles
+    $roles = $this->rolesAsignables($request);
 
     // Devuelve la vista con los usuarios
     return view('pages.Tools.Usuario.index', compact('usuarios', 'name', 'roles'));
@@ -49,9 +49,9 @@ class UsuarioController extends Controller
   /**
    * Show the form for creating a new resource.
    */
-  public function create()
+  public function create(Request $request)
   {
-    $roles = Role::all(); // Obtiene todos los roles
+    $roles = $this->rolesAsignables($request);
     return view('pages.Tools.Usuario.create', compact('roles'));
   }
 
@@ -65,8 +65,8 @@ class UsuarioController extends Controller
       'name' => 'required|string|max:255',
       'email' => 'required|email|unique:users,email',
       'password' => 'required|string|min:8|confirmed',
-      'role' => 'required|exists:roles,id', // Validar que el rol exista
-    ]);
+      'role' => ['required', \Illuminate\Validation\Rule::in($this->rolesAsignables($request)->pluck('id')->all())],
+    ], ['role.in' => 'El rol elegido no es válido.']);
 
 
     try {
@@ -106,10 +106,10 @@ class UsuarioController extends Controller
   /**
    * Show the form for editing the specified resource.
    */
-  public function edit($id)
+  public function edit(Request $request, $id)
   {
-    $usuario = User::findOrFail($id); // Encuentra el usuario por ID
-    $roles = Role::all(); // Obtiene todos los roles disponibles
+    $usuario = $this->usuarioModificable($request, $id);
+    $roles = $this->rolesAsignables($request);
 
     return view('pages.Tools.Usuario.edit', compact('usuario', 'roles'));
   }
@@ -120,10 +120,10 @@ class UsuarioController extends Controller
       'name' => 'required|string|max:255',
       'email' => 'required|email|unique:users,email,' . $id,
       'password' => 'nullable|string|min:8|confirmed',
-      'role' => 'required|exists:roles,id', // Validación del rol
-    ]);
+      'role' => ['required', \Illuminate\Validation\Rule::in($this->rolesAsignables($request)->pluck('id')->all())],
+    ], ['role.in' => 'El rol elegido no es válido.']);
 
-    $usuario = User::findOrFail($id);
+    $usuario = $this->usuarioModificable($request, $id);
 
     // Actualiza los datos del usuario
     $usuario->update([
@@ -153,27 +153,41 @@ class UsuarioController extends Controller
   /**
    * Remove the specified resource from storage.
    */
-  public function destroy(string $id)
+  public function destroy(Request $request, string $id)
   {
-    $user = User::findOrFail($id);
+    $user = $this->usuarioModificable($request, $id);
+    if ($user->is($request->user())) {
+      return back()->with('error', 'No puede desactivar su propio usuario.');
+    }
     $user->update(['is_active' => 0]);
 
     return redirect()->route('usuarios.index')->with('success', 'Usuario desactivado correctamente');
   }
 
-  public function deactivate($id)
-  {
-    $user = User::findOrFail($id);
-    $user->update(['is_active' => 0]);
 
-    return redirect()->route('usuarios.index')->with('success', 'Usuario desactivado correctamente');
-  }
-
-  public function activate($id)
+  public function activate(Request $request, $id)
   {
-    $user = User::findOrFail($id);
+    $user = $this->usuarioModificable($request, $id);
     $user->update(['is_active' => 1]);
 
     return redirect()->route('usuarios.index')->with('success', 'Usuario activado correctamente');
+  }
+
+  /**
+   * Roles que puede asignar quien está usando la pantalla: los de Super Usuario (permiso_99) solo otro Super Usuario.
+   */
+  private function rolesAsignables(Request $request)
+  {
+    return Role::with('permissions')->orderBy('name')->get()
+      ->filter(fn($rol) => $request->user()->can('permiso_99') || !$rol->permissions->contains('name', 'permiso_99'))
+      ->values();
+  }
+
+  /** Al Super Usuario solo lo modifica otro Super Usuario. */
+  private function usuarioModificable(Request $request, $id): User
+  {
+    $usuario = User::findOrFail($id);
+    abort_if($usuario->checkPermissionTo('permiso_99') && !$request->user()->can('permiso_99'), 403, 'Solo el Super Usuario puede modificar este usuario.');
+    return $usuario;
   }
 }

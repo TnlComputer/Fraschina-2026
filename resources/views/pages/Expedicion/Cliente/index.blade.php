@@ -5,7 +5,7 @@
 @section('content_header')
 <div class="d-flex justify-content-between align-items-center">
   <h1>Clientes de Expedición</h1>
-  <a href="{{ route('expedicion_cliente.create') }}" class="btn btn-primary"><i class="fas fa-plus"></i> Nuevo</a>
+  @can('permiso_11')<a href="{{ route('expedicion_cliente.create') }}" class="btn btn-primary"><i class="fas fa-plus"></i> Nuevo</a>@endcan
 </div>
 @endsection
 

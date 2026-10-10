@@ -22,6 +22,7 @@ class AuxiliaresTest extends TestCase
     Permission::firstOrCreate(['name' => 'permiso_9', 'guard_name' => 'web']);
     $this->user = User::factory()->create();
     $this->user->givePermissionTo('permiso_9');
+    $this->conAcciones($this->user);
   }
 
   public function test_alta_y_edicion_de_un_barrio(): void

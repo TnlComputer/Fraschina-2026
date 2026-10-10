@@ -95,10 +95,10 @@
       <!-- Personal Asociado -->
       <h4 class="d-flex justify-content-between align-items-center">
         <span>Personal Asociado</span>
-        <a href="{{ route('transporte_personal.create', ['transporte' => $transporte->id]) }}"
+        @can('permiso_11')<a href="{{ route('transporte_personal.create', ['transporte' => $transporte->id]) }}"
           class="btn btn-primary btn-sm">
           <i class="fas fa-user-plus"></i> Nuevo Personal
-        </a>
+        </a>@endcan
       </h4>
       <div class="table-responsive">
         <table class="table table-sm table-bordered">

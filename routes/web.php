@@ -77,7 +77,7 @@ Route::middleware('auth')->group(function () {
 // permiso_99 (Super Usuario) pasa siempre por el Gate::before de AppServiceProvider.
 
 // REPRESENTACION (permiso_1)
-Route::middleware(['auth', 'permission:permiso_1'])->group(function () {
+Route::middleware(['auth', 'permission:permiso_1', 'accion'])->group(function () {
   Route::resource('/representacion', RepresentacionController::class);
 
   Route::get('/representacion/{representacion}/representacion_personal/create', [RepresentacionPersonalController::class, 'create'])
@@ -92,7 +92,7 @@ Route::middleware(['auth', 'permission:permiso_1'])->group(function () {
 });
 
 // DISTRIBUCION (permiso_2)
-Route::middleware(['auth', 'permission:permiso_2'])->group(function () {
+Route::middleware(['auth', 'permission:permiso_2', 'accion'])->group(function () {
   Route::resource('/distribucion', DistribucionController::class);
 
   Route::get('/distribucion/{distribucion}/distribucion_personal/create', [DistribucionPersonalController::class, 'create'])
@@ -137,7 +137,7 @@ Route::middleware(['auth', 'permission:permiso_2'])->group(function () {
 });
 
 // MOLINO (permiso_3)
-Route::middleware(['auth', 'permission:permiso_3'])->group(function () {
+Route::middleware(['auth', 'permission:permiso_3', 'accion'])->group(function () {
   Route::resource('/molino', MolinoController::class);
 
   Route::get('/molino/{molino}/molino_personal/create', [MolinoPersonalController::class, 'create'])
@@ -147,7 +147,7 @@ Route::middleware(['auth', 'permission:permiso_3'])->group(function () {
 });
 
 // AGRO (permiso_4)
-Route::middleware(['auth', 'permission:permiso_4'])->group(function () {
+Route::middleware(['auth', 'permission:permiso_4', 'accion'])->group(function () {
   Route::resource('/agro', AgroController::class);
 
   Route::get('/agro/{agro}/agro_personal/create', [AgroPersonalController::class, 'create'])
@@ -157,7 +157,7 @@ Route::middleware(['auth', 'permission:permiso_4'])->group(function () {
 });
 
 // PROVEEDOR (permiso_5)
-Route::middleware(['auth', 'permission:permiso_5'])->group(function () {
+Route::middleware(['auth', 'permission:permiso_5', 'accion'])->group(function () {
   Route::resource('/proveedor', ProveedorController::class);
 
   Route::get('/proveedor/{proveedor}/proveedor_personal/create', [ProveedorPersonalController::class, 'create'])
@@ -172,7 +172,7 @@ Route::middleware(['auth', 'permission:permiso_5'])->group(function () {
 });
 
 // TRANSPORTE (permiso_6)
-Route::middleware(['auth', 'permission:permiso_6'])->group(function () {
+Route::middleware(['auth', 'permission:permiso_6', 'accion'])->group(function () {
   Route::resource('/transporte', TransporteController::class);
 
   Route::get('/transporte/{transporte}/transporte_personal/create', [TransportePersonalController::class, 'create'])
@@ -182,7 +182,7 @@ Route::middleware(['auth', 'permission:permiso_6'])->group(function () {
 });
 
 // EXPEDICION - Central de Pedidos (permiso_7)
-Route::middleware(['auth', 'permission:permiso_7'])->group(function () {
+Route::middleware(['auth', 'permission:permiso_7', 'accion'])->group(function () {
   // Tablero
   Route::get('/expedicion', [ExpedicionController::class, 'index'])->name('expedicion.index');
 
@@ -222,10 +222,10 @@ Route::middleware(['auth', 'permission:permiso_7'])->group(function () {
 });
 
 // AGENDA GENERAL (permiso_8)
-Route::middleware(['auth', 'permission:permiso_8'])->resource('/AgendaGral', AgendaGralController::class);
+Route::middleware(['auth', 'permission:permiso_8', 'accion'])->resource('/AgendaGral', AgendaGralController::class);
 
 // TOOLS (permiso_9)
-Route::middleware(['auth', 'permission:permiso_9'])->group(function () {
+Route::middleware(['auth', 'permission:permiso_9', 'accion'])->group(function () {
   Route::resource('/tools/usuarios', UsuarioController::class);
   Route::put('/tools/usuarios/{id}/activate', [UsuarioController::class, 'activate'])->name('usuarios.activate');
   Route::resource('/tools/roles', RoleController::class);

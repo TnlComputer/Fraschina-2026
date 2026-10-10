@@ -77,8 +77,8 @@
 <div class="card mt-4">
   <div class="card-header">
     <h3 class="card-title">Personal Relacionado</h3>
-    <a href="{{ route('representacion_personal.create', $representacion->id) }}"
-      class="btn btn-primary btn-sm float-right">Nuevo Personal</a>
+    @can('permiso_11')<a href="{{ route('representacion_personal.create', $representacion->id) }}"
+      class="btn btn-primary btn-sm float-right">Nuevo Personal</a>@endcan
   </div>
   <div class="card-body">
     <table class="table table-bordered table-sm w-100">
@@ -148,8 +148,8 @@
 <div class="card mt-4">
   <div class="card-header">
     <h3 class="card-title">Productos Relacionados</h3>
-    <a href="{{ route('representacion_producto.create', $representacion->id) }}"
-      class="btn btn-primary btn-sm float-right">Nuevo Producto</a>
+    @can('permiso_11')<a href="{{ route('representacion_producto.create', $representacion->id) }}"
+      class="btn btn-primary btn-sm float-right">Nuevo Producto</a>@endcan
   </div>
   <div class="card-body">
     <table class="table table-bordered table-sm w-100">

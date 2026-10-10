@@ -35,6 +35,7 @@ class CentralPedidosTest extends TestCase
         Permission::firstOrCreate(['name' => 'permiso_7', 'guard_name' => 'web']);
         $this->user = User::factory()->create();
         $this->user->givePermissionTo('permiso_7');
+        $this->conAcciones($this->user);
 
         $this->cliente = DB::table('expedicion_clientes')->insertGetId(['sigla' => 'ARG', 'linea1' => 'Entregar con turno']);
         $this->molino = DB::table('expedicion_molinos')->insertGetId(['sigla' => 'LUJ', 'calificacion' => '1', 'contMolino' => 'Juan']);

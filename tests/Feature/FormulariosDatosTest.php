@@ -25,6 +25,7 @@ class FormulariosDatosTest extends TestCase
     }
     $this->user = User::factory()->create();
     $this->user->givePermissionTo(['permiso_1', 'permiso_2']);
+    $this->conAcciones($this->user);
   }
 
   public function test_personal_de_representacion_muestra_y_guarda_todos_sus_datos(): void

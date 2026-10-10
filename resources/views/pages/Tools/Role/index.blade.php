@@ -1,131 +1,94 @@
-{{-- @extends('adminlte::page')
-
-@section('content')
-<h2>Gestión de Roles</h2>
-<a href="{{ route('roles.create') }}" class="btn btn-primary">Crear Nuevo Rol</a>
-<table class="table">
-  <thead>
-    <tr>
-      <th>Nombre</th>
-      <th>Permisos</th>
-      <th>Acciones</th>
-    </tr>
-  </thead>
-  <tbody>
-    @foreach($roles as $role)
-    <tr>
-      <td>{{ $role->name }}</td>
-      <td>
-        @foreach($role->permissions as $permission)
-        <span class="badge bg-info">{{ $permission->description }}</span>
-        @endforeach
-      </td>
-      <td>
-        <a href="{{ route('roles.edit', $role->id) }}" class="btn btn-warning">Editar</a>
-        <form action="{{ route('roles.destroy', $role->id) }}" method="POST" style="display:inline-block;">
-          @csrf
-          @method('DELETE')
-          <button type="submit" class="btn btn-danger">Eliminar</button>
-        </form>
-      </td>
-    </tr>
-    @endforeach
-  </tbody>
-</table>
-{{ $roles->links() }}
-@endsection --}}
-
 @extends('adminlte::page')
 
+@section('title', 'Roles')
+
+@section('content_header')
+<div class="d-flex flex-wrap align-items-center justify-content-between">
+  <h1>Roles</h1>
+  @can('permiso_11')<a href="{{ route('roles.create') }}" class="btn btn-primary"><i class="fas fa-plus"></i> Nuevo rol</a>@endcan
+</div>
+@endsection
+
+@use('App\Http\Controllers\RoleController')
+@php
+$cols = collect(array_merge(RoleController::SECCIONES, RoleController::ACCIONES))->map(fn($n) => $permisos[$n] ?? null)->filter();
+// rótulos cortos para que entren las columnas; el nombre completo queda en el title
+$corto = ['permiso_1' => 'Repres.', 'permiso_2' => 'Distrib.', 'permiso_3' => 'Molino', 'permiso_4' => 'Agro', 'permiso_5' => 'Proveed.',
+  'permiso_6' => 'Transp.', 'permiso_7' => 'Exped.', 'permiso_8' => 'Agenda', 'permiso_9' => 'Herram.', 'permiso_11' => 'Alta',
+  'permiso_12' => 'Editar', 'permiso_13' => 'Eliminar'];
+@endphp
+
 @section('content')
-<h2>Gestión de Roles</h2>
-<a href="{{ route('roles.create') }}" class="btn btn-primary">Crear Nuevo Rol</a>
-<table class="table table-striped table-responsive-sm table-striped-columns table-valign-middle table-sm">
-  <thead>
-    <tr>
-      <th>Rol</th>
-      <th>Repr</th>
-      <th>Dist</th>
-      <th>Moli</th>
-      <th>Prov</th>
-      <th>Agro</th>
-      <th>Tran</th>
-      <th>Expe</th>
-      <th>Agra</th>
-      <th>Tool</th>
-      <th>Alta</th>
-      <th>Edit</th>
-      <th>Del </th>
-      <th>Acción</th>
-    </tr>
-  </thead>
-  <tbody>
-    @foreach($roles as $role)
-    <tr class=" text-md">
-      <td class="text-capitalize">{{ $role->name }}</td>
+<p class="text-muted mb-2">Cada usuario tiene un rol. El rol define a qué secciones entra y si puede dar de alta, modificar o eliminar registros.</p>
 
-      {{-- Mostrar los permisos como columnas --}}
-      @foreach([1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 13] as $i)
-      <td style="background-color: {{ $role->permissions->contains('name', 'permiso_'.$i) ? '#90ee90' : '#af2626' }};">
-      </td>
-      {{-- <td> {{ $role->permissions->contains('name', 'permiso_'.$i) ? 'SI' : 'NO' }}</td> --}}
-      @endforeach
-
-      <td>
-
-        <a href="{{ route('roles.edit', $role->id) }}" class="btn btn-warning btn-xs" title="Editar">
-          <i class="fa-solid fa-pen-to-square fa-xs"></i>
-        </a>
-        {{-- <form action="{{ route('roles.destroy', $role->id) }}" method="POST" style="display:inline-block;">
-          @csrf
-          @method('DELETE') --}}
-          {{-- <form action="{{ route('roles.destroy', $role->id) }}" method="POST" style="display:inline-block;"
-            onsubmit="return confirm('¿Estás seguro de que deseas eliminar este rol?')">
-            @csrf
-            @method('DELETE') --}}
-            <button class="btn btn-danger btn-xs" onclick="confirmDeletion('{{ route('roles.destroy', $role->id) }}')"
-              title="Eliminar"><i class="fa-solid fa-trash fa-xs"></i></button>
-            {{--
-          </form> --}}
-      </td>
-    </tr>
-    @endforeach
-  </tbody>
-</table>
-{{ $roles->links() }}
-
-<!-- Modal -->
-<div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="confirmModalLabel">Confirmar Eliminación</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        ¿Estás seguro de que deseas eliminar este rol? Esta acción no se puede deshacer.
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-        <form id="deleteForm" method="POST" style="display: inline;">
-          @csrf
-          @method('DELETE')
-          <button type="submit" class="btn btn-danger">Eliminar</button>
-        </form>
-      </div>
-    </div>
+<div class="card">
+  <div class="card-body p-0 table-responsive">
+    <table class="table table-sm table-hover mb-0 tabla-roles">
+      <thead>
+        <tr>
+          <th>Rol</th>
+          <th class="text-center">Usuarios</th>
+          @foreach ($cols as $p)
+          <th class="text-center {{ in_array($p->name, RoleController::ACCIONES) ? 'col-accion' : '' }}" title="{{ $p->description }}">
+            <span class="rotulo">{{ $corto[$p->name] ?? $p->description }}</span>
+          </th>
+          @endforeach
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @forelse ($roles as $role)
+        @php $super = $role->permissions->contains('name', RoleController::SUPER); @endphp
+        <tr>
+          <td class="font-weight-bold text-nowrap">
+            {{ $role->name }}
+            @if ($super)<span class="badge badge-danger ml-1" title="Acceso total">Super Usuario</span>@endif
+          </td>
+          <td class="text-center">
+            @if ($role->users_count)
+            <span class="badge badge-secondary">{{ $role->users_count }}</span>
+            @else
+            <span class="text-muted">—</span>
+            @endif
+          </td>
+          @foreach ($cols as $p)
+          <td class="text-center {{ in_array($p->name, RoleController::ACCIONES) ? 'col-accion' : '' }}">
+            @if ($super || $role->permissions->contains('name', $p->name))
+            <i class="fas fa-check text-success" title="{{ $p->description }}: sí"></i>
+            @else
+            <span class="text-muted">·</span>
+            @endif
+          </td>
+          @endforeach
+          <td class="d-flex">
+            <a href="{{ route('roles.edit', $role) }}" class="btn-xs btn-warning" title="Editar"><i class="fa-solid fa-pen-to-square fa-xs"></i></a>
+            @unless ($super)
+            <form method="POST" action="{{ route('roles.destroy', $role) }}" onsubmit="return confirm('¿Eliminar el rol «{{ $role->name }}»?');">
+              @csrf
+              @method('DELETE')
+              <button type="submit" class="btn-xs btn-danger" title="{{ $role->users_count ? 'Tiene usuarios asignados' : 'Eliminar' }}" @disabled($role->users_count)>
+                <i class="fa-solid fa-trash fa-xs"></i>
+              </button>
+            </form>
+            @endunless
+          </td>
+        </tr>
+        @empty
+        <tr><td colspan="{{ $cols->count() + 3 }}" class="text-center text-muted">No hay roles.</td></tr>
+        @endforelse
+      </tbody>
+    </table>
   </div>
 </div>
-
 @endsection
 
-@section('js')
-<script>
-  function confirmDeletion(actionUrl) {
-    const deleteForm = document.getElementById('deleteForm');
-    deleteForm.setAttribute('action', actionUrl);
-    const modal = new bootstrap.Modal(document.getElementById('confirmModal'));
-    modal.show();
-  }
-</script>
-@endsection
+@push('css')
+<style>
+  .tabla-roles th { vertical-align: bottom; font-size: .75rem; text-transform: none; letter-spacing: 0; padding: .4rem .3rem; }
+  .tabla-roles th .rotulo { display: inline-block; max-width: 72px; white-space: normal; line-height: 1.15; overflow-wrap: normal; }
+  .tabla-roles td { padding: .45rem .3rem; }
+  .tabla-roles td, .tabla-roles th { vertical-align: middle; }
+  .tabla-roles .col-accion { background: rgba(0, 123, 255, .05); }
+  .tabla-roles button[disabled] { opacity: .35; cursor: not-allowed; }
+</style>
+@endpush

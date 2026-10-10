@@ -5,7 +5,7 @@
 @section('content_header')
 <div class="d-flex justify-content-between align-items-center">
   <h1>Central de Pedidos</h1>
-  <a href="{{ route('expedicion_pedido.create') }}" class="btn btn-primary"><i class="fas fa-plus"></i> Nuevo pedido</a>
+  @can('permiso_11')<a href="{{ route('expedicion_pedido.create') }}" class="btn btn-primary"><i class="fas fa-plus"></i> Nuevo pedido</a>@endcan
 </div>
 @endsection
 

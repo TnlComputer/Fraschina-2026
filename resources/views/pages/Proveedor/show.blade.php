@@ -92,10 +92,10 @@
       <!-- Personal Asociado -->
       <h4 class="d-flex justify-content-between align-items-center">
         <span>Personal Asociado</span>
-        <a href="{{ route('proveedor_personal.create', ['proveedor' => $proveedor->id]) }}"
+        @can('permiso_11')<a href="{{ route('proveedor_personal.create', ['proveedor' => $proveedor->id]) }}"
           class="btn btn-primary btn-sm">
           <i class="fas fa-user-plus"></i> Nuevo Personal
-        </a>
+        </a>@endcan
       </h4>
       <div class="table-responsive">
         <table class="table table-sm table-bordered">
@@ -171,10 +171,10 @@
       <!-- Personal Asociado -->
       <h4 class="d-flex justify-content-between align-items-center">
         <span>Productos Relacionados</span>
-        <a href="{{ route('proveedor_producto.create', ['proveedor' => $proveedor->id]) }}"
+        @can('permiso_11')<a href="{{ route('proveedor_producto.create', ['proveedor' => $proveedor->id]) }}"
           class="btn btn-primary btn-sm">
           <i class="fas fa-user-plus"></i> Nuevo Producto
-        </a>
+        </a>@endcan
       </h4>
       <div class="table-responsive">
         <table class="table table-sm table-bordered">
