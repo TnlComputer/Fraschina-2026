@@ -58,9 +58,7 @@ class ExpedicionMolinoController extends Controller
 
   public function destroy(ExpedicionMolino $expedicion_molino)
   {
-    if ($expedicion_molino->pedidos()->exists()) {
-      return back()->with('error', 'El molino tiene pedidos: no se puede eliminar.');
-    }
+    // Borrado lógico: queda en la base y en sus pedidos, pero no se muestra ni se puede elegir
     $expedicion_molino->delete();
 
     return redirect()->route('expedicion_molino.index')->with('success', 'Molino eliminado.');

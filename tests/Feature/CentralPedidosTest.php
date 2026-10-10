@@ -13,7 +13,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
-use Spatie\Permission\Models\Permission;
+use App\Models\Permission;
 use Tests\TestCase;
 
 class CentralPedidosTest extends TestCase
@@ -227,6 +227,37 @@ class CentralPedidosTest extends TestCase
         $this->actingAs($this->user)->post('/expedicion_MTC', [
             'expClie_id' => $this->cliente, 'expMolino_id' => $this->molino,
         ])->assertSessionHasErrors('expMolino_id');
+    }
+
+    public function test_nada_se_borra_fisicamente(): void
+    {
+        ExpNotificacionDestinatario::create([
+            'expedicion_molino_id' => $this->molino, 'canal' => 'mail', 'destino' => 'x@molino.com', 'evento' => 'pedido_nuevo',
+        ]);
+        $this->actingAs($this->user)->post('/expedicion_pedido', $this->datosPedido(['confirmar' => 0]));
+        $pedido = ExpPedido::firstOrFail();
+
+        // Quitar una línea del pedido: se oculta pero queda en la base
+        $datos = $this->datosPedido();
+        unset($datos['lineas'][1]);
+        $this->actingAs($this->user)->put("/expedicion_pedido/{$pedido->id}", $datos);
+        $this->assertCount(1, $pedido->fresh()->lineas);
+        $this->assertSame(2, \App\Models\ExpPedidoLinea::withTrashed()->where('pedido_id', $pedido->id)->count());
+
+        // Eliminar molino, cliente y destinatario: borrado lógico
+        $destinatario = ExpNotificacionDestinatario::firstOrFail();
+        $this->actingAs($this->user)->delete("/expedicion/avisos/{$destinatario->id}");
+        $this->actingAs($this->user)->delete("/expedicion_molino/{$this->molino}");
+        $this->actingAs($this->user)->delete("/expedicion_cliente/{$this->cliente}");
+
+        $this->assertSoftDeleted('exp_notificacion_destinatarios', ['id' => $destinatario->id]);
+        $this->assertSoftDeleted('expedicion_molinos', ['id' => $this->molino]);
+        $this->assertSoftDeleted('expedicion_clientes', ['id' => $this->cliente]);
+
+        // El pedido sigue mostrando su cliente y molino, pero ya no se pueden elegir para pedidos nuevos
+        $this->actingAs($this->user)->get("/expedicion_pedido/{$pedido->id}")->assertOk()->assertSee('LUJ');
+        $this->actingAs($this->user)->get('/expedicion_molino')->assertOk()->assertDontSee('LUJ');
+        $this->actingAs($this->user)->post('/expedicion_pedido', $this->datosPedido())->assertSessionHasErrors('expedicion_molino_id');
     }
 
     public function test_sin_permiso_de_expedicion_no_entra(): void

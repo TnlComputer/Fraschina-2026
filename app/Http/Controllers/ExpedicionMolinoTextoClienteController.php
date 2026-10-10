@@ -82,7 +82,7 @@ class ExpedicionMolinoTextoClienteController extends Controller
         'required',
         'exists:expedicion_molinos,id',
         Rule::unique('expedicion_molinos_textos_clientes')
-          ->where(fn($q) => $q->where('expClie_id', $request->expClie_id))
+          ->where(fn($q) => $q->where('expClie_id', $request->expClie_id)->whereNull('deleted_at'))
           ->ignore($ignorarId),
       ],
       'plazo_dias' => 'nullable|integer|min:0|max:365',

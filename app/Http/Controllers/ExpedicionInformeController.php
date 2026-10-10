@@ -44,6 +44,7 @@ class ExpedicionInformeController extends Controller
   public function certificados()
   {
     $entregas = ExpEntrega::with(['linea.pedido.cliente', 'linea.pedido.molino'])
+      ->whereHas('linea')
       ->where('descarga_completa', true)
       ->where('certificado_recibido', false)
       ->get()

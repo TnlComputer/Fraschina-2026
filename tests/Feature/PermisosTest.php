@@ -4,7 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Spatie\Permission\Models\Permission;
+use App\Models\Permission;
 use Tests\TestCase;
 
 class PermisosTest extends TestCase
@@ -48,6 +48,21 @@ class PermisosTest extends TestCase
             ->post('/export/generate', ['table' => 'users'])
             ->assertRedirect('/tools/export')
             ->assertSessionHasErrors('table');
+    }
+
+    public function test_roles_y_permisos_se_eliminan_logicamente(): void
+    {
+        $admin = User::factory()->create();
+        $admin->givePermissionTo('permiso_99');
+        \App\Models\Role::create(['name' => 'predeterminado', 'guard_name' => 'web']);
+        $rol = \App\Models\Role::create(['name' => 'temporal', 'guard_name' => 'web']);
+        $permiso = Permission::create(['name' => 'permiso_temporal', 'guard_name' => 'web']);
+
+        $this->actingAs($admin)->delete("/tools/roles/{$rol->id}")->assertRedirect();
+        $this->actingAs($admin)->delete("/tools/permissions/{$permiso->id}")->assertRedirect();
+
+        $this->assertSoftDeleted('roles', ['id' => $rol->id]);
+        $this->assertSoftDeleted('permissions', ['id' => $permiso->id]);
     }
 
     public function test_super_usuario_pasa_todos_los_permisos(): void

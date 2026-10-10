@@ -35,7 +35,7 @@ class ExpedicionController extends Controller
         ->where('estado', ExpPedido::CONFIRMADO)->whereNull('enviado_at')->orderBy('numero')->get(),
       'entregasHoy' => $entregas($hoy),
       'entregasManana' => $entregas($manana),
-      'certificadosPendientes' => ExpEntrega::where('descarga_completa', true)->where('certificado_recibido', false)->count(),
+      'certificadosPendientes' => ExpEntrega::whereHas('linea')->where('descarga_completa', true)->where('certificado_recibido', false)->count(),
       'tentativas' => ExpPedidoLinea::where('fecha_tentativa', true)
         ->whereHas('pedido', fn($q) => $q->vigentes()->whereNotIn('estado', [ExpPedido::ANULADO, ExpPedido::CERRADO]))
         ->count(),

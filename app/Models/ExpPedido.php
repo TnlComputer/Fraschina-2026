@@ -45,12 +45,12 @@ class ExpPedido extends Model
 
   public function cliente()
   {
-    return $this->belongsTo(ExpedicionCliente::class, 'expedicion_cliente_id');
+    return $this->belongsTo(ExpedicionCliente::class, 'expedicion_cliente_id')->withTrashed();
   }
 
   public function molino()
   {
-    return $this->belongsTo(ExpedicionMolino::class, 'expedicion_molino_id');
+    return $this->belongsTo(ExpedicionMolino::class, 'expedicion_molino_id')->withTrashed();
   }
 
   public function lineas()

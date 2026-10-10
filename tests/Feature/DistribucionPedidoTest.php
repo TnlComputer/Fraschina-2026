@@ -7,7 +7,7 @@ use App\Models\DistribucionNroPedidos;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
-use Spatie\Permission\Models\Permission;
+use App\Models\Permission;
 use Tests\TestCase;
 
 class DistribucionPedidoTest extends TestCase
@@ -103,6 +103,17 @@ class DistribucionPedidoTest extends TestCase
 
         // La línea del otro pedido quedó intacta
         $this->assertEquals(1000, (float) $lineaAjena->fresh()->precio_unitario);
+
+        // Quitar una línea la oculta (borrado lógico), no la borra
+        $this->actingAs($this->user)->put("/distribucion_pedido/{$pedido->id}", [
+            'fecha_entrega' => '2026-10-20',
+            'existing_product_line_ids' => [$lineaPropia->id],
+            'existing_precios' => [2000],
+            'existing_cantidades' => [1],
+        ])->assertRedirect();
+        $this->assertSame(1, $pedido->lineasPedidos()->count());
+        $this->assertSame(2, DistribucionLineaPedidos::withTrashed()->where('pedido_id', $pedido->id)->count());
+        $this->assertEquals(2210.00, (float) $pedido->fresh()->totalPedido);
     }
 
     public function test_pantallas_de_reparto_y_agenda_renderizan(): void

@@ -64,9 +64,7 @@ class ExpedicionClienteController extends Controller
 
   public function destroy(ExpedicionCliente $expedicion_cliente)
   {
-    if ($expedicion_cliente->pedidos()->exists()) {
-      return back()->with('error', 'El cliente tiene pedidos: no se puede eliminar.');
-    }
+    // Borrado lógico: queda en la base y en sus pedidos, pero no se muestra ni se puede elegir
     $expedicion_cliente->delete();
 
     return redirect()->route('expedicion_cliente.index')->with('success', 'Cliente eliminado.');

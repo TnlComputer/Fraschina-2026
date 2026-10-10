@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ExpNotificacionDestinatario extends Model
 {
+  use SoftDeletes;
+
   public const CANALES = [
     'mail' => 'Mail',
     'whatsapp' => 'WhatsApp',
@@ -28,11 +31,11 @@ class ExpNotificacionDestinatario extends Model
 
   public function molino()
   {
-    return $this->belongsTo(ExpedicionMolino::class, 'expedicion_molino_id');
+    return $this->belongsTo(ExpedicionMolino::class, 'expedicion_molino_id')->withTrashed();
   }
 
   public function cliente()
   {
-    return $this->belongsTo(ExpedicionCliente::class, 'expedicion_cliente_id');
+    return $this->belongsTo(ExpedicionCliente::class, 'expedicion_cliente_id')->withTrashed();
   }
 }

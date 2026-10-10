@@ -214,8 +214,8 @@ class ExpedicionPedidoController extends Controller
   private function validar(Request $request): array
   {
     $validated = $request->validate([
-      'expedicion_cliente_id' => 'required|exists:expedicion_clientes,id',
-      'expedicion_molino_id' => 'required|exists:expedicion_molinos,id',
+      'expedicion_cliente_id' => ['required', Rule::exists('expedicion_clientes', 'id')->whereNull('deleted_at')],
+      'expedicion_molino_id' => ['required', Rule::exists('expedicion_molinos', 'id')->whereNull('deleted_at')],
       'tipo' => ['required', Rule::in(array_keys(ExpPedido::TIPOS))],
       'fecha_pedido' => 'required|date',
       'observaciones' => 'nullable|string|max:2000',

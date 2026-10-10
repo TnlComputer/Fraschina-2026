@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Configuración de una combinación cliente-molino: condiciones habituales
@@ -12,7 +13,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class ExpedicionMolinoTextoCliente extends Model
 {
-  use HasFactory;
+  use HasFactory, SoftDeletes;
 
   protected $table = 'expedicion_molinos_textos_clientes';
 
@@ -27,12 +28,12 @@ class ExpedicionMolinoTextoCliente extends Model
 
   public function cliente()
   {
-    return $this->belongsTo(ExpedicionCliente::class, 'expClie_id');
+    return $this->belongsTo(ExpedicionCliente::class, 'expClie_id')->withTrashed();
   }
 
   public function molino()
   {
-    return $this->belongsTo(ExpedicionMolino::class, 'expMolino_id');
+    return $this->belongsTo(ExpedicionMolino::class, 'expMolino_id')->withTrashed();
   }
 
   public static function para(int $clienteId, int $molinoId): ?self
