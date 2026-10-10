@@ -295,17 +295,17 @@ SELECT
         NULL,
         `Idcliente`
     ) AS `representacion_id`, -- Asigna NULL si es 0
-    `Idarea` AS `area_id`,
-    `Idcargo` AS `cargo_id`,
-    `cate_cargo` AS `categoriacargo_id`,
+    NULLIF(`Idarea`, '') AS `area_id`, -- vacíos del sistema viejo pasan a NULL
+    NULLIF(`Idcargo`, '') AS `cargo_id`,
+    NULLIF(`cate_cargo`, '') AS `categoriacargo_id`,
     `TelDirecto` AS `teldirecto`,
     `Interno` AS `interno`,
     `TelCelular` AS `telcelular`,
-    `Idprofesion` AS `profesion_id`,
+    NULLIF(`Idprofesion`, '') AS `profesion_id`,
     `Telparticular` AS `telparticular`,
     `Mail` AS `email`,
     `INFOparticular` AS `observaciones`,
-    `fuera`,
+    IFNULL(NULLIF(`fuera`, ''), 0) AS `fuera`,
     'A' AS `status`,
     CURRENT_TIMESTAMP AS `created_at`,
     CURRENT_TIMESTAMP AS `updated_at`

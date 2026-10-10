@@ -187,36 +187,56 @@ INSERT IGNORE INTO
         created_at,
         updated_at
     )
+-- Referencias inexistentes (ej. producto 0, persona borrada) pasan a NULL para no perder la agenda.
 SELECT
-    id_CDAg AS id,
-    fecha_CDAg AS fecha,
-    hora_CDAg AS hs,
-    idPrio AS prioridad_id,
-    idAccion AS accion_id,
-    temas_CDAg AS temas,
-    cotiz_CDAg AS cotizacion,
-    fecCotEnt_CDAg AS fecCotEnt,
-    fecCot_CDAg AS fecCot,
-    idProductoCDA AS producto_id,
-    Idcliente AS distribucion_id,
-    id_persCD AS persona_id,
-    id_tipoper AS tipoper_id,
-    idVeraz AS veraz_id,
-    idEstado AS estado_id,
-    idContInit AS contacto_id,
-    idCargo AS cargo_id,
-    idBarrio AS barrio_id,
-    idCiudad AS municipio_id,
-    idLocalidad AS localidad_id,
-    idZona AS zona_id,
-    idRubro AS rubro_id,
-    idTamano AS tamanio_id,
-    idModo AS modo_id,
-    pedidosID AS pedido_id,
-    estadoPed AS estadoPedido,
+    a.id_CDAg AS id,
+    a.fecha_CDAg AS fecha,
+    a.hora_CDAg AS hs,
+    r0.id AS prioridad_id,
+    r1.id AS accion_id,
+    a.temas_CDAg AS temas,
+    a.cotiz_CDAg AS cotizacion,
+    a.fecCotEnt_CDAg AS fecCotEnt,
+    a.fecCot_CDAg AS fecCot,
+    r2.id AS producto_id,
+    a.Idcliente AS distribucion_id,
+    r3.id AS persona_id,
+    r4.id AS tipoper_id,
+    r5.id AS veraz_id,
+    r6.id AS estado_id,
+    r7.id AS contacto_id,
+    r8.id AS cargo_id,
+    r9.id AS barrio_id,
+    r10.id AS municipio_id,
+    r11.id AS localidad_id,
+    r12.id AS zona_id,
+    r13.id AS rubro_id,
+    r14.id AS tamanio_id,
+    r15.id AS modo_id,
+    r16.id AS pedido_id,
+    a.estadoPed AS estadoPedido,
     'A' AS status,
     CURRENT_TIMESTAMP AS created_at,
     CURRENT_TIMESTAMP AS updated_at
-FROM fraschin_backup.CDagenda;
+FROM fraschin_backup.CDagenda a
+    LEFT JOIN fraschina_2024.auxprioridades r0 ON r0.id = a.idPrio
+    LEFT JOIN fraschina_2024.auxacciones r1 ON r1.id = a.idAccion
+    LEFT JOIN fraschina_2024.productos_c_d_a r2 ON r2.id = a.idProductoCDA
+    LEFT JOIN fraschina_2024.distribucion_personal r3 ON r3.id = a.id_persCD
+    LEFT JOIN fraschina_2024.auxtipopersonal r4 ON r4.id = a.id_tipoper
+    LEFT JOIN fraschina_2024.auxveraz r5 ON r5.id = a.idVeraz
+    LEFT JOIN fraschina_2024.auxestados r6 ON r6.id = a.idEstado
+    LEFT JOIN fraschina_2024.auxcontacto r7 ON r7.id = a.idContInit
+    LEFT JOIN fraschina_2024.auxcargos r8 ON r8.id = a.idCargo
+    LEFT JOIN fraschina_2024.auxbarrios r9 ON r9.id = a.idBarrio
+    LEFT JOIN fraschina_2024.auxmunicipios r10 ON r10.id = a.idCiudad
+    LEFT JOIN fraschina_2024.auxlocalidades r11 ON r11.id = a.idLocalidad
+    LEFT JOIN fraschina_2024.auxzonas r12 ON r12.id = a.idZona
+    LEFT JOIN fraschina_2024.auxrubros r13 ON r13.id = a.idRubro
+    LEFT JOIN fraschina_2024.auxtamanio r14 ON r14.id = a.idTamano
+    LEFT JOIN fraschina_2024.auxmodos r15 ON r15.id = a.idModo
+    LEFT JOIN fraschina_2024.distribucion_nropedidos r16 ON r16.id = a.pedidosID
+WHERE
+    a.Idcliente IN (SELECT id FROM fraschina_2024.distribucions);
 
 SET foreign_key_checks = 1;
