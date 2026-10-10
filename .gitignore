@@ -24,3 +24,6 @@ yarn-error.log
 
 # Documentos internos (el repo es publico)
 *.docx
+
+# Seeder con usuarios reales (usar database/seeders/UsersTableSeeder.php.example)
+/database/seeders/UsersTableSeeder.php

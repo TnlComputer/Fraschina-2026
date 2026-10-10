@@ -1,0 +1,44 @@
+<?php
+
+/*
+ * Plantilla del seeder de usuarios. Copiar (sin .example) como UsersTableSeeder.php (no se versiona),
+ * cargar los usuarios reales y definir SEED_USER_PASSWORD en el .env.
+ */
+
+namespace Database\Seeders;
+
+use App\Models\User;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
+
+class UsersTableSeeder extends Seeder
+{
+  public function run()
+  {
+    $passwordInicial = env('SEED_USER_PASSWORD');
+    if (empty($passwordInicial)) {
+      $this->command?->error('Definí SEED_USER_PASSWORD en el .env para crear los usuarios iniciales.');
+      return;
+    }
+
+    $users = [
+      [
+        'name' => 'Administrador',
+        'email' => 'admin@example.com',
+        'role' => 'gerencia',
+        'permissions' => ['permiso_99'],
+      ],
+    ];
+
+    foreach ($users as $userData) {
+      $user = User::firstOrCreate(
+        ['email' => $userData['email']],
+        ['name' => $userData['name'], 'password' => Hash::make($passwordInicial)]
+      );
+
+      $user->assignRole(Role::findByName($userData['role']));
+      $user->givePermissionTo($userData['permissions']);
+    }
+  }
+}
