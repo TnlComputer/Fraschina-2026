@@ -132,6 +132,22 @@ class DistribucionPedidoTest extends TestCase
         $this->actingAs($this->user)->get('/distribucion_agenda')->assertOk()->assertSee('Harina 000');
     }
 
+    public function test_calendario_de_reparto_marca_dias_con_pedidos(): void
+    {
+        $this->crearPedido();
+        $this->crearPedido();
+
+        $this->actingAs($this->user)->getJson('/distribucion/reparto/fechas?desde=2026-10-01&hasta=2026-10-31')
+            ->assertOk()
+            ->assertExactJson(['2026-10-15' => 2]);
+
+        $this->actingAs($this->user)->getJson('/distribucion/reparto/fechas?desde=2026-11-01&hasta=2026-11-30')
+            ->assertOk()->assertExactJson([]);
+
+        $this->actingAs($this->user)->get('/distribucion_reparto?fecha=2026-10-15')
+            ->assertOk()->assertSee('flatpickr', false)->assertDontSee('actualizarBtn', false);
+    }
+
     private function crearPedido(): DistribucionNroPedidos
     {
         $this->actingAs($this->user)->post('/distribucion_pedido', [

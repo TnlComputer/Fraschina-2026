@@ -35,6 +35,27 @@ class DistribucionRepartoController extends Controller
     return view('pages.Distribucion.Reparto.index', compact('distribuciones', 'fecha'));
   }
 
+  /**
+   * Días con pedidos de reparto entre dos fechas (para resaltarlos en el calendario).
+   * Devuelve {"2026-10-06": 12, ...} con la cantidad de pedidos por día.
+   */
+  public function fechasConPedidos(Request $request)
+  {
+    $request->validate([
+      'desde' => 'required|date_format:Y-m-d',
+      'hasta' => 'required|date_format:Y-m-d|after_or_equal:desde',
+    ]);
+
+    $dias = DistribucionNroPedidos::where('status', 'A')
+      ->whereDate('fechaEntrega', '>=', $request->desde)
+      ->whereDate('fechaEntrega', '<=', $request->hasta)
+      ->selectRaw('DATE(fechaEntrega) as dia, COUNT(*) as pedidos')
+      ->groupBy('dia')
+      ->pluck('pedidos', 'dia');
+
+    return response()->json($dias);
+  }
+
   public function show($id)
   {
     $pedido = DistribucionNroPedidos::with([

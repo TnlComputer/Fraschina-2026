@@ -4,6 +4,19 @@
 
 @section('content')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/l10n/es.js"></script>
+<style>
+  /* Días con pedidos de reparto */
+  .flatpickr-day.con-pedidos { font-weight: 800; color: #1f2d3d; }
+  .flatpickr-day.con-pedidos::after {
+    content: ''; position: absolute; left: 50%; bottom: 3px; transform: translateX(-50%);
+    width: 4px; height: 4px; border-radius: 50%; background: #28a745;
+  }
+  .flatpickr-day.con-pedidos.selected::after { background: #fff; }
+  .flatpickr-day { position: relative; }
+</style>
 <div class="container">
   <h1>Distribución Reparto</h1>
 
@@ -38,8 +51,9 @@
     <form method="GET" action="{{ route('distribucion_reparto.index') }}" id="fecha-form"
       class="d-flex align-items-center">
       <!-- Campo de Fecha -->
-      <input type="date" name="fecha" id="fecha-input" value="{{ $fecha }}"
-        class="form-control d-inline-block w-auto h-100" style="height: calc(2.25rem + 2px);">
+      <input type="text" name="fecha" id="fecha-input" value="{{ $fecha }}" autocomplete="off"
+        class="form-control d-inline-block w-auto h-100" style="height: calc(2.25rem + 2px); background: #fff;"
+        title="Los días en negrita tienen pedidos">
 
       <!-- Botones de Cambio de Fecha -->
       <button type="submit" class="btn btn-success mx-1 h-100">Buscar por Fecha</button>
@@ -253,27 +267,77 @@
   const anteriorBtn = document.getElementById('anterior-btn');
   const posteriorBtn = document.getElementById('posterior-btn');
   const fechaInput = document.getElementById('fecha-input');
-  
-  // Función para actualizar el campo de fecha
-  function actualizarFecha(dias) {
-  const fechaActual = new Date(fechaInput.value || new Date());
-  fechaActual.setDate(fechaActual.getDate() + dias);
-  fechaInput.value = fechaActual.toISOString().split('T')[0]; // Formato YYYY-MM-DD
-  document.getElementById('fecha-form').submit(); // Envía el formulario
+  const fechaForm = document.getElementById('fecha-form');
+
+  // Fechas en hora local (toISOString usa UTC y después de las 21 h saltaba al día siguiente)
+  function ymd(d) {
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
   }
-  
+  function parseYmd(s) {
+    const [a, m, d] = (s || '').split('-').map(Number);
+    return a ? new Date(a, m - 1, d) : new Date();
+  }
+
+  function irA(fecha) {
+    fechaInput.value = ymd(fecha);
+    fechaForm.submit();
+  }
+
+  // Calendario: los días con pedidos se muestran en negrita (con un punto verde)
+  const diasConPedidos = {};
+  const mesesCargados = new Set();
+
+  async function cargarMes(fp) {
+    const clave = `${fp.currentYear}-${fp.currentMonth}`;
+    if (mesesCargados.has(clave)) return;
+    mesesCargados.add(clave);
+    // Incluye los días de los meses vecinos que se ven en la grilla
+    const desde = ymd(new Date(fp.currentYear, fp.currentMonth, -6));
+    const hasta = ymd(new Date(fp.currentYear, fp.currentMonth + 1, 7));
+    try {
+      const url = `{{ route('distribucion_reparto.fechas') }}?desde=${desde}&hasta=${hasta}`;
+      Object.assign(diasConPedidos, await (await fetch(url, { headers: { 'Accept': 'application/json' } })).json());
+      fp.redraw();
+    } catch (e) {
+      mesesCargados.delete(clave);
+      console.error(e);
+    }
+  }
+
+  const calendario = flatpickr(fechaInput, {
+    locale: 'es',
+    dateFormat: 'Y-m-d',
+    altInput: true,
+    altFormat: 'd/m/Y',
+    altInputClass: fechaInput.className,
+    allowInput: true,
+    onReady: (sel, str, fp) => cargarMes(fp),
+    onMonthChange: (sel, str, fp) => cargarMes(fp),
+    onYearChange: (sel, str, fp) => cargarMes(fp),
+    onOpen: (sel, str, fp) => cargarMes(fp),
+    onDayCreate: (sel, str, fp, dia) => {
+      const cantidad = diasConPedidos[ymd(dia.dateObj)];
+      if (cantidad) {
+        dia.classList.add('con-pedidos');
+        dia.title = `${cantidad} pedido${cantidad > 1 ? 's' : ''}`;
+      }
+    },
+    onChange: (sel, str) => { if (str) fechaForm.submit(); },
+  });
+
   // Eventos de los Botones
-  hoyBtn.addEventListener('click', () => {
-  fechaInput.value = new Date().toISOString().split('T')[0];
-  document.getElementById('fecha-form').submit(); // Envía el formulario
-  });
-  
+  hoyBtn.addEventListener('click', () => irA(new Date()));
+
   anteriorBtn.addEventListener('click', () => {
-  actualizarFecha(-1);
+    const f = parseYmd(fechaInput.value);
+    f.setDate(f.getDate() - 1);
+    irA(f);
   });
-  
+
   posteriorBtn.addEventListener('click', () => {
-  actualizarFecha(1);
+    const f = parseYmd(fechaInput.value);
+    f.setDate(f.getDate() + 1);
+    irA(f);
   });
 
 function verificarDatos(event, url) {
@@ -311,15 +375,6 @@ function verificarDatos(event, url) {
 
 
 
-// Enviar formulario solo cuando se hace clic en "Actualizar Distribución"
-  actualizarBtn.addEventListener('click', function() {
-  // Buscar el formulario de distribución correspondiente
-  const formulario = document.querySelector(`#distribucion-form`);
-  if (formulario) {
-  formulario.submit();
-  }
-  });
-  
   // Evitar que el formulario se envíe al presionar Enter accidentalmente
   document.querySelector('form').addEventListener('keydown', function(event) {
   if (event.key === 'Enter') {
