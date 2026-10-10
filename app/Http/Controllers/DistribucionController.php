@@ -229,10 +229,10 @@ class DistribucionController extends Controller
 
 
     // Normalización de checkboxes
-    $validated['auto'] = $request->has('auto') ? 'on' : 'off';
-    $validated['lunes'] = $request->has('lunes') ? 'on' : 'off';
-    $validated['sabado'] = $request->has('sabado') ? 'on' : 'off';
-    $validated['fac_imp'] = $request->has('fac_imp') ? 'on' : 'off';
+    $validated['auto'] = $request->has('auto') ? 'SI' : 'NO';
+    $validated['lunes'] = $request->has('lunes') ? 'SI' : 'NO';
+    $validated['sabado'] = $request->has('sabado') ? 'SI' : 'NO';
+    $validated['fac_imp'] = $request->has('fac_imp') ? 'SI' : 'NO';
     $validated['status'] = 'A';
 
     // Crear la distribución
@@ -308,10 +308,10 @@ class DistribucionController extends Controller
 
 
     // Normalización de checkboxes
-    $validated['auto'] = $request->has('auto') ? 'on' : 'off';
-    $validated['lunes'] = $request->has('lunes') ? 'on' : 'off';
-    $validated['sabado'] = $request->has('sabado') ? 'on' : 'off';
-    $validated['fac_imp'] = $request->has('fac_imp') ? 'on' : 'off';
+    $validated['auto'] = $request->has('auto') ? 'SI' : 'NO';
+    $validated['lunes'] = $request->has('lunes') ? 'SI' : 'NO';
+    $validated['sabado'] = $request->has('sabado') ? 'SI' : 'NO';
+    $validated['fac_imp'] = $request->has('fac_imp') ? 'SI' : 'NO';
 
     // Actualización del registro (los desactivados no se editan ni se reactivan por esta vía)
     $distribucion = Distribucion::where('status', 'A')->findOrFail($id);

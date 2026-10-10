@@ -132,4 +132,13 @@ class Distribucion extends Model
   {
     return $this->belongsTo(AuxTipoPagos::class, 'tcobro_id');
   }
+
+  /**
+   * Indicadores del cliente (lunes, sabado, auto, fac_imp) se guardan como 'SI' / 'NO'.
+   * Acepta también valores viejos o del formulario: 'S', 'on', '1', true.
+   */
+  public static function esSi($valor): bool
+  {
+    return in_array(strtoupper(trim((string) $valor)), ['SI', 'S', 'ON', '1', 'TRUE'], true);
+  }
 }

@@ -161,7 +161,7 @@
           <strong>Sabado Recibe:</strong> {{ $agenda->distribucion->sabado }} <br>
           <strong>Factura Impresa:</strong>
           <span
-            style="background-color: {{ $agenda->distribucion->fac_imp === 'SI' ? 'red' : 'transparent' }}; padding: 2px 5px;">
+            style="background-color: {{ \App\Models\Distribucion::esSi($agenda->distribucion->fac_imp) ? 'red' : 'transparent' }}; padding: 2px 5px;">
             {{ $agenda->distribucion->fac_imp }}
           </span>
           <br>

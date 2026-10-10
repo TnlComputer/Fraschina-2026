@@ -148,6 +148,38 @@ class DistribucionPedidoTest extends TestCase
             ->assertOk()->assertSee('flatpickr', false)->assertDontSee('actualizarBtn', false);
     }
 
+    public function test_reparto_muestra_y_guarda_factura_chofer_y_orden(): void
+    {
+        $pedido = $this->crearPedido();
+        DB::table('distribucions')->where('id', $this->clienteId)->update(['fac_imp' => 'NO']);
+
+        // Cada campo de la fila está asociado a su formulario (antes el <form> dentro de la tabla los perdía)
+        $this->actingAs($this->user)->get('/distribucion_reparto?fecha=2026-10-15')
+            ->assertOk()
+            ->assertSee('name="nroFactura" form="distribucion-form-' . $pedido->id . '"', false)
+            ->assertSee('name="chofer" form="distribucion-form-' . $pedido->id . '"', false)
+            ->assertSee('Factura No Impresa');
+
+        $this->actingAs($this->user)->put("/distribucion_reparto/{$pedido->id}", [
+            'fechaFactura' => '2026-10-14', 'nroFactura' => '16683', 'totalFactura' => 1105,
+            'chofer' => 'H', 'orden' => 3, 'fecha' => '2026-10-15',
+        ])->assertRedirect();
+
+        $pedido->refresh();
+        $this->assertSame(['16683', 'H', 3], [$pedido->nroFactura, $pedido->chofer, (int) $pedido->orden]);
+        $this->actingAs($this->user)->get('/distribucion_reparto?fecha=2026-10-15')->assertSee('value="16683"', false);
+    }
+
+    public function test_indicadores_si_no_del_cliente(): void
+    {
+        foreach (['SI', 'si', 'S', 'on', '1', true] as $valor) {
+            $this->assertTrue(\App\Models\Distribucion::esSi($valor), var_export($valor, true));
+        }
+        foreach (['NO', 'off', '', null, '0', false] as $valor) {
+            $this->assertFalse(\App\Models\Distribucion::esSi($valor), var_export($valor, true));
+        }
+    }
+
     private function crearPedido(): DistribucionNroPedidos
     {
         $this->actingAs($this->user)->post('/distribucion_pedido', [

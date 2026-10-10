@@ -63,6 +63,15 @@
     </form>
   </div>
 
+  {{-- Un formulario por pedido, fuera de la tabla: los campos de cada fila se asocian con form="..." --}}
+  @foreach ($distribuciones as $distribucion)
+  <form method="POST" action="{{ route('distribucion_reparto.update', $distribucion->id) }}" id="distribucion-form-{{ $distribucion->id }}">
+    @csrf
+    @method('PUT')
+    <input type="hidden" name="fecha" value="{{ $fecha }}">
+  </form>
+  @endforeach
+
   <!-- Tabla de distribuciones -->
   <table class="table table-sm text-xs table-bordered w-100">
     <thead>
@@ -84,12 +93,7 @@
     <tbody class="text-xs bold">
       @foreach ($distribuciones as $distribucion)
       {{-- @if ($distribucion->tipo == 'P' || $distribucion->tipo == 'PT') --}}
-      <form method="POST" action="{{ route('distribucion_reparto.update', $distribucion->id) }}"
-        id="distribucion-form-{{ $distribucion->id }}">
-        @csrf
-        @method('PUT')
-        <input type="hidden" name="fecha" value="{{ $fecha }}">
-        <tr>
+<tr>
           <td class=" text-center">{{ $distribucion->fechaEntrega }}</td>
           @if ($distribucion->tipo != 'T')
           <td>
@@ -126,17 +130,17 @@
             </a> --}}
           </td>
           @endif
-          <td><button type="submit" id="actualizar-btn" class="btn btn-xs" title="Actualizar">
+          <td><button type="submit" form="distribucion-form-{{ $distribucion->id }}" class="btn btn-xs" title="Guardar factura, chofer y orden">
               <i class="fas fa-sync-alt fs-xs text-orange"></i>
             </button>
           </td>
           @if ($distribucion->tipo != 'T')
           <td class="text-center">
-            <input type="date" name="fechaFactura" value="{{ $distribucion->fechaFactura }}"
+            <input type="date" name="fechaFactura" form="distribucion-form-{{ $distribucion->id }}" value="{{ $distribucion->fechaFactura }}"
               class="text-center text-xs factura-fecha" data-label="Fecha Factura" style="width: 100px;" />
           </td>
           <td class="text-center">
-            <input type="text" name="nroFactura" value="{{ $distribucion->nroFactura }}"
+            <input type="text" name="nroFactura" form="distribucion-form-{{ $distribucion->id }}" value="{{ $distribucion->nroFactura }}"
               class=" text-center text-xs factura-nro" data-label="Nro. Factura" style="width: 60px;" />
           </td>
           <td class="text-center">
@@ -145,19 +149,19 @@
             @endphp
 
             @if ($dif > 0.01)
-            <input type="number" name="totalFactura" value="{{ $distribucion->totalFactura }}"
+            <input type="number" name="totalFactura" form="distribucion-form-{{ $distribucion->id }}" value="{{ $distribucion->totalFactura }}"
               title="$ {{ number_format($distribucion->totalFactura - $distribucion->totalPedido, 2) }}"
               class="text-center text-xs bg-red factura-importe" data-label="Importe Factura" step="0.01"
               style="width: 90px;" />
             @else
-            <input type="number" name="totalFactura" value="{{ $distribucion->totalFactura }}"
+            <input type="number" name="totalFactura" form="distribucion-form-{{ $distribucion->id }}" value="{{ $distribucion->totalFactura }}"
               title="$ {{ number_format($distribucion->totalFactura - $distribucion->totalPedido, 2) }}"
               class="text-center text-xs factura-importe" data-label="Importe de Factura" step="0.01"
               style="width: 90px;" />
             @endif
           </td>
-          <td class="{{ $distribucion->distribucion->fac_imp ? 'bg-yellow-300' : '' }}">
-            @if ($distribucion->distribucion->fac_imp)
+          <td class="{{ \App\Models\Distribucion::esSi($distribucion->distribucion->fac_imp) ? 'bg-yellow-300' : '' }}">
+            @if (\App\Models\Distribucion::esSi($distribucion->distribucion->fac_imp))
             <i class="fas fa-print text-success" title="Factura Impresa"></i>
             @else
             <i class="fas fa-times-circle text-danger" title="Factura No Impresa"></i>
@@ -170,11 +174,11 @@
           <td></td>
           @endif
           <td class="text-center">
-            <input type="text" name="chofer" value="{{ $distribucion->chofer }}" class="text-center text-xs"
+            <input type="text" name="chofer" form="distribucion-form-{{ $distribucion->id }}" value="{{ $distribucion->chofer }}" class="text-center text-xs"
               style="width: 30px;" />
           </td>
           <td class="text-center">
-            <input type="number" name="orden" value="{{ $distribucion->orden }}" class="text-center text-xs"
+            <input type="number" name="orden" form="distribucion-form-{{ $distribucion->id }}" value="{{ $distribucion->orden }}" class="text-center text-xs"
               style="width: 40px;" />
           </td>
           {{-- @else
@@ -230,7 +234,7 @@
         </tr>
         @endforeach
 
-      </form>
+      
     </tbody>
   </table>
 

@@ -246,9 +246,7 @@
     <div class="col-md-1">
       <label for="auto" class="form-label">Automático</label>
       <div class="form-check">
-        <input type="checkbox" name="auto" id="auto" class="form-check-input" {{ old('auto', $distribucion->auto ??
-        'off')
-        == 'on' ? 'checked' : '' }}>
+        <input type="checkbox" name="auto" id="auto" class="form-check-input" {{ \App\Models\Distribucion::esSi(old('auto', $distribucion->auto ?? null)) ? 'checked' : '' }}>
         <label class="form-check-label" for="auto">Sí</label>
       </div>
     </div>
@@ -327,7 +325,7 @@
     <label for="lunes" class="form-label">Lunes <i class="fa-solid fa-lock"></i></label>
     <div class="form-check">
       <input type="checkbox" name="lunes" id="lunes" class="form-check-input @error('lunes') is-invalid @enderror" {{
-        old('lunes', $distribucion->lunes ?? 'off') == 'on' ? 'checked' : '' }}>
+        \App\Models\Distribucion::esSi(old('lunes', $distribucion->lunes ?? null)) ? 'checked' : '' }}>
       <label class="form-check-label" for="lunes">Sí</label>
       @error('lunes')
       <div class="invalid-feedback">{{ $message }}</div>
@@ -339,8 +337,7 @@
     <label for="sabado" class="form-label">Sábado <i class="fa-solid fa-check"></i></label>
     <div class="form-check">
       <input type="checkbox" name="sabado" id="sabado" class="form-check-input @error('sabado') is-invalid @enderror" {{
-        old('sabado', $distribucion->sabado ??
-      'off') == 'on' ? 'checked' : '' }}>
+        \App\Models\Distribucion::esSi(old('sabado', $distribucion->sabado ?? null)) ? 'checked' : '' }}>
       <label class="form-check-label" for="sabado">Sí</label>
       @error('sabado')
       <div class="invalid-feedback">{{ $message }}</div>
@@ -352,8 +349,7 @@
     <label for="fac_imp" class="form-label">Factura <i class="fa-solid fa-print fa-sm"></i></label>
     <div class="form-check">
       <input type="checkbox" name="fac_imp" id="fac_imp" class="form-check-input @error('fac_imp') is-invalid @enderror"
-        {{ old('fac_imp', $distribucion->fac_imp ??
-      'off') == 'on' ? 'checked' : '' }}>
+        {{ \App\Models\Distribucion::esSi(old('fac_imp', $distribucion->fac_imp ?? null)) ? 'checked' : '' }}>
       <label class="form-check-label" for="fac_imp">Sí</label>
       @error('fac_imp')
       <div class="invalid-feedback">{{ $message }}</div>

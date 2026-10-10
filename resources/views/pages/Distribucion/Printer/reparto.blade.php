@@ -121,7 +121,7 @@
       <th class="text-rigth">Importe Factura</th>
     </tr>
     <tr>
-      <td class="text-center"><strong>{{ $distribucion->distribucion->fac_imp ? 'IMPRIMIR' : '' }}</strong></td>
+      <td class="text-center"><strong>{{ \App\Models\Distribucion::esSi($distribucion->distribucion->fac_imp) ? 'IMPRIMIR' : '' }}</strong></td>
       <td class="text-center">{{ $distribucion->distribucion->auxcobro->accion ?? '' }}</td>
       <td class="text-center">{{ $distribucion->distribucion->auxpago->nombre ?? '' }}</td>
       <td class="text-center">{{ $distribucion->distribucion->auxtcobro->nombre ?? '' }}</td>
@@ -136,8 +136,8 @@
         {{ substr($distribucion->distribucion->hasta1 ?? '', 0, 5) }}
       </td>
       @endif
-      <td class="text-center">{{ $distribucion->distribucion->sabado ? 'Sí' : 'No' }}</td>
-      <td class="text-center">{{ $distribucion->distribucion->lunes ? 'Sí' : 'No' }}</td>
+      <td class="text-center">{{ \App\Models\Distribucion::esSi($distribucion->distribucion->sabado) ? 'Sí' : 'No' }}</td>
+      <td class="text-center">{{ \App\Models\Distribucion::esSi($distribucion->distribucion->lunes) ? 'Sí' : 'No' }}</td>
       <td class="text-rigth">${{ number_format($distribucion->totalFactura, 2) }}</td>
   </table>
   <table class="table" style="padding-left:70px;">

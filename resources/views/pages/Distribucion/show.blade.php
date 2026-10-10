@@ -65,11 +65,11 @@
                 </tr>
                 <tr>
                   <th>Lunes Cerrado</th>
-                  <td>{{ $distribucion->lunes ? 'Sí' : 'No' }}</td>
+                  <td>{{ \App\Models\Distribucion::esSi($distribucion->lunes) ? 'Sí' : 'No' }}</td>
                 </tr>
                 <tr>
                   <th>Sábado Recibe</th>
-                  <td>{{ $distribucion->sabado ? 'Sí' : 'No' }}</td>
+                  <td>{{ \App\Models\Distribucion::esSi($distribucion->sabado) ? 'Sí' : 'No' }}</td>
                 </tr>
                 <tr>
                   <th>Marcas</th>
@@ -132,7 +132,7 @@
                 </tr>
                 <tr>
                   <th>Factura Impresa</th>
-                  <td>{{ $distribucion->fac_imp ? 'Sí' : 'No' }}</td>
+                  <td>{{ \App\Models\Distribucion::esSi($distribucion->fac_imp) ? 'Sí' : 'No' }}</td>
                 </tr>
                 <tr>
                   <th>Contacto inicial</th>
