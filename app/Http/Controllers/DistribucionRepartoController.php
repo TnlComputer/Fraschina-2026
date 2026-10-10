@@ -56,6 +56,34 @@ class DistribucionRepartoController extends Controller
     return response()->json($dias);
   }
 
+  /**
+   * Vista para el chofer (celular): una tarjeta por parada, en orden de entrega.
+   */
+  public function movil(Request $request)
+  {
+    $fecha = $this->fechaValida($request);
+    $request->validate(['chofer' => 'nullable|string|max:2']);
+
+    $base = DistribucionNroPedidos::where('status', 'A')->whereDate('fechaEntrega', $fecha)->conLineas();
+    $choferes = (clone $base)->whereNotNull('chofer')->where('chofer', '!=', '')->distinct()->orderBy('chofer')->pluck('chofer');
+
+    $paradas = (clone $base)
+      ->with(array_merge(self::DIRECCION, [
+        'lineasPedidos' => fn($query) => $query->orderBy('linea'),
+        'lineasPedidos.producto',
+        'lineasTareas' => fn($query) => $query->orderBy('linea'),
+        'lineasTareas.tarea',
+        'distribucion.auxcobro',
+        'distribucion.auxpago',
+        'distribucion.auxtcobro',
+      ]))
+      ->when($request->filled('chofer'), fn($q) => $q->where('chofer', $request->chofer))
+      ->ordenReparto()
+      ->get();
+
+    return view('pages.Distribucion.Reparto.movil', compact('paradas', 'fecha', 'choferes'));
+  }
+
   public function show($id)
   {
     $pedido = DistribucionNroPedidos::with([

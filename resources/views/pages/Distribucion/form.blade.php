@@ -1,11 +1,8 @@
-<div class="container-fluid text-sm">
+<div class="card"><div class="card-body text-sm">
   <form id="distribucionForm" action="{{ $action }}" method="POST">
     @csrf
     @if ($method !== 'POST') @method($method) @endif
-
-    <h1>
-      Falta alta personal y alta productos, verificando que no ya exista el producto para el cliente o el personal
-    </h1>
+    <h5 class="form-seccion"><i class="fas fa-store"></i> Datos del cliente</h5>
     <div class="row g-3">
       <!-- Razón Social y Nombre Fantasía -->
       <div class="col-md-2">
@@ -30,6 +27,7 @@
       </div>
     </div>
 
+    <h5 class="form-seccion"><i class="fas fa-location-dot"></i> Dirección</h5>
     <div class="row g-3">
       <!-- Dirección -->
       <div class="col-md-3">
@@ -138,6 +136,7 @@
       </div>
     </div>
 
+    <h5 class="form-seccion"><i class="fas fa-phone"></i> Contacto</h5>
     <div class="row g-3">
       <!-- Teléfono, Fax, CUIT y Correo -->
       <div class="col-md-3">
@@ -166,6 +165,7 @@
       </div>
     </div>
 
+    <h5 class="form-seccion"><i class="fas fa-briefcase"></i> Perfil comercial</h5>
     <div class="row g-3">
       <!-- Rubro, Tamaño y Modo -->
       <div class="col-md-3">
@@ -222,6 +222,7 @@
       </div>
     </div>
 
+    <h5 class="form-seccion"><i class="fas fa-circle-info"></i> Situación</h5>
     <div class="row g-3">
       <!-- Contacto -->
       <div class="col-md-3">
@@ -290,6 +291,7 @@
     </div>
 </div>
 
+<h5 class="form-seccion"><i class="fas fa-truck"></i> Entregas</h5>
 <div class="row g-3">
   <div class="col-md-4">
     <label for="desde">Mañana</label>
@@ -359,6 +361,7 @@
 
 </div>
 
+<h5 class="form-seccion"><i class="fas fa-cash-register"></i> Recepción y cobranza</h5>
 <div class="row g-3">
   <div class="col-md-3">
     <!-- Observaciones Recepción -->
@@ -413,7 +416,8 @@
 </div>
 
 <div class="col-md-12">
-  <label for="info" class="form-label">Información Adicional</label>
+  <h5 class="form-seccion"><i class="fas fa-note-sticky"></i> Información adicional</h5>
+      <label for="info" class="form-label sr-only">Información Adicional</label>
   <textarea name="info" id="info" rows="2"
     class="form-control @error('info') is-invalid @enderror">{{ old('info', $distribucion->info ?? '') }}</textarea>
   @error('info')<div class="invalid-feedback">{{ $message }}</div>@enderror
@@ -441,4 +445,4 @@
   </div>
 </div>
 </form>
-</div>
+</div></div>

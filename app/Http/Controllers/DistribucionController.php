@@ -46,7 +46,7 @@ class DistribucionController extends Controller
         'auxZon.nombre as zona'
       )
       ->where('d.status', '=', 'A') // Filtrar por estado activo
-      ->orderBy('d.razonsocial', 'asc'); // Ordenar por razonsocial de manera ascendente
+      ->orderByRaw("COALESCE(NULLIF(d.nomfantasia, ''), d.razonsocial)"); // Por nombre de fantasía (como se los conoce)
 
     if ($name) {
       $query->where(function ($subQuery) use ($name) {

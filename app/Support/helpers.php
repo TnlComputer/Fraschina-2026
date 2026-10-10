@@ -50,6 +50,26 @@ if (!function_exists('horario')) {
   }
 }
 
+if (!function_exists('color_css')) {
+  /**
+   * Color CSS a partir de los nombres que usan las tablas auxiliares ("Rojo", "Verde"...).
+   * Devuelve tonos suaves, legibles como fondo. Un valor ya válido (#hex) se respeta.
+   */
+  function color_css($nombre, ?string $porDefecto = null): ?string
+  {
+    $nombre = trim((string) $nombre);
+    if (preg_match('/^#[0-9a-f]{3,8}$/i', $nombre)) {
+      return $nombre;
+    }
+    $colores = [
+      'rojo' => '#f8d7da', 'verde' => '#d4edda', 'amarillo' => '#fff3cd', 'naranja' => '#ffe0c2',
+      'azul' => '#cfe2ff', 'celeste' => '#d1ecf1', 'violeta' => '#e2d9f3', 'gris' => '#e2e3e5',
+      'rosa' => '#f9d6e8', 'marron' => '#e8d9c5', 'marrón' => '#e8d9c5', 'negro' => '#d6d8db',
+    ];
+    return $colores[mb_strtolower($nombre)] ?? $porDefecto;
+  }
+}
+
 if (!function_exists('numero')) {
   /**
    * Número con formato argentino: 1.234,56

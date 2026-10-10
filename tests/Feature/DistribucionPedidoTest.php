@@ -180,6 +180,28 @@ class DistribucionPedidoTest extends TestCase
         }
     }
 
+    public function test_formulario_de_cliente_envia_a_la_ruta_de_clientes(): void
+    {
+        $this->actingAs($this->user)->get('/distribucion/create')
+            ->assertOk()
+            ->assertSee('action="' . route('distribucion.store') . '"', false)
+            ->assertDontSee('Falta alta personal');
+
+        $this->actingAs($this->user)->get("/distribucion/{$this->clienteId}/edit")
+            ->assertOk()
+            ->assertSee('action="' . route('distribucion.update', $this->clienteId) . '"', false);
+    }
+
+    public function test_reparto_vista_chofer(): void
+    {
+        $this->crearPedido();
+
+        $this->actingAs($this->user)->get('/distribucion/reparto/movil?fecha=2026-10-15')
+            ->assertOk()->assertSee('La Test')->assertSee('Harina 000');
+        $this->actingAs($this->user)->get('/distribucion_agenda?dia=hoy')->assertOk();
+        $this->actingAs($this->user)->get('/distribucion_agenda?dia=2026-10-15')->assertOk();
+    }
+
     private function crearPedido(): DistribucionNroPedidos
     {
         $this->actingAs($this->user)->post('/distribucion_pedido', [

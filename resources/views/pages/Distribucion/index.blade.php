@@ -15,7 +15,7 @@
                 <div class="barra__index d-flex justify-content-between align-items-center mb-3">
                   <div class="div__nuevo">
                     <form action="{{ route('distribucion.create') }}">
-                      <input class="btn btn-primary" type="submit" value="Nueva Distribuciòn">
+                      <input class="btn btn-primary" type="submit" value="Nuevo cliente">
                     </form>
                   </div>
                   <div class="div__nuevo">
@@ -36,16 +36,14 @@
                 <table class="table table-sm table-striped table-bordered w-100">
                   <thead>
                     <tr>
-                      <th>Nro.GS</th>
+                      <th>Nro. GS</th>
                       <th>Nombre Fantasía</th>
                       <th>Razón social</th>
                       <th>Dirección</th>
                       <th>Barrio</th>
                       <th>Localidad</th>
                       <th>Municipio</th>
-                      <th>Zona</th>
-                      <th>Teléfono</th>
-                      <th>Email</th>
+                      <th>Teléfono / Email</th>
                       <th class=" text-center">Acciones</th>
                     </tr>
                   </thead>
@@ -64,9 +62,7 @@
                       <td>{{ $distribucion->barrio }}</td>
                       <td>{{ $distribucion->localidad }}</td>
                       <td>{{ $distribucion->municipio }}</td>
-                      <td>{{ $distribucion->zona }}</td>
-                      <td>{{ $distribucion->telefono }}</td>
-                      <td>{{ $distribucion->correo }}</td>
+                      <td>{{ $distribucion->telefono }}@if ($distribucion->correo)<div class="text-muted">{{ $distribucion->correo }}</div>@endif</td>
                       {{-- <td class="d-flex justify-content-around"> --}}
 
                       <td class=" d-flex justify-content-between">
@@ -90,7 +86,7 @@
                     </tr>
                     @empty
                     <tr>
-                      <td colspan="11" class="text-center">No hay registros para mostrar...</td>
+                      <td colspan="10" class="text-center">No hay registros para mostrar...</td>
                     </tr>
                     @endforelse
                   </tbody>

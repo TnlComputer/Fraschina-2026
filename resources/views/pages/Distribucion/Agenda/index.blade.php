@@ -4,21 +4,33 @@
 
 @section('content_header')
 <h1>Agenda de Distribución</h1>
-<div class="d-flex justify-content-between align-items-center mt-3">
-  <!-- Botón para nuevo contacto -->
-  <a href="{{ route('distribucion_agenda.create') }}" class="btn btn-success ml-3">
-    <i class="fas fa-plus"></i> Nuevo Contacto Agenda
-  </a><a href="{{ route('distribucion_pedido.create') }}" class="btn btn-info ml-3">
-    <i class="fas fa-plus"></i> Nuevo Pedido
-  </a> <!-- Formulario de búsqueda -->
-  <form method="GET" action="{{ route('distribucion_agenda.index') }}" class="d-flex">
-    <div class="input-group">
-      <input type="text" name="search" class="form-control" placeholder="Buscar..."
-        value="{{ request()->input('search') }}">
-      <button class="btn btn-primary" type="submit">Buscar</button>
-    </div>
-  </form>
+@php
+  $hoy = now()->toDateString();
+  $manana = now()->addDay()->toDateString();
+  $filtro = request('dia');
+@endphp
+<div class="barra__index">
+  <a href="{{ route('distribucion_agenda.create') }}" class="btn btn-success"><i class="fas fa-plus"></i> Nuevo contacto</a>
+  <a href="{{ route('distribucion_pedido.create') }}" class="btn btn-info"><i class="fas fa-plus"></i> Nuevo pedido</a>
+
+  <div class="btn-group ml-2" role="group" aria-label="Filtrar por día">
+    <a href="{{ route('distribucion_agenda.index', array_filter(['search' => request('search')])) }}" class="btn btn-outline-secondary {{ !$filtro ? 'active' : '' }}">Todos</a>
+    <a href="{{ route('distribucion_agenda.index', array_filter(['dia' => 'hoy', 'search' => request('search')])) }}" class="btn btn-outline-secondary {{ $filtro === 'hoy' ? 'active' : '' }}">Hoy</a>
+    <a href="{{ route('distribucion_agenda.index', array_filter(['dia' => 'manana', 'search' => request('search')])) }}" class="btn btn-outline-secondary {{ $filtro === 'manana' ? 'active' : '' }}">Mañana</a>
+  </div>
+
+  <div class="div__buscar">
+    <form method="GET" action="{{ route('distribucion_agenda.index') }}" class="form__buscar d-flex">
+      <input type="date" name="dia" class="form-control mr-1" style="max-width: 170px"
+        value="{{ in_array($filtro, ['hoy', 'manana']) ? '' : $filtro }}" title="Ver un día" onchange="this.form.submit()">
+      <input type="text" name="search" class="form-control" placeholder="Buscar cliente, tema, contacto..." value="{{ request('search') }}">
+      <button class="btn btn-primary" type="submit"><i class="fas fa-search"></i></button>
+    </form>
+  </div>
 </div>
+@if ($dia)
+<div class="small text-muted mb-2">Mostrando el {{ fecha($dia) }} · {{ $agendas->total() }} {{ $agendas->total() === 1 ? 'contacto' : 'contactos' }}</div>
+@endif
 @stop
 
 @section('content')
@@ -29,6 +41,7 @@
       <thead>
         <tr>
           <th class=" text-center">Fecha</th>
+          <th class=" text-center">Prioridad</th>
           <th class=" text-center">Hora</th>
           <th class=" text-center">Auto</th>
           <th>Nombre Fantasía</th>
@@ -40,8 +53,10 @@
       </thead>
       <tbody>
         @foreach($agendas as $agenda)
-        <tr>
-          <td class=" text-center">{{ $agenda->fecha }}</td>
+        @php $colorPrioridad = color_css($agenda->auxprioridades?->color); @endphp
+        <tr style="border-left: 5px solid {{ $colorPrioridad ? str_replace(['#f8d7da', '#d4edda', '#fff3cd'], ['#dc3545', '#28a745', '#ffc107'], $colorPrioridad) : 'transparent' }}">
+          <td class=" text-center text-nowrap">{{ fecha($agenda->fecha) }}</td>
+          <td class="text-center">@if (trim((string) $agenda->auxprioridades?->nombre) !== '')<span class="badge" style="background: {{ $colorPrioridad ?? '#e2e3e5' }}">{{ $agenda->auxprioridades->nombre }}</span>@endif</td>
           <td class="text-center">
             {{ $agenda->hs ? \Carbon\Carbon::createFromFormat('H:i:s', $agenda->hs)->format('H:i') : '' }}
           </td>
@@ -53,7 +68,7 @@
           </td>
           <td class=" text-center">{{ $agenda->distribucion->auxestado->nomEstado ?? '' }}</td>
           <td class=" text-center text-capitalize"
-            style="background-color: {{ $agenda->auxacciones?->colorAcc ?? '#FFFFFF' }};">{{
+            style="background-color: {{ color_css($agenda->auxacciones?->colorAcc, 'transparent') }};">{{
             $agenda->auxacciones->accion ?? '' }}</td>
           <td>{{ Str::limit($agenda->temas, 80) }}</td>
           {{-- <td>
@@ -115,10 +130,10 @@
           <strong>Auto:</strong> {{ $agenda->distribucion->auto }} <br>
           <strong>Veráz:</strong> {{ $agenda->distribucion->auxveraz->estado ?? 'No disponible' }} <br>
           <strong>Estado:</strong> {{ $agenda->distribucion->auxestado->nomEstado ?? 'No disponible' }} <br>
-          <strong>Acción:</strong> <span style="background-color: {{ $agenda->auxacciones?->colorAcc ?? '#FFFFFF' }};">
+          <strong>Acción:</strong> <span style="background-color: {{ color_css($agenda->auxacciones?->colorAcc, 'transparent') }};">
             {{ $agenda->auxacciones?->accion ?? '' }} </span><br>
           <strong>Prioridad:</strong><span
-            style="background-color: {{ $agenda->auxprioridades?->color ?? '#FFFFFF' }};">
+            style="background-color: {{ color_css($agenda->auxprioridades?->color, 'transparent') }};">
             {{ $agenda->auxprioridades?->nombre ?? 'No disponible' }} </span> <br>
           <strong>Cargo:</strong>{{ $agenda->distribucionPersonal?->cargo?->cargo ?? '' }} <br>
           <strong>Persona:</strong> {{

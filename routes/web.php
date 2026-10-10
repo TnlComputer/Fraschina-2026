@@ -120,6 +120,8 @@ Route::middleware(['auth', 'permission:permiso_2'])->group(function () {
   // Reparto
   Route::get('/distribucion/reparto/fechas', [DistribucionRepartoController::class, 'fechasConPedidos'])
     ->name('distribucion_reparto.fechas');
+  Route::get('/distribucion/reparto/movil', [DistribucionRepartoController::class, 'movil'])
+    ->name('distribucion_reparto.movil');
   Route::get('/distribucion/reparto/imprimir', [DistribucionRepartoController::class, 'imprimirReparto'])
     ->name('distribucion_reparto.imprimirReparto');
   Route::get('/distribucion/reparto/control', [DistribucionRepartoController::class, 'imprimirControl'])

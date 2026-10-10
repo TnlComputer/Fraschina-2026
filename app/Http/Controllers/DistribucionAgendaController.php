@@ -22,6 +22,13 @@ class DistribucionAgendaController extends Controller
   {
     // Obtener el término de búsqueda desde la solicitud (si existe)
     $search = $request->input('search');
+    // Filtro por día: 'hoy', 'manana' o una fecha Y-m-d (vacío = todos)
+    $request->validate(['dia' => ['nullable', 'regex:/^(hoy|manana|\d{4}-\d{2}-\d{2})$/']]);
+    $dia = match ($request->input('dia')) {
+      'hoy' => now()->toDateString(),
+      'manana' => now()->addDay()->toDateString(),
+      default => $request->input('dia'),
+    };
 
     // Consulta los registros con las relaciones necesarias, ordenados por fecha descendente
     $agendas = DistribucionAgenda::with([
@@ -95,11 +102,14 @@ class DistribucionAgendaController extends Controller
             ->orWhere('hs', 'like', "%$search%");
         });
       })
+      ->when($dia, fn($q) => $q->whereDate('fecha', $dia))
       ->orderBy('fecha', 'desc') // Ordena por la columna 'fecha' en orden descendente
-      ->paginate(12); // Paginación con 12 registros por página
+      ->orderBy('hs') // y dentro del día por hora
+      ->paginate(12) // Paginación con 12 registros por página
+      ->withQueryString();
 
     // Retorna la vista con los datos
-    return view('pages.Distribucion.Agenda.index', compact('agendas'));
+    return view('pages.Distribucion.Agenda.index', compact('agendas', 'dia'));
   }
 
 

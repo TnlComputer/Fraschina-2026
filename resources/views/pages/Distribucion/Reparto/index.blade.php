@@ -30,6 +30,7 @@
     </div>
     <!-- Botón Reparto Impresion -->
     <div>
+      <a href="{{ route('distribucion_reparto.movil', ['fecha' => $fecha]) }}" class="btn btn-outline-primary mr-1" title="Vista para el chofer (celular)"><i class="fas fa-mobile-screen"></i> Chofer</a>
       <a href="{{ route('distribucion_reparto.imprimirReparto', ['fecha' => $fecha]) }}" title="Impresión Reparto"
         target="_blank" class="btn btn-info"><i class="fas fa-print"></i>
         Reparto
@@ -73,6 +74,7 @@
   @endforeach
 
   <!-- Tabla de distribuciones -->
+  <div class="reparto-scroll">
   <table class="table table-sm text-xs table-bordered table-hover table-sticky w-100 reparto-tabla">
     <thead>
       <tr>
@@ -244,6 +246,7 @@
       </tr>
     </tfoot>
   </table>
+  </div>
 
 </div>
 <!-- Paginación -->
