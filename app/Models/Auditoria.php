@@ -14,6 +14,10 @@ class Auditoria extends Model
     'modificacion' => 'Modificación',
     'eliminacion' => 'Eliminación',
     'restauracion' => 'Restauración',
+    'ingreso' => 'Ingreso',
+    'salida' => 'Salida',
+    'ingreso_fallido' => 'Ingreso fallido',
+    'ingreso_rechazado' => 'Ingreso rechazado',
   ];
 
   public const UPDATED_AT = null;

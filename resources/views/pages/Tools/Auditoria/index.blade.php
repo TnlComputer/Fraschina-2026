@@ -11,7 +11,10 @@
 
 @section('content')
 @php
-$colores = ['alta' => 'success', 'modificacion' => 'info', 'eliminacion' => 'danger', 'restauracion' => 'warning'];
+$colores = [
+  'alta' => 'success', 'modificacion' => 'info', 'eliminacion' => 'danger', 'restauracion' => 'warning',
+  'ingreso' => 'primary', 'salida' => 'secondary', 'ingreso_fallido' => 'danger', 'ingreso_rechazado' => 'dark',
+];
 @endphp
 <div class="card">
   <div class="card-body">

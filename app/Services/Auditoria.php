@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Auditoria as Registro;
 use App\Models\ExpPedidoMovimiento;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
@@ -20,8 +21,8 @@ class Auditoria
   /** Campos que nunca se guardan en el log. */
   private const SENSIBLES = ['password', 'remember_token'];
 
-  /** Campos que no cuentan como modificación. */
-  private const IGNORADOS = ['created_at', 'updated_at'];
+  /** Campos que no cuentan como modificación (remember_token cambia en cada ingreso/salida). */
+  private const IGNORADOS = ['created_at', 'updated_at', 'remember_token'];
 
   /** Sector según el prefijo de la tabla (el primero que coincide). */
   private const SECTORES = [
@@ -47,7 +48,7 @@ class Auditoria
 
   public static function sectores(): array
   {
-    return array_values(array_unique(array_merge(array_values(self::SECTORES), ['Otros'])));
+    return array_values(array_unique(array_merge(['Accesos'], array_values(self::SECTORES), ['Otros'])));
   }
 
   public function modelo(Model $modelo, string $evento): void
@@ -95,9 +96,22 @@ class Auditoria
     $this->guardar($accion, $sector, $tabla, $registroId, $descripcion, $cambios);
   }
 
-  private function guardar(string $accion, string $sector, string $tabla, ?string $registroId, string $descripcion, array $cambios): void
+  /**
+   * Ingresos, salidas e intentos fallidos. Para un intento fallido se guarda el mail usado, nunca la contraseña.
+   */
+  public function acceso(string $accion, ?Authenticatable $usuario, string $descripcion, array $cambios = []): void
   {
-    $usuario = Auth::user();
+    try {
+      $this->guardar($accion, 'Accesos', 'users', $usuario ? (string) $usuario->getAuthIdentifier() : null, $descripcion, $cambios, $usuario);
+    } catch (\Throwable $e) {
+      // Un problema con el log nunca debe impedir ingresar o salir
+      report($e);
+    }
+  }
+
+  private function guardar(string $accion, string $sector, string $tabla, ?string $registroId, string $descripcion, array $cambios, ?Authenticatable $usuario = null): void
+  {
+    $usuario ??= Auth::user();
     $request = app()->runningInConsole() ? null : request();
 
     Registro::create([

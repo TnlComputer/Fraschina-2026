@@ -52,6 +52,30 @@ class AuditoriaTest extends TestCase
         $this->assertArrayNotHasKey('password', $registros->firstWhere('accion', 'alta')->cambios);
     }
 
+    public function test_registra_ingresos_salidas_e_intentos_fallidos(): void
+    {
+        $usuario = User::factory()->create(['name' => 'Magali', 'email' => 'magali@test.com']);
+        $inactivo = User::factory()->create(['name' => 'Baja', 'email' => 'baja@test.com', 'is_active' => false]);
+
+        $this->post('/login', ['email' => 'magali@test.com', 'password' => 'mal-clave'])->assertSessionHasErrors();
+        $this->post('/login', ['email' => 'nadie@test.com', 'password' => 'x'])->assertSessionHasErrors();
+        $this->post('/login', ['email' => 'baja@test.com', 'password' => 'password'])->assertSessionHasErrors();
+        $this->post('/login', ['email' => 'magali@test.com', 'password' => 'password']);
+        $this->assertAuthenticatedAs($usuario);
+        $this->post('/logout');
+
+        $accesos = Auditoria::where('sector', 'Accesos')->orderBy('id')->get();
+        $this->assertSame(
+            ['ingreso_fallido', 'ingreso_fallido', 'ingreso_rechazado', 'ingreso', 'salida'],
+            $accesos->pluck('accion')->all()
+        );
+        $this->assertSame($usuario->id, $accesos[0]->user_id);
+        $this->assertSame('nadie@test.com', $accesos[1]->cambios['email'][1]);
+        $this->assertSame($inactivo->id, $accesos[2]->user_id);
+        $this->assertSame('Magali', $accesos[3]->usuario);
+        $this->assertStringNotContainsString('mal-clave', json_encode(Auditoria::pluck('cambios')));
+    }
+
     public function test_pantalla_con_filtros_solo_para_administrador(): void
     {
         $this->actingAs($this->admin)->post('/expedicion_general', ['fecha' => '2026-10-01', 'mo' => 'LUJ', 'cl' => 'ARG']);
