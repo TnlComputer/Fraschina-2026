@@ -621,7 +621,7 @@ return [
         [
           'type' => 'css',
           'asset' => true,
-          'location' => 'css/fraschina.css?v=20261011g',
+          'location' => 'css/fraschina.css?v=20261011h',
         ],
       ],
     ],

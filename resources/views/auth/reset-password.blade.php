@@ -4,3 +4,5 @@
 @extends('adminlte::auth.passwords.reset')
 
 @section('password_reset_url', 'reset-password')
+
+@include('partials.ver-clave')

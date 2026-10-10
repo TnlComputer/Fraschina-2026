@@ -119,6 +119,8 @@ class RepresentacionController extends Controller
       'zona_id' => 'nullable|exists:auxzonas,id',
       'municipio_id' => 'nullable|exists:auxmunicipios,id',
       'telefono' => 'nullable|string|max:255',
+      'fax' => 'nullable|string|max:255',
+      'correo' => 'nullable|string|max:255',
       'cuit' => 'nullable|string|max:255',
       'marcas' => 'nullable|string|max:255',
       'info' => 'nullable|string',
@@ -137,6 +139,8 @@ class RepresentacionController extends Controller
     $representacion->zona_id = $request->zona_id;
     $representacion->municipio_id = $request->municipio_id;
     $representacion->telefono = $request->telefono;
+    $representacion->fax = $request->fax;
+    $representacion->correo = $request->correo;
     $representacion->cuit = $request->cuit;
     $representacion->marcas = $request->marcas;
     $representacion->info = $request->info;
@@ -214,6 +218,8 @@ class RepresentacionController extends Controller
       'zona_id' => 'nullable|exists:auxzonas,id',
       'municipio_id' => 'nullable|exists:auxmunicipios,id',
       'telefono' => 'nullable|string|max:255',
+      'fax' => 'nullable|string|max:255',
+      'correo' => 'nullable|string|max:255',
       'cuit' => 'nullable|string|max:255',
       'marcas' => 'nullable|string|max:255',
       'info' => 'nullable|string',
@@ -232,6 +238,8 @@ class RepresentacionController extends Controller
     $representacion->zona_id = $request->zona_id;
     $representacion->municipio_id = $request->municipio_id; // Se actualiza el municipio
     $representacion->telefono = $request->telefono;
+    $representacion->fax = $request->fax;
+    $representacion->correo = $request->correo;
     $representacion->cuit = $request->cuit;
     $representacion->marcas = $request->marcas;
     $representacion->info = $request->info;

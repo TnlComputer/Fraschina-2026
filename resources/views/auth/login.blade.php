@@ -9,3 +9,5 @@
 @endif
 Ingrese con su correo y contraseña
 @endsection
+
+@include('partials.ver-clave')

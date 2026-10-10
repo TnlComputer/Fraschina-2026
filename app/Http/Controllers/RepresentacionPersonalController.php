@@ -39,9 +39,9 @@ class RepresentacionPersonalController extends Controller
   public function create(Representacion $representacion)
   {
     $representacion = Representacion::findOrFail($representacion->id);
-    $profesiones = AuxProfesion::all();
-    $areas = AuxAreas::all();
-    $cargos = AuxCargos::all();
+    $profesiones = AuxProfesion::orderBy('nombreprofesion')->get();
+    $areas = AuxAreas::orderBy('area')->get();
+    $cargos = AuxCargos::orderBy('cargo')->get();
 
     // dd($representacion, $profesiones, $areas, $cargos);
     return view('pages.Representacion.Personal.create', compact('representacion', 'profesiones', 'areas', 'cargos'));
@@ -64,9 +64,9 @@ class RepresentacionPersonalController extends Controller
       'telcelular' => 'nullable|max:50',
       'profesion_id' => 'nullable|exists:auxprofesiones,id',
       'telparticular' => 'nullable|max:50',
-      'email' => 'nullable|email|max:150',
+      'email' => 'nullable|string|max:150',
       'observaciones' => 'nullable',
-      'fuera' => 'nullable|boolean', // No es obligatorio ya que tiene valor por defecto
+      'fuera' => 'nullable|in:0,1', // 0 = pertenece a la empresa, 1 = ya no
       'status' => 'nullable|in:A,D', // No es obligatorio ya que tiene valor por defecto
     ], [
       'nombre.required' => 'El nombre es obligatorio.',
@@ -84,6 +84,7 @@ class RepresentacionPersonalController extends Controller
 
     // Guardar los datos
     $personal->fill($request->except('fuera', 'status'));
+    $personal->categoriacargo_id = AuxCargos::find($request->cargo_id)?->categoria_id;
     $personal->save();
 
     // Redirigir con mensaje de éxito
@@ -108,9 +109,9 @@ class RepresentacionPersonalController extends Controller
   {
     $personal = RepresentacionPersonal::findOrFail($id); // Obtén el registro por ID
     $representaciones = Representacion::all(); // Dropdown para representaciones
-    $areas = AuxAreas::all(); // Dropdown para áreas
-    $cargos = AuxCargos::all(); // Dropdown para cargos
-    $profesiones = AuxProfesion::all(); // Dropdown para profesiones
+    $areas = AuxAreas::orderBy('area')->get(); // Dropdown para áreas
+    $cargos = AuxCargos::orderBy('cargo')->get(); // Dropdown para cargos
+    $profesiones = AuxProfesion::orderBy('nombreprofesion')->get(); // Dropdown para profesiones
 
     return view('pages.Representacion.Personal.edit', compact('personal', 'representaciones', 'areas', 'cargos', 'profesiones'));
   }
@@ -132,9 +133,9 @@ class RepresentacionPersonalController extends Controller
       'telcelular' => 'nullable|max:50',
       'profesion_id' => 'nullable|exists:auxprofesiones,id',
       'telparticular' => 'nullable|max:50',
-      'email' => 'nullable|email|max:150',
+      'email' => 'nullable|string|max:150',
       'observaciones' => 'nullable',
-      'fuera' => 'nullable|boolean', // No es obligatorio ya que tiene valor por defecto
+      'fuera' => 'nullable|in:0,1', // 0 = pertenece a la empresa, 1 = ya no
       'status' => 'nullable|in:A,D', // No es obligatorio ya que tiene valor por defecto
     ], [
       'nombre.required' => 'El nombre es obligatorio.',
@@ -150,9 +151,9 @@ class RepresentacionPersonalController extends Controller
 
     // Asignar valores por defecto si no se proporcionan
     $personal->fuera = $request->has('fuera') ? $request->fuera : 0;
-    $personal->status = $request->has('status') ? $request->status : 'A';
-
-    // Actualizar el registro con los datos recibidos
+    // Actualizar el registro con los datos recibidos (la categoría acompaña al cargo, como en el sistema anterior)
+    unset($validated['fuera'], $validated['status']);
+    $personal->categoriacargo_id = AuxCargos::find($request->cargo_id)?->categoria_id;
     $personal->update($validated);
 
     // Redirigir con un mensaje de éxito

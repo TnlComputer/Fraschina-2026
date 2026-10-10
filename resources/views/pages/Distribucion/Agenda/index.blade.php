@@ -142,10 +142,10 @@
           <strong>Temas:</strong>
           <span id="temas{{ $agenda->id }}">{{ $agenda->temas }}</span>
           <div id="full-temas{{ $agenda->id }}" style="display: none;">{{ $agenda->temas }}</div><br>
-          <strong>Ult.Cotización /Venta:</strong> {{ $agenda->distribucion->telefono }} <br>
-          <strong>Fecha Ult.Cotización:</strong> {{ fecha($agenda->fecha) }} <br>
-          <strong>Cotización:</strong> {{ $agenda->cotizacion }} <br>
-          @php $ultimaEntrega = $agenda->distribucion->distribucionLineaPedidos->max('fechaEntrega'); @endphp
+          <strong>Ult. cotiz./venta:</strong> {{ $agenda->cotizacion }} <br>
+          <strong>Fecha ult. cotiz./venta:</strong> {{ fecha($agenda->fecCot) }} <br>
+          {{-- última entrega: la del pedido más reciente, o la que guardó el sistema anterior (fecCotEnt) --}}
+          @php $ultimaEntrega = $agenda->distribucion->distribucionLineaPedidos->max('fechaEntrega') ?: $agenda->fecCotEnt; @endphp
           <strong>Fecha Ult.Entrega:</strong> {{ fecha($ultimaEntrega) }} <br>
           <strong>Información:</strong> {{ $agenda->distribucion->info }} <br>
 

@@ -19,6 +19,7 @@ class DistribucionAgenda extends Model
     'accion_id',
     'persona_id',
     'cotizacion',
+    'fecCot',
     'temas',
     'status',
   ];

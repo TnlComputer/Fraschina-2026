@@ -159,7 +159,7 @@
 
   <!-- Fuera (checkbox) -->
   <div class="col-md-6 mb-3">
-    <label for="fuera" class="form-label">¿Está fuera?</label>
+    <label for="fuera" class="form-label">Ya no está en la empresa</label>
     <input type="checkbox" name="fuera" id="fuera" class="" {{ old('fuera', $personal->fuera) == 1 ?
     'checked' : '' }}>
     @error('fuera')

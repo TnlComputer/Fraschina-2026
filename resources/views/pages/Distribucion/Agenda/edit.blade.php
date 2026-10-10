@@ -76,7 +76,7 @@
             @foreach ($field['options'] as $option)
             <option value="{{ $option->id }}" {{ old($field['name'], $agenda->{$field['name']}) == $option->id ?
               'selected' : '' }}>
-              {{ $option->{$field['display']} }}
+              {{ trim((string) $option->{$field['display']}) !== '' ? $option->{$field['display']} : '(sin dato)' }}
             </option>
             @endforeach
           </select>
@@ -102,13 +102,23 @@
           @enderror
         </div>
 
-        <!-- Campo: Cotización -->
-        <div class="form-group col-md-9">
-          <label for="cotizacion">Cotización</label>
+        <!-- Campo: Última cotización / venta -->
+        <div class="form-group col-md-6">
+          <label for="cotizacion">Ult. cotiz./venta</label>
           <input type="text" name="cotizacion" id="cotizacion"
             class="form-control @error('cotizacion') is-invalid @enderror"
             value="{{ old('cotizacion', $agenda->cotizacion) }}">
           @error('cotizacion')
+          <span class="invalid-feedback">{{ $message }}</span>
+          @enderror
+        </div>
+
+        <!-- Campo: Fecha de la última cotización / venta -->
+        <div class="form-group col-md-3">
+          <label for="fecCot">Fecha ult. cotiz./venta</label>
+          <input type="date" name="fecCot" id="fecCot" class="form-control @error('fecCot') is-invalid @enderror"
+            value="{{ old('fecCot', $agenda->fecCot ? \Illuminate\Support\Carbon::parse($agenda->fecCot)->format('Y-m-d') : '') }}">
+          @error('fecCot')
           <span class="invalid-feedback">{{ $message }}</span>
           @enderror
         </div>

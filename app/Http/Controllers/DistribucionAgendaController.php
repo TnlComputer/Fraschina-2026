@@ -163,6 +163,7 @@ class DistribucionAgendaController extends Controller
       'accion_id' => 'required|exists:auxacciones,id',
       'persona_id' => 'required|exists:distribucion_personal,id',
       'cotizacion' => 'nullable|string|max:255',
+      'fecCot' => 'nullable|date',
       'temas' => 'nullable|string',
     ]);
 
@@ -251,6 +252,7 @@ class DistribucionAgendaController extends Controller
       'accion_id' => 'required|exists:auxacciones,id',
       'temas' => 'nullable|string',
       'cotizacion' => 'nullable|string',
+      'fecCot' => 'nullable|date',
       'persona_id' => 'nullable|exists:distribucion_personal,id',
     ]);
 
@@ -264,6 +266,7 @@ class DistribucionAgendaController extends Controller
       'accion_id' => $request->accion_id,
       'temas' => $request->temas,
       'cotizacion' => $request->cotizacion,
+      'fecCot' => $request->fecCot,
       'persona_id' => $request->persona_id,
     ]);
 

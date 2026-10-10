@@ -143,7 +143,8 @@
                 @enderror
               </div>
             </div>
-            <!-- Teléfono -->
+            <div class="row">
+              <!-- Teléfono -->
             <div class="col-md-6 mb-3">
               <label for="telefono" class="form-label">Teléfono</label>
               <input type="text" name="telefono" id="telefono"
@@ -153,9 +154,26 @@
               <div class="invalid-feedback">{{ $message }}</div>
               @enderror
             </div>
+            </div>
             <div class="row">
+              <div class="col-md-3 mb-3">
+                <label for="fax" class="form-label">Fax</label>
+                <input type="text" name="fax" id="fax" class="form-control @error('fax') is-invalid @enderror"
+                  value="{{ old('fax', $representacion->fax) }}">
+                @error('fax')
+                <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+              </div>
+              <div class="col-md-3 mb-3">
+                <label for="correo" class="form-label">Email</label>
+                <input type="text" name="correo" id="correo" class="form-control @error('correo') is-invalid @enderror"
+                  value="{{ old('correo', $representacion->correo) }}">
+                @error('correo')
+                <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+              </div>
               <!-- Fiscal -->
-              <div class="col-md-4 mb-3">
+              <div class="col-md-3 mb-3">
                 <label for="cuit" class="form-label">CUIT</label>
                 <input type="text" name="cuit" id="cuit" class="form-control @error('cuit') is-invalid @enderror"
                   value="{{ old('cuit', $representacion->cuit) }}">
@@ -164,7 +182,7 @@
                 @enderror
               </div>
 
-              <div class="col-md-4 mb-3">
+              <div class="col-md-3 mb-3">
                 <label for="marcas" class="form-label">Marcas</label>
                 <input type="text" name="marcas" id="marcas" class="form-control @error('marcas') is-invalid @enderror"
                   value="{{ old('marcas', $representacion->marcas) }}">

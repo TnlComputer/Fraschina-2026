@@ -140,7 +140,7 @@ SELECT
     CUIT,
     Excenciones,
     Idiva,
-    NULL AS marcas, -- Asumiendo que esta columna no está en clientes
+    INFOenParticular AS marcas, -- "Marca/s" en el sistema anterior
     Info,
     Contacto,
     Horario,
