@@ -13,9 +13,9 @@
       @csrf
       @include('pages.Agro.form')
 
-      <div class="d-flex justify-content-between">
+      <div class="form-acciones mt-3">
         <button type="submit" id="submitButton" class="btn btn-primary">Guardar</button>
-        <a href="{{ route('agro.index') }}" class="btn btn-secondary">Cancelar</a>
+        <a href="{{ route('agro.index') }}" class="btn btn-outline-secondary">Cancelar</a>
       </div>
     </form>
   </div>

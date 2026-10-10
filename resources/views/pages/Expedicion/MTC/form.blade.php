@@ -81,9 +81,9 @@
       <input type="text" name="linea{{ $i }}" value="{{ old('linea' . $i, $config->{'linea' . $i}) }}" class="form-control form-control-sm mb-1" maxlength="200" placeholder="Línea {{ $i }}">
       @endforeach
     </div>
-    <div class="card-footer">
-      <button class="btn btn-success">Guardar</button>
-      <a href="{{ route('expedicion_MTC.index') }}" class="btn btn-secondary">Cancelar</a>
+    <div class="card-footer form-acciones">
+      <button class="btn btn-primary">Guardar</button>
+      <a href="{{ route('expedicion_MTC.index') }}" class="btn btn-outline-secondary">Cancelar</a>
     </div>
   </div>
 </form>

@@ -16,7 +16,7 @@
     <select name="cliente_id" id="cliente_id" class="form-control" required>
       <option value="">Seleccione un cliente</option>
       @foreach($clientes as $cliente)
-      <option value="{{ $cliente->id }}">{{ $cliente->nomfantasia }} - {{ $cliente->razonsocial }}</option>
+      <option value="{{ $cliente->id }}">{{ unir($cliente->nomfantasia, $cliente->razonsocial) }}</option>
       @endforeach
     </select>
   </div>

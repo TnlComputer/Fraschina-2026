@@ -49,13 +49,13 @@
                       {{ $representacion->dire_calle }}
                       {{ $representacion->dire_nro }}
                       @if($representacion->piso != '')
-                      {{ $representacion->piso }}
+                      Piso {{ $representacion->piso }}
                       @endif
                       @if($representacion->dpto != '')
-                      Piso {{ $representacion->dpto }}
+                      Dpto {{ $representacion->dpto }}
                       @endif
                       @if($representacion->codpost != '')
-                      - ({{ $representacion->codpost }})
+                      ({{ $representacion->codpost }})
                       @endif
                     </td>
                     <td data-titulo="Barrio">{{ $representacion->barrio }}</td>

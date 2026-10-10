@@ -105,10 +105,10 @@
 
             </div>
 
-            <div class="d-flex justify-content-between">
-              <button type="submit" class="btn btn-success">Guardar Cambios</button>
+            <div class="form-acciones mt-3">
+              <button type="submit" class="btn btn-primary">Guardar Cambios</button>
               <a href="{{ route('representacion.show', $personal->representacion_id ) }}"
-                class="btn btn-secondary">Cancelar</a>
+                class="btn btn-outline-secondary">Cancelar</a>
             </div>
           </form>
         </div>

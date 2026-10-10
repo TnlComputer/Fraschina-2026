@@ -30,7 +30,7 @@ class ExpedicionCliente extends Model
   public function getNombreAttribute(): string
   {
     $razon = $this->representacion?->razonsocial;
-    return trim($this->sigla . ($razon ? ' - ' . $razon : ''));
+    return unir($this->sigla, $razon);
   }
 
   /**

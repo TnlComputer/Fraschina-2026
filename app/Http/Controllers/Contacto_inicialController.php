@@ -3,10 +3,26 @@
 namespace App\Http\Controllers;
 
 use App\Models\AuxContacto;
+use App\Http\Controllers\Concerns\CrudAuxiliar;
 use Illuminate\Http\Request;
 
 class Contacto_inicialController extends Controller
 {
+  use CrudAuxiliar;
+
+  protected function auxiliar(): array
+  {
+    return [
+      'modelo' => AuxContacto::class,
+      'titulo' => 'Contacto inicial',
+      'ruta' => 'contacto_inicial',
+      'campos' => [
+        'contacto' => ['label' => 'Contacto inicial', 'requerido' => true, 'unico' => true],
+      ],
+      'usado_en' => ['distribucion_agenda.contacto_id', 'distribucions.contacto_id'],
+    ];
+  }
+
   /**
    * Display a listing of the resource.
    */
@@ -29,52 +45,4 @@ class Contacto_inicialController extends Controller
     return view('pages.Tools.Contacto_inicial.index', compact('contactos', 'name'));
   }
 
-
-  /**
-   * Show the form for creating a new resource.
-   */
-  public function create()
-  {
-    //
-  }
-
-  /**
-   * Store a newly created resource in storage.
-   */
-  public function store(Request $request)
-  {
-    //
-  }
-
-  /**
-   * Display the specified resource.
-   */
-  public function show(string $id)
-  {
-    //
-  }
-
-  /**
-   * Show the form for editing the specified resource.
-   */
-  public function edit(string $id)
-  {
-    //
-  }
-
-  /**
-   * Update the specified resource in storage.
-   */
-  public function update(Request $request, string $id)
-  {
-    //
-  }
-
-  /**
-   * Remove the specified resource from storage.
-   */
-  public function destroy(string $id)
-  {
-    //
-  }
 }

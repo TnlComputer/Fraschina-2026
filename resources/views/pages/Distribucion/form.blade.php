@@ -415,7 +415,7 @@
   </div>
 </div>
 
-<div class="col-md-12">
+<div class="mt-3">
   <h5 class="form-seccion"><i class="fas fa-note-sticky"></i> Información adicional</h5>
       <label for="info" class="form-label sr-only">Información Adicional</label>
   <textarea name="info" id="info" rows="2"
@@ -437,9 +437,9 @@
 
 <!-- Botones en la misma línea -->
 <div class="row mt-4">
-  <div class="col-md-12 d-flex justify-content-between">
+  <div class="col-12 form-acciones mt-3">
     <button type="submit" class="btn btn-primary">{{ $buttonText }}</button>
-    <a href="{{ route('distribucion.index') }}" class="btn btn-secondary">
+    <a href="{{ route('distribucion.index') }}" class="btn btn-outline-secondary">
       Cancelar
     </a>
   </div>

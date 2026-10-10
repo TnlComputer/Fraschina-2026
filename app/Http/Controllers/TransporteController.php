@@ -73,9 +73,9 @@ class TransporteController extends Controller
    */
   public function create()
   {
-    $barrios = DB::table('auxbarrios')->orderBy('nombrebarrio', 'asc')->get();
-    $localidades = DB::table('auxlocalidades')->orderBy('localidad', 'asc')->get();
-    $municipios = DB::table('auxmunicipios')->orderBy('ciudadmunicipio', 'asc')->get();
+    $barrios = tabla_aux('auxbarrios')->orderBy('nombrebarrio', 'asc')->get();
+    $localidades = tabla_aux('auxlocalidades')->orderBy('localidad', 'asc')->get();
+    $municipios = tabla_aux('auxmunicipios')->orderBy('ciudadmunicipio', 'asc')->get();
 
     return view('pages.Transporte.create', compact('barrios', 'localidades', 'municipios'));
   }
@@ -112,9 +112,9 @@ class TransporteController extends Controller
   {
     $transporte = DB::table('transportes')->where('id', $id)->first();
 
-    $barrios = DB::table('auxbarrios')->orderBy('nombrebarrio', 'asc')->get();
-    $localidades = DB::table('auxlocalidades')->orderBy('localidad', 'asc')->get();
-    $municipios = DB::table('auxmunicipios')->orderBy('ciudadmunicipio', 'asc')->get();
+    $barrios = tabla_aux('auxbarrios', $transporte->barrio_id)->orderBy('nombrebarrio', 'asc')->get();
+    $localidades = tabla_aux('auxlocalidades', $transporte->localidad_id)->orderBy('localidad', 'asc')->get();
+    $municipios = tabla_aux('auxmunicipios', $transporte->municipio_id)->orderBy('ciudadmunicipio', 'asc')->get();
 
     return view('pages.Transporte.edit', compact('transporte', 'barrios', 'localidades', 'municipios'));
   }

@@ -20,12 +20,12 @@ class RepresentacionPersonal extends Model
 
   public function area()
   {
-    return $this->belongsTo(AuxAreas::class, 'area_id');
+    return $this->belongsTo(AuxAreas::class, 'area_id')->withTrashed();
   }
 
   public function cargo()
   {
-    return $this->belongsTo(AuxCargos::class, 'cargo_id');
+    return $this->belongsTo(AuxCargos::class, 'cargo_id')->withTrashed();
   }
 
   public function profesion()

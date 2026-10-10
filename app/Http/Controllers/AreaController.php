@@ -3,10 +3,27 @@
 namespace App\Http\Controllers;
 
 use App\Models\AuxAreas;
+use App\Http\Controllers\Concerns\CrudAuxiliar;
 use Illuminate\Http\Request;
 
 class AreaController extends Controller
 {
+  use CrudAuxiliar;
+
+  protected function auxiliar(): array
+  {
+    return [
+      'modelo' => AuxAreas::class,
+      'titulo' => 'Área',
+      'femenino' => true,
+      'ruta' => 'areas',
+      'campos' => [
+        'area' => ['label' => 'Área', 'requerido' => true, 'unico' => true],
+      ],
+      'usado_en' => ['agro_personal.area_id', 'distribucion_personal.area_id', 'molino_personal.area_id', 'proveedor_personal.area_id', 'representacion_personal.area_id', 'transporte_personal.area_id'],
+    ];
+  }
+
   /**
    * Display a listing of the resource.
    */
@@ -28,51 +45,5 @@ class AreaController extends Controller
     // Retorna la vista con los datos
     return view('pages.Tools.Area.index', compact('areas', 'name'));
   }
-  /**
-   * Show the form for creating a new resource.
-   */
-  public function create()
-  {
-    //
-  }
 
-  /**
-   * Store a newly created resource in storage.
-   */
-  public function store(Request $request)
-  {
-    //
-  }
-
-  /**
-   * Display the specified resource.
-   */
-  public function show(string $id)
-  {
-    //
-  }
-
-  /**
-   * Show the form for editing the specified resource.
-   */
-  public function edit(string $id)
-  {
-    //
-  }
-
-  /**
-   * Update the specified resource in storage.
-   */
-  public function update(Request $request, string $id)
-  {
-    //
-  }
-
-  /**
-   * Remove the specified resource from storage.
-   */
-  public function destroy(string $id)
-  {
-    //
-  }
 }

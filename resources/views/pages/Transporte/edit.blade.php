@@ -13,9 +13,9 @@
 
       @include('pages.Transporte.form', ['action' => 'edit', 'transporte' => $transporte])
 
-      <div class="d-flex justify-content-between">
+      <div class="form-acciones mt-3">
         <button type="submit" class="btn btn-primary" id="submitBtn">Guardar</button>
-        <a href="{{ route('transporte.index') }}" class="btn btn-secondary">Cancelar</a>
+        <a href="{{ route('transporte.index') }}" class="btn btn-outline-secondary">Cancelar</a>
       </div>
     </form>
   </div>

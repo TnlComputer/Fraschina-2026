@@ -26,12 +26,12 @@ class DistribucionAgenda extends Model
   // Relación con la tabla de prioridades (auxprioridades)
   public function auxprioridades()
   {
-    return $this->belongsTo(AuxPrioridades::class, 'prioridad_id', 'id');
+    return $this->belongsTo(AuxPrioridades::class, 'prioridad_id', 'id')->withTrashed();
   }
   // Relación con la tabla de acciones (auxacciones)
   public function auxacciones()
   {
-    return $this->belongsTo(AuxAcciones::class, 'accion_id', 'id');
+    return $this->belongsTo(AuxAcciones::class, 'accion_id', 'id')->withTrashed();
   }
   // Relación con la distribución
   public function distribucion()

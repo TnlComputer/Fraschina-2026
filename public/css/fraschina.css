@@ -189,6 +189,26 @@ input.form-control[type="number"] { text-align: right; }
    con la columna anterior. Se mantiene como celda y los botones en línea. */
 .table td.d-flex { display: table-cell !important; white-space: nowrap; text-align: right; }
 .table td.d-flex > *, .table td.d-flex > form { display: inline-block; vertical-align: middle; margin: 0 1px !important; }
+/* ...pero los botones siguen siendo flex para que el ícono quede centrado en el cuadrado */
+.table td.d-flex > a.btn-xs, .table td.d-flex > a.btn-2xs, .table td.d-flex > a.btn-sm,
+.table td.d-flex > button { display: inline-flex !important; }
+.btn-xs > i, .btn-2xs > i, td .btn-sm > i:only-child { line-height: 1; vertical-align: 0; margin: 0; }
+
+/* ---------- Botones de los formularios (Guardar / Cancelar) ---------- */
+.form-acciones { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; }
+.form-acciones .btn { margin: 0 !important; font-size: 1rem; padding: .375rem .9rem; }
+.btn > i + span, .btn > i:first-child:not(:only-child) { margin-right: .3rem; }
+
+/* Barras de botones en pantallas angostas: que bajen de renglón en vez de salirse o pisarse */
+@media (max-width: 767.98px) {
+  .form-acciones .btn { flex: 1 1 auto; }
+  .content form .btn + .btn, .content form .btn + a.btn, .content form a.btn + .btn { margin-top: .25rem; }
+  .barra__index { flex-wrap: wrap; gap: .5rem; }
+  .barra__index > * { max-width: 100%; }
+  .content-header .btn, .card-header .btn { margin-top: .25rem; }
+  .card-header.d-flex, .content-header .d-flex { flex-wrap: wrap; gap: .5rem; }
+  .btn-group-toggle, .btn-group:not(.btn-group-vertical) { flex-wrap: wrap; }
+}
 
 /* ---------- Celular y tablet ---------- */
 @media (max-width: 767.98px) {

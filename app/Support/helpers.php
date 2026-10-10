@@ -89,3 +89,31 @@ if (!function_exists('pesos')) {
     return '$ ' . numero($valor, $decimales);
   }
 }
+
+if (!function_exists('unir')) {
+  /**
+   * Une las partes que tienen dato con un separador: unir('Pérez', '', 'Centro') → "Pérez - Centro" (sin guiones sueltos).
+   */
+  function unir(...$partes): string
+  {
+    $separador = ' - ';
+    return implode($separador, array_filter(array_map(fn($p) => trim((string) $p), $partes), fn($p) => $p !== ''));
+  }
+}
+
+if (!function_exists('tabla_aux')) {
+  /**
+   * Consulta de una tabla auxiliar sin los valores eliminados; $actual (id o ids) se incluye igual,
+   * para que un registro que ya lo tiene asignado lo siga mostrando al editarse.
+   */
+  function tabla_aux(string $tabla, $actual = null): \Illuminate\Database\Query\Builder
+  {
+    $actual = array_filter((array) $actual);
+    return \Illuminate\Support\Facades\DB::table($tabla)->where(function ($q) use ($actual) {
+      $q->whereNull('deleted_at');
+      if ($actual) {
+        $q->orWhereIn('id', $actual);
+      }
+    });
+  }
+}

@@ -3,10 +3,28 @@
 namespace App\Http\Controllers;
 
 use App\Models\AuxMunicipios;
+use App\Http\Controllers\Concerns\CrudAuxiliar;
 use Illuminate\Http\Request;
 
 class MunicipioController extends Controller
 {
+  use CrudAuxiliar;
+
+  protected function auxiliar(): array
+  {
+    return [
+      'modelo' => AuxMunicipios::class,
+      'titulo' => 'Ciudad / municipio',
+      'femenino' => true,
+      'ruta' => 'ciudades_municipios',
+      'campos' => [
+        'ciudadmunicipio' => ['label' => 'Ciudad / municipio', 'requerido' => true, 'unico' => true],
+        'usos' => ['label' => 'Se usa en', 'tipo' => 'usos'],
+      ],
+      'usado_en' => ['agros.municipio_id', 'distribucion_agenda.municipio_id', 'distribucions.municipio_id', 'molinos.municipio_id', 'proveedores.municipio_id', 'representacions.municipio_id', 'transportes.municipio_id'],
+    ];
+  }
+
   /**
    * Display a listing of the resource.
    */
@@ -29,51 +47,4 @@ class MunicipioController extends Controller
     return view('pages.Tools.Municipio.index', compact('municipios', 'name'));
   }
 
-  /**
-   * Show the form for creating a new resource.
-   */
-  public function create()
-  {
-    //
-  }
-
-  /**
-   * Store a newly created resource in storage.
-   */
-  public function store(Request $request)
-  {
-    //
-  }
-
-  /**
-   * Display the specified resource.
-   */
-  public function show(string $id)
-  {
-    //
-  }
-
-  /**
-   * Show the form for editing the specified resource.
-   */
-  public function edit(string $id)
-  {
-    //
-  }
-
-  /**
-   * Update the specified resource in storage.
-   */
-  public function update(Request $request, string $id)
-  {
-    //
-  }
-
-  /**
-   * Remove the specified resource from storage.
-   */
-  public function destroy(string $id)
-  {
-    //
-  }
 }

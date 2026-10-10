@@ -3,10 +3,27 @@
 namespace App\Http\Controllers;
 
 use App\Models\AuxCalles;
+use App\Http\Controllers\Concerns\CrudAuxiliar;
 use Illuminate\Http\Request;
 
 class CalleController extends Controller
 {
+  use CrudAuxiliar;
+
+  protected function auxiliar(): array
+  {
+    return [
+      'modelo' => AuxCalles::class,
+      'titulo' => 'Calle',
+      'femenino' => true,
+      'ruta' => 'calles',
+      'campos' => [
+        'calle' => ['label' => 'Calle', 'requerido' => true, 'unico' => true],
+      ],
+      'usado_en' => ['distribucions.dire_calle_id'],
+    ];
+  }
+
   /**
    * Display a listing of the resource.
    */
@@ -30,52 +47,4 @@ class CalleController extends Controller
     return view('pages.Tools.Calle.index', compact('calles', 'name'));
   }
 
-
-  /**
-   * Show the form for creating a new resource.
-   */
-  public function create()
-  {
-    //
-  }
-
-  /**
-   * Store a newly created resource in storage.
-   */
-  public function store(Request $request)
-  {
-    //
-  }
-
-  /**
-   * Display the specified resource.
-   */
-  public function show(string $id)
-  {
-    //
-  }
-
-  /**
-   * Show the form for editing the specified resource.
-   */
-  public function edit(string $id)
-  {
-    //
-  }
-
-  /**
-   * Update the specified resource in storage.
-   */
-  public function update(Request $request, string $id)
-  {
-    //
-  }
-
-  /**
-   * Remove the specified resource from storage.
-   */
-  public function destroy(string $id)
-  {
-    //
-  }
 }

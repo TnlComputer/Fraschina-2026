@@ -12,9 +12,9 @@
     @csrf
     @include('pages.Transporte.Personal.form')
 
-    <div class="d-flex justify-content-between">
+    <div class="form-acciones mt-3">
       <button type="submit" class="btn btn-primary" id="saveButton">Guardar</button>
-      <a href="{{ route('transporte.show', ['transporte' => $personal->transporte_id]) }}" class="btn btn-secondary"
+      <a href="{{ route('transporte.show', ['transporte' => $personal->transporte_id]) }}" class="btn btn-outline-secondary"
         id="cancelButton">Cancelar</a>
     </div>
   </form>

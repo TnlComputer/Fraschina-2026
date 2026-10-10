@@ -101,9 +101,9 @@
       <input type="hidden" name="status" value="A">
 
       <!-- Botón para guardar y cancelar en la misma línea -->
-      <div class="form-group mt-3 d-flex justify-content-between">
-        <button type="submit" class="btn btn-primary btn-sm">Nuevo Producto</button>
-        <a href="{{ route('representacion.show', $representacion->id) }}" class="btn btn-secondary btn-sm">Cancelar</a>
+      <div class="form-acciones mt-3">
+        <button type="submit" class="btn btn-primary">Nuevo Producto</button>
+        <a href="{{ route('representacion.show', $representacion->id) }}" class="btn btn-outline-secondary">Cancelar</a>
       </div>
     </form>
   </div>

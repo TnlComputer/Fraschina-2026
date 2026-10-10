@@ -3,10 +3,27 @@
 namespace App\Http\Controllers;
 
 use App\Models\AuxTamanios;
+use App\Http\Controllers\Concerns\CrudAuxiliar;
 use Illuminate\Http\Request;
 
 class TamanioController extends Controller
 {
+  use CrudAuxiliar;
+
+  protected function auxiliar(): array
+  {
+    return [
+      'modelo' => AuxTamanios::class,
+      'titulo' => 'Dimensión',
+      'femenino' => true,
+      'ruta' => 'tamanios',
+      'campos' => [
+        'nombre' => ['label' => 'Dimensión', 'requerido' => true, 'unico' => true],
+      ],
+      'usado_en' => ['distribucion_agenda.tamanio_id', 'distribucions.tamanio_id'],
+    ];
+  }
+
   /**
    * Display a listing of the resource.
    */
@@ -29,51 +46,4 @@ class TamanioController extends Controller
     return view('pages.Tools.Tamanio.index', compact('tamanios', 'name'));
   }
 
-  /**
-   * Show the form for creating a new resource.
-   */
-  public function create()
-  {
-    //
-  }
-
-  /**
-   * Store a newly created resource in storage.
-   */
-  public function store(Request $request)
-  {
-    //
-  }
-
-  /**
-   * Display the specified resource.
-   */
-  public function show(string $id)
-  {
-    //
-  }
-
-  /**
-   * Show the form for editing the specified resource.
-   */
-  public function edit(string $id)
-  {
-    //
-  }
-
-  /**
-   * Update the specified resource in storage.
-   */
-  public function update(Request $request, string $id)
-  {
-    //
-  }
-
-  /**
-   * Remove the specified resource from storage.
-   */
-  public function destroy(string $id)
-  {
-    //
-  }
 }

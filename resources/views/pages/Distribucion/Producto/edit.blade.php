@@ -72,10 +72,10 @@
         </div>
       </div>
 
-      <div class="d-flex justify-content-between">
+      <div class="form-acciones mt-3">
         <button type="submit" class="btn btn-primary" id="saveBtn">Guardar</button>
         <a href="{{ route('distribucion.show', ['distribucion' => $distribucion_producto->distribucion_id]) }}"
-          class="btn btn-secondary" id="cancelBtn">Cancelar</a>
+          class="btn btn-outline-secondary" id="cancelBtn">Cancelar</a>
       </div>
     </form>
   </div>

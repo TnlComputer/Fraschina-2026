@@ -69,10 +69,10 @@ class AgroController extends Controller
    */
   public function create()
   {
-    $barrios = DB::table('auxbarrios')->orderBy('nombrebarrio', 'asc')->get();
-    $localidades = DB::table('auxlocalidades')->orderBy('localidad', 'asc')->get();
-    $municipios = DB::table('auxmunicipios')->orderBy('ciudadmunicipio', 'asc')->get();
-    $rubros = DB::table('auxrubros')->orderBy('nombre', 'asc')->get();
+    $barrios = tabla_aux('auxbarrios')->orderBy('nombrebarrio', 'asc')->get();
+    $localidades = tabla_aux('auxlocalidades')->orderBy('localidad', 'asc')->get();
+    $municipios = tabla_aux('auxmunicipios')->orderBy('ciudadmunicipio', 'asc')->get();
+    $rubros = tabla_aux('auxrubros')->orderBy('nombre', 'asc')->get();
 
     return view('pages.Agro.create', compact('barrios', 'localidades', 'municipios', 'rubros'));
   }
@@ -115,10 +115,10 @@ class AgroController extends Controller
   {
     $agro = Agro::findOrFail($id);
 
-    $barrios = DB::table('auxbarrios')->orderBy('nombrebarrio', 'asc')->get();
-    $localidades = DB::table('auxlocalidades')->orderBy('localidad', 'asc')->get();
-    $municipios = DB::table('auxmunicipios')->orderBy('ciudadmunicipio', 'asc')->get();
-    $rubros = DB::table('auxrubros')->orderBy('nombre', 'asc')->get();
+    $barrios = tabla_aux('auxbarrios', $agro->barrio_id)->orderBy('nombrebarrio', 'asc')->get();
+    $localidades = tabla_aux('auxlocalidades', $agro->localidad_id)->orderBy('localidad', 'asc')->get();
+    $municipios = tabla_aux('auxmunicipios', $agro->municipio_id)->orderBy('ciudadmunicipio', 'asc')->get();
+    $rubros = tabla_aux('auxrubros', $agro->rubro_id)->orderBy('nombre', 'asc')->get();
 
     return view('pages.Agro.edit', compact('agro', 'barrios', 'localidades', 'municipios', 'rubros'));
   }

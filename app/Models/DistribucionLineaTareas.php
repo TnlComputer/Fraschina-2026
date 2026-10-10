@@ -17,7 +17,7 @@ class DistribucionLineaTareas extends Model
   // Relación: una línea de tarea pertenece a una tarea
   public function tarea()
   {
-    return $this->belongsTo(DistribucionTareas::class, 'tarea_id');
+    return $this->belongsTo(DistribucionTareas::class, 'tarea_id')->withTrashed();
   }
   public function distribucionNropedido()
   {

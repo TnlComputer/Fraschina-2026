@@ -12,9 +12,9 @@
     @csrf
     @include('pages.Agro.Personal.form')
 
-    <div class="d-flex justify-content-between">
+    <div class="form-acciones mt-3">
       <button type="submit" class="btn btn-primary" id="saveButton">Guardar</button>
-      <a href="{{ route('agro.show', ['agro' => $personal->agro_id]) }}" class="btn btn-secondary"
+      <a href="{{ route('agro.show', ['agro' => $personal->agro_id]) }}" class="btn btn-outline-secondary"
         id="cancelButton">Cancelar</a>
     </div>
   </form>

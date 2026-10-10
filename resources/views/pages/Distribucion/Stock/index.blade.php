@@ -4,11 +4,14 @@
 <div class="container-fluid">
   <div class="row">
     <div class="col-12">
-      <div class="card-header">
-        <h3 class="card-title">{{ __('Distribución') }}</h3>
+      <div class="card mt-3">
+        <div class="card-body text-center py-5 text-muted">
+          <i class="fas fa-boxes fa-3x mb-3"></i>
+          <h4>Stock</h4>
+          <p class="mb-0">Este módulo está en preparación.</p>
+        </div>
       </div>
       <div class="col-12">
-        STOCK PROXIMAMENTE
         {{-- <div class="py-2">
           <div class="max-w-8xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
@@ -55,7 +58,7 @@
                         {{ $distribucion->dire_calle }} {{ $distribucion->dire_nro }}
                         @if($distribucion->piso) Piso {{ $distribucion->piso }} @endif
                         @if($distribucion->dpto) Dpto {{ $distribucion->dpto }} @endif
-                        @if($distribucion->codpost) - ({{ $distribucion->codpost }}) @endif
+                        @if($distribucion->codpost) ({{ $distribucion->codpost }}) @endif
                       </td>
                       <td>{{ $distribucion->barrio }}</td>
                       <td>{{ $distribucion->localidad }}</td>

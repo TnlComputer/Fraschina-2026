@@ -3,10 +3,26 @@
 namespace App\Http\Controllers;
 
 use App\Models\AuxBarrios;
+use App\Http\Controllers\Concerns\CrudAuxiliar;
 use Illuminate\Http\Request;
 
 class BarrioController extends Controller
 {
+  use CrudAuxiliar;
+
+  protected function auxiliar(): array
+  {
+    return [
+      'modelo' => AuxBarrios::class,
+      'titulo' => 'Barrio',
+      'ruta' => 'barrios',
+      'campos' => [
+        'nombrebarrio' => ['label' => 'Barrio', 'requerido' => true, 'unico' => true],
+      ],
+      'usado_en' => ['agros.barrio_id', 'distribucion_agenda.barrio_id', 'distribucions.barrio_id', 'molinos.barrio_id', 'proveedores.barrio_id', 'representacions.barrio_id', 'transportes.barrio_id'],
+    ];
+  }
+
     /**
      * Display a listing of the resource.
      */
@@ -29,51 +45,5 @@ class BarrioController extends Controller
     // Retorna la vista con los datos
     return view('pages.Tools.Barrio.index', compact('barrios', 'name'));
   }
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
 }

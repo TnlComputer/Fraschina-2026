@@ -215,12 +215,10 @@
                   $distribucion->distribucion->dire_nro }}
                   {{ $distribucion->distribucion->piso }}
                   {{ $distribucion->distribucion->dpto }} <br>
-                  {{ $distribucion->distribucion->auxbarrio?->nombrebarrio }} -
-                  {{ $distribucion->distribucion->auxlocalidad?->localidad }} - {{
-                  $distribucion->distribucion->auxmunicipio?->ciudadmunicipio }} <br>
-                  <strong>Horarios:</strong><br> Mañana: {{ $distribucion->distribucion->desde }} - {{
-                  $distribucion->distribucion->hasta }}<br>
-                  Tarde: {{ $distribucion->distribucion->desde1 }} -{{ $distribucion->distribucion->hasta1 }}<br>
+                  {{ unir($distribucion->distribucion->auxbarrio?->nombrebarrio, $distribucion->distribucion->auxlocalidad?->localidad,
+                  $distribucion->distribucion->auxmunicipio?->ciudadmunicipio) }} <br>
+                  <strong>Horarios:</strong><br> Mañana: {{ horario($distribucion->distribucion->desde, $distribucion->distribucion->hasta) }}<br>
+                  Tarde: {{ horario($distribucion->distribucion->desde1, $distribucion->distribucion->hasta1) }}<br>
                   <strong>Observaciones:</strong><br>
                   {{$distribucion->distribucion->obsrecep }}<br>
                 </div>

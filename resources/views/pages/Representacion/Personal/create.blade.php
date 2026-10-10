@@ -143,9 +143,9 @@
         @enderror
       </div>
 
-      <div class="d-flex justify-content-between">
-        <button type="submit" id="submitButton" class="btn btn-success" disabled>Nuevo Personal</button>
-        <a href="{{ route('representacion.show', $representacion->id) }}" class="btn btn-secondary">Cancelar</a>
+      <div class="form-acciones mt-3">
+        <button type="submit" id="submitButton" class="btn btn-primary" disabled>Nuevo Personal</button>
+        <a href="{{ route('representacion.show', $representacion->id) }}" class="btn btn-outline-secondary">Cancelar</a>
       </div>
     </form>
   </div>

@@ -175,21 +175,21 @@ class DistribucionController extends Controller
   public function create()
   {
     // Obtener datos auxiliares ordenados
-    $calles = DB::table('auxcalles')->orderBy('calle')->get();
-    $barrios = DB::table('auxbarrios')->orderBy('nombrebarrio')->get();
-    $localidades = DB::table('auxlocalidades')->orderBy('localidad')->get();
-    $municipios = DB::table('auxmunicipios')->orderBy('ciudadmunicipio')->get();
-    $zonas = DB::table('auxzonas')->orderBy('nombre')->get();
-    $rubros = DB::table('auxrubros')
+    $calles = tabla_aux('auxcalles')->orderBy('calle')->get();
+    $barrios = tabla_aux('auxbarrios')->orderBy('nombrebarrio')->get();
+    $localidades = tabla_aux('auxlocalidades')->orderBy('localidad')->get();
+    $municipios = tabla_aux('auxmunicipios')->orderBy('ciudadmunicipio')->get();
+    $zonas = tabla_aux('auxzonas')->orderBy('nombre')->get();
+    $rubros = tabla_aux('auxrubros')
       ->where('distribuciones', 'SI')
       ->orderBy('nombre')
       ->get();
 
-    $tamanos = DB::table('auxtamanio')->orderBy('nombre')->get();
-    $modos = DB::table('auxmodos')->orderBy('nombre')->get();
-    $contactos = DB::table('auxcontacto')->orderBy('contacto')->get();
-    $estados = DB::table('auxestados')->orderBy('nomEstado')->get();
-    $verazs = DB::table('auxveraz')->orderBy('estado')->get();
+    $tamanos = tabla_aux('auxtamanio')->orderBy('nombre')->get();
+    $modos = tabla_aux('auxmodos')->orderBy('nombre')->get();
+    $contactos = tabla_aux('auxcontacto')->orderBy('contacto')->get();
+    $estados = tabla_aux('auxestados')->orderBy('nomEstado')->get();
+    $verazs = tabla_aux('auxveraz')->orderBy('estado')->get();
     $cobrars = DB::table('auxcobrar')->orderBy('accion')->get();
     $pagos = DB::table('auxpagos')->orderBy('nombre')->get();
     $tiposPago = DB::table('auxtipopagos')->orderBy('nombre')->get();
@@ -256,23 +256,23 @@ class DistribucionController extends Controller
     // $municipios = DB::table('auxmunicipios')->pluck('ciudadmunicipio', 'id');
     // $zonas = DB::table('auxzonas')->pluck('nombre', 'id');
 
-    $calles = DB::table('auxcalles')->orderBy('calle')->get();
-    $barrios = DB::table('auxbarrios')->orderBy('nombrebarrio')->get();
-    $localidades = DB::table('auxlocalidades')->orderBy('localidad')->get();
-    $municipios = DB::table('auxmunicipios')->orderBy('ciudadmunicipio')->get();
-    $zonas = DB::table('auxzonas')->orderBy('nombre')->get();
-    $rubros = DB::table('auxrubros')
+    $calles = tabla_aux('auxcalles', $distribucion->dire_calle_id)->orderBy('calle')->get();
+    $barrios = tabla_aux('auxbarrios', $distribucion->barrio_id)->orderBy('nombrebarrio')->get();
+    $localidades = tabla_aux('auxlocalidades', $distribucion->localidad_id)->orderBy('localidad')->get();
+    $municipios = tabla_aux('auxmunicipios', $distribucion->municipio_id)->orderBy('ciudadmunicipio')->get();
+    $zonas = tabla_aux('auxzonas', $distribucion->zona_id)->orderBy('nombre')->get();
+    $rubros = tabla_aux('auxrubros', $distribucion->rubro_id)
       ->where('distribuciones', 'SI')
       ->orderBy('nombre')
       ->get();
 
     // Consultas a tablas auxiliares
     // $horas = DB::table('auxhoras')->orderBy('hora')->get();
-    $tamanos = DB::table('auxtamanio')->orderBy('nombre')->get();
-    $modos = DB::table('auxmodos')->orderBy('nombre')->get();
-    $contactos = DB::table('auxcontacto')->orderBy('contacto')->get();
-    $estados = DB::table('auxestados')->orderBy('nomEstado')->get();
-    $verazs = DB::table('auxveraz')->orderBy('estado')->get();
+    $tamanos = tabla_aux('auxtamanio', $distribucion->tamanio_id)->orderBy('nombre')->get();
+    $modos = tabla_aux('auxmodos', $distribucion->modo_id)->orderBy('nombre')->get();
+    $contactos = tabla_aux('auxcontacto', $distribucion->contacto_id)->orderBy('contacto')->get();
+    $estados = tabla_aux('auxestados', $distribucion->estado_id)->orderBy('nomEstado')->get();
+    $verazs = tabla_aux('auxveraz', $distribucion->veraz_id)->orderBy('estado')->get();
     $cobrars = DB::table('auxcobrar')->orderBy('accion')->get();
     $pagos = DB::table('auxpagos')->orderBy('nombre')->get();
     $tiposPago = DB::table('auxtipopagos')->orderBy('nombre')->get();

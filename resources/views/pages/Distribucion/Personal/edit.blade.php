@@ -13,9 +13,9 @@
     @method('PUT')
     @include('pages.Distribucion.Personal.form', ['Personal' => $personal->id])
 
-    <div class="d-flex justify-content-between">
+    <div class="form-acciones mt-3">
       <button type="submit" class="btn btn-primary">Actualizar</button>
-      <a href="{{ route('distribucion.show', $personal->distribucion_id) }}" class="btn btn-secondary">
+      <a href="{{ route('distribucion.show', $personal->distribucion_id) }}" class="btn btn-outline-secondary">
         Cancelar </a>
     </div>
   </form>

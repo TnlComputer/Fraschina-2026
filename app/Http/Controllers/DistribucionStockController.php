@@ -20,7 +20,8 @@ class DistribucionStockController extends Controller
    */
   public function create()
   {
-    //
+    // El módulo de stock todavía no está hecho: se muestra el aviso del listado
+    return redirect()->route('distribucion_stock.index');
   }
 
   /**

@@ -3,10 +3,28 @@
 namespace App\Http\Controllers;
 
 use App\Models\AuxZonas;
+use App\Http\Controllers\Concerns\CrudAuxiliar;
 use Illuminate\Http\Request;
 
 class ZonaController extends Controller
 {
+  use CrudAuxiliar;
+
+  protected function auxiliar(): array
+  {
+    return [
+      'modelo' => AuxZonas::class,
+      'titulo' => 'Zona',
+      'femenino' => true,
+      'ruta' => 'zonas',
+      'campos' => [
+        'nombre' => ['label' => 'Zona', 'requerido' => true, 'unico' => true],
+        'usos' => ['label' => 'Se usa en', 'tipo' => 'usos'],
+      ],
+      'usado_en' => ['distribucion_agenda.zona_id', 'distribucions.zona_id', 'representacions.zona_id'],
+    ];
+  }
+
   /**
    * Display a listing of the resource.
    */
@@ -30,51 +48,4 @@ class ZonaController extends Controller
     return view('pages.Tools.Zona.index', compact('zonas', 'name'));
   }
 
-  /**
-   * Show the form for creating a new resource.
-   */
-  public function create()
-  {
-    //
-  }
-
-  /**
-   * Store a newly created resource in storage.
-   */
-  public function store(Request $request)
-  {
-    //
-  }
-
-  /**
-   * Display the specified resource.
-   */
-  public function show(string $id)
-  {
-    //
-  }
-
-  /**
-   * Show the form for editing the specified resource.
-   */
-  public function edit(string $id)
-  {
-    //
-  }
-
-  /**
-   * Update the specified resource in storage.
-   */
-  public function update(Request $request, string $id)
-  {
-    //
-  }
-
-  /**
-   * Remove the specified resource from storage.
-   */
-  public function destroy(string $id)
-  {
-    //
-  }
 }

@@ -35,9 +35,9 @@ class MolinoController extends Controller
 
   public function create()
   {
-    $barrios = DB::table('auxbarrios')->orderBy('nombrebarrio', 'asc')->get();
-    $localidades = DB::table('auxlocalidades')->orderBy('localidad', 'asc')->get();
-    $municipios = DB::table('auxmunicipios')->orderBy('ciudadmunicipio', 'asc')->get();
+    $barrios = tabla_aux('auxbarrios')->orderBy('nombrebarrio', 'asc')->get();
+    $localidades = tabla_aux('auxlocalidades')->orderBy('localidad', 'asc')->get();
+    $municipios = tabla_aux('auxmunicipios')->orderBy('ciudadmunicipio', 'asc')->get();
 
     return view('pages.Molino.create', compact('barrios', 'localidades', 'municipios'));
   }
@@ -74,9 +74,9 @@ class MolinoController extends Controller
   {
     $molino = DB::table('molinos')->where('id', $id)->first();
 
-    $barrios = DB::table('auxbarrios')->orderBy('nombrebarrio', 'asc')->get();
-    $localidades = DB::table('auxlocalidades')->orderBy('localidad', 'asc')->get();
-    $municipios = DB::table('auxmunicipios')->orderBy('ciudadmunicipio', 'asc')->get();
+    $barrios = tabla_aux('auxbarrios', $molino->barrio_id)->orderBy('nombrebarrio', 'asc')->get();
+    $localidades = tabla_aux('auxlocalidades', $molino->localidad_id)->orderBy('localidad', 'asc')->get();
+    $municipios = tabla_aux('auxmunicipios', $molino->municipio_id)->orderBy('ciudadmunicipio', 'asc')->get();
 
     return view('pages.Molino.edit', compact('molino', 'barrios', 'localidades', 'municipios'));
   }

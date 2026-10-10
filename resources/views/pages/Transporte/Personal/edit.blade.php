@@ -14,9 +14,9 @@
       {{-- Incluye el formulario común para crear/editar --}}
       @include('pages.Transporte.Personal.form', ['action' => 'edit', 'personal' => $personal])
 
-      <div class="d-flex justify-content-between">
+      <div class="form-acciones mt-3">
         <button type="submit" class="btn btn-primary" id="saveButton">Actualizar</button>
-        <a href="{{ route('transporte.show', ['transporte' => $personal->transporte_id]) }}" class="btn btn-secondary">Cancelar</a>
+        <a href="{{ route('transporte.show', ['transporte' => $personal->transporte_id]) }}" class="btn btn-outline-secondary">Cancelar</a>
       </div>
     </form>
   </div>

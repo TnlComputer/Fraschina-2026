@@ -40,7 +40,7 @@ class DistribucionPersonal extends Model
 
   public function cargo()
   {
-    return $this->belongsTo(AuxCargos::class, 'cargo_id');
+    return $this->belongsTo(AuxCargos::class, 'cargo_id')->withTrashed();
   }
 
   public function profesion()
@@ -49,6 +49,6 @@ class DistribucionPersonal extends Model
   }
   public function tipoPersonal()
   {
-    return $this->belongsTo(AuxTipoPersonal::class, 'tipo_personal_id');  // Cambia 'tipo_personal_id' por el nombre correcto de la clave foránea
+    return $this->belongsTo(AuxTipoPersonal::class, 'tipo_personal_id')->withTrashed();  // Cambia 'tipo_personal_id' por el nombre correcto de la clave foránea
   }
 }

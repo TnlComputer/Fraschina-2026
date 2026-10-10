@@ -69,9 +69,9 @@
   </div>
   @endif
 
-  <div class="form-group d-flex justify-content-between">
-    <button type="submit" class="btn btn-success">Crear Rol</button>
-    <a href="{{ route('roles.index') }}" class="btn btn-secondary">Cancelar</a>
+  <div class="form-acciones mt-3">
+    <button type="submit" class="btn btn-primary">Crear Rol</button>
+    <a href="{{ route('roles.index') }}" class="btn btn-outline-secondary">Cancelar</a>
   </div>
 </form>
 @endsection

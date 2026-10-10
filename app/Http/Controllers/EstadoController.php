@@ -3,10 +3,26 @@
 namespace App\Http\Controllers;
 
 use App\Models\AuxEstados;
+use App\Http\Controllers\Concerns\CrudAuxiliar;
 use Illuminate\Http\Request;
 
 class EstadoController extends Controller
 {
+  use CrudAuxiliar;
+
+  protected function auxiliar(): array
+  {
+    return [
+      'modelo' => AuxEstados::class,
+      'titulo' => 'Estado',
+      'ruta' => 'estados',
+      'campos' => [
+        'nomEstado' => ['label' => 'Estado', 'requerido' => true, 'unico' => true],
+      ],
+      'usado_en' => ['distribucion_agenda.estado_id', 'distribucions.estado_id'],
+    ];
+  }
+
   /**
    * Display a listing of the resource.
    */
@@ -29,52 +45,4 @@ class EstadoController extends Controller
     return view('pages.Tools.Estado.index', compact('estados', 'name'));
   }
 
-
-  /**
-   * Show the form for creating a new resource.
-   */
-  public function create()
-  {
-    //
-  }
-
-  /**
-   * Store a newly created resource in storage.
-   */
-  public function store(Request $request)
-  {
-    //
-  }
-
-  /**
-   * Display the specified resource.
-   */
-  public function show(string $id)
-  {
-    //
-  }
-
-  /**
-   * Show the form for editing the specified resource.
-   */
-  public function edit(string $id)
-  {
-    //
-  }
-
-  /**
-   * Update the specified resource in storage.
-   */
-  public function update(Request $request, string $id)
-  {
-    //
-  }
-
-  /**
-   * Remove the specified resource from storage.
-   */
-  public function destroy(string $id)
-  {
-    //
-  }
 }

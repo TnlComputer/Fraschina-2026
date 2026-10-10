@@ -274,7 +274,7 @@
       </table>
     </div>
     <div class="derecha">
-      <strong class="letra-cliente">Recibimos de : {{ $pedido->razonsocial }} - {{ $pedido->nomfantasia }}</strong>
+      <strong class="letra-cliente">Recibimos de : {{ unir($pedido->razonsocial, $pedido->nomfantasia) }}</strong>
 
       <table class="table-recibo">
         <thead>
@@ -450,7 +450,7 @@
       </table>
     </div>
     <div class="derecha">
-      <strong class="letra-cliente">Recibimos de : {{ $pedido->razonsocial }} - {{ $pedido->nomfantasia }}</strong>
+      <strong class="letra-cliente">Recibimos de : {{ unir($pedido->razonsocial, $pedido->nomfantasia) }}</strong>
 
       <table class="table-recibo">
         <thead>

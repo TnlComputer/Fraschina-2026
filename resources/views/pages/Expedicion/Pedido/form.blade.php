@@ -84,15 +84,15 @@ $lineas = old('lineas', $editando ? $pedido->lineas->map(fn($l) => array_merge($
   <button type="button" class="btn btn-outline-primary mb-3" id="agregar-linea"><i class="fas fa-plus"></i> Agregar línea</button>
 
   <div class="card">
-    <div class="card-body d-flex flex-wrap align-items-center">
+    <div class="card-body form-acciones">
       @if (!$editando)
-      <button type="submit" name="confirmar" value="0" class="btn btn-info mr-2">Guardar como pendiente de confirmación</button>
-      <button type="submit" name="confirmar" value="1" class="btn btn-success mr-2">Guardar y confirmar</button>
+      <button type="submit" name="confirmar" value="1" class="btn btn-primary">Guardar y confirmar</button>
+      <button type="submit" name="confirmar" value="0" class="btn btn-outline-primary">Guardar como pendiente de confirmación</button>
       @else
-      <button type="submit" class="btn btn-success mr-2">Guardar cambios</button>
+      <button type="submit" class="btn btn-primary">Guardar cambios</button>
       @endif
-      <a href="{{ $editando ? route('expedicion_pedido.show', $pedido) : route('expedicion.index') }}" class="btn btn-secondary">Cancelar</a>
-      <small class="text-muted ml-3">Las entregas con <strong>fecha tentativa</strong> se ven en azul en la planificación.</small>
+      <a href="{{ $editando ? route('expedicion_pedido.show', $pedido) : route('expedicion.index') }}" class="btn btn-outline-secondary">Cancelar</a>
+      <small class="text-muted">Las entregas con <strong>fecha tentativa</strong> se ven en azul en la planificación.</small>
     </div>
   </div>
 </form>

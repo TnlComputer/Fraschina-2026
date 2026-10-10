@@ -42,9 +42,9 @@
               </div>
               <!-- Añadir otros campos según necesidad -->
             </div>
-            <div class="mt-3">
+            <div class="form-acciones mt-3">
               <button type="submit" class="btn btn-warning">Actualizar</button>
-              <a href="{{ route('expedicion_general.index') }}" class="btn btn-secondary">Cancelar</a>
+              <a href="{{ route('expedicion_general.index') }}" class="btn btn-outline-secondary">Cancelar</a>
             </div>
           </form>
         </div>

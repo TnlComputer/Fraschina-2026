@@ -40,22 +40,22 @@ class Representacion extends Model
 
   public function barrio()
   {
-    return $this->belongsTo(AuxBarrios::class);
+    return $this->belongsTo(AuxBarrios::class)->withTrashed();
   }
 
   public function localidad()
   {
-    return $this->belongsTo(AuxLocalidades::class);
+    return $this->belongsTo(AuxLocalidades::class)->withTrashed();
   }
 
   public function zona()
   {
-    return $this->belongsTo(AuxZonas::class);
+    return $this->belongsTo(AuxZonas::class)->withTrashed();
   }
 
   public function municipio()
   {
-    return $this->belongsTo(AuxMunicipios::class);
+    return $this->belongsTo(AuxMunicipios::class)->withTrashed();
   }
 
   public function personal()

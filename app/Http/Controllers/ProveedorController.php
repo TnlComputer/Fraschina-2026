@@ -62,10 +62,10 @@ class ProveedorController extends Controller
    */
   public function create()
   {
-    $barrios = DB::table('auxbarrios')->orderBy('nombrebarrio', 'asc')->get();
-    $localidades = DB::table('auxlocalidades')->orderBy('localidad', 'asc')->get();
-    $municipios = DB::table('auxmunicipios')->orderBy('ciudadmunicipio', 'asc')->get();
-    $rubros = DB::table('auxrubros')->orderBy('nombre', 'asc')->get();
+    $barrios = tabla_aux('auxbarrios')->orderBy('nombrebarrio', 'asc')->get();
+    $localidades = tabla_aux('auxlocalidades')->orderBy('localidad', 'asc')->get();
+    $municipios = tabla_aux('auxmunicipios')->orderBy('ciudadmunicipio', 'asc')->get();
+    $rubros = tabla_aux('auxrubros')->orderBy('nombre', 'asc')->get();
 
     return view('pages.Proveedor.create', compact('barrios', 'localidades', 'municipios', 'rubros'));
   }
@@ -110,10 +110,10 @@ class ProveedorController extends Controller
   {
     $proveedor = Proveedor::findOrFail($id);
 
-    $barrios = DB::table('auxbarrios')->orderBy('nombrebarrio', 'asc')->get();
-    $localidades = DB::table('auxlocalidades')->orderBy('localidad', 'asc')->get();
-    $municipios = DB::table('auxmunicipios')->orderBy('ciudadmunicipio', 'asc')->get();
-    $rubros = DB::table('auxrubros')->orderBy('nombre', 'asc')->get();
+    $barrios = tabla_aux('auxbarrios', $proveedor->barrio_id)->orderBy('nombrebarrio', 'asc')->get();
+    $localidades = tabla_aux('auxlocalidades', $proveedor->localidad_id)->orderBy('localidad', 'asc')->get();
+    $municipios = tabla_aux('auxmunicipios', $proveedor->municipio_id)->orderBy('ciudadmunicipio', 'asc')->get();
+    $rubros = tabla_aux('auxrubros', $proveedor->rubro_id)->orderBy('nombre', 'asc')->get();
 
     return view('pages.Proveedor.edit', compact('proveedor', 'barrios', 'localidades', 'municipios', 'rubros'));
   }

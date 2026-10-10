@@ -35,7 +35,7 @@ class ExpedicionMolino extends Model
   public function getNombreAttribute(): string
   {
     $razon = $this->molino?->razonsocial;
-    return trim($this->sigla . ($razon ? ' - ' . $razon : ''));
+    return unir($this->sigla, $razon);
   }
 
   /**

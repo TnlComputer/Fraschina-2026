@@ -56,9 +56,9 @@
       </div>
 
       <!-- Botones -->
-      <div class="d-flex justify-content-between">
+      <div class="form-acciones mt-3">
         <button type="submit" class="btn btn-primary" id="guardarBtn">Guardar</button>
-        <a href="{{ route('proveedor.show', ['proveedor' => $proveedor->id]) }}" class="btn btn-secondary">Cancelar</a>
+        <a href="{{ route('proveedor.show', ['proveedor' => $proveedor->id]) }}" class="btn btn-outline-secondary">Cancelar</a>
       </div>
     </form>
   </div>

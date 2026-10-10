@@ -3,10 +3,27 @@
 namespace App\Http\Controllers;
 
 use App\Models\AuxFamilias;
+use App\Http\Controllers\Concerns\CrudAuxiliar;
 use Illuminate\Http\Request;
 
 class FamiliaController extends Controller
 {
+  use CrudAuxiliar;
+
+  protected function auxiliar(): array
+  {
+    return [
+      'modelo' => AuxFamilias::class,
+      'titulo' => 'Familia',
+      'femenino' => true,
+      'ruta' => 'familias',
+      'campos' => [
+        'familia' => ['label' => 'Familia', 'requerido' => true, 'unico' => true],
+      ],
+      'usado_en' => [],
+    ];
+  }
+
   /**
    * Display a listing of the resource.
    */
@@ -29,52 +46,4 @@ class FamiliaController extends Controller
     return view('pages.Tools.Familia.index', compact('familias', 'name'));
   }
 
-
-  /**
-   * Show the form for creating a new resource.
-   */
-  public function create()
-  {
-    //
-  }
-
-  /**
-   * Store a newly created resource in storage.
-   */
-  public function store(Request $request)
-  {
-    //
-  }
-
-  /**
-   * Display the specified resource.
-   */
-  public function show(string $id)
-  {
-    //
-  }
-
-  /**
-   * Show the form for editing the specified resource.
-   */
-  public function edit(string $id)
-  {
-    //
-  }
-
-  /**
-   * Update the specified resource in storage.
-   */
-  public function update(Request $request, string $id)
-  {
-    //
-  }
-
-  /**
-   * Remove the specified resource from storage.
-   */
-  public function destroy(string $id)
-  {
-    //
-  }
 }

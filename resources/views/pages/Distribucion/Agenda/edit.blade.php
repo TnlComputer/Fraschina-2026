@@ -25,7 +25,7 @@
               $distribucion->id ?
               'selected' : '' }}>
               @if(!empty($distribucion->nomfantasia) && !empty($distribucion->razonsocial))
-              {{ $distribucion->nomfantasia }} - {{ $distribucion->razonsocial }}
+              {{ unir($distribucion->nomfantasia, $distribucion->razonsocial) }}
               @elseif(!empty($distribucion->nomfantasia))
               {{ $distribucion->nomfantasia }}
               @elseif(!empty($distribucion->razonsocial))
@@ -124,9 +124,9 @@
         @enderror
       </div>
 
-      <div class="d-flex justify-content-between">
-        <a href="{{ route('distribucion_agenda.index') }}" class="btn btn-secondary">Cancelar</a>
-        <button type="submit" class="btn btn-success">Actualizar</button>
+      <div class="form-acciones mt-3">
+        <button type="submit" class="btn btn-primary">Actualizar</button>
+        <a href="{{ route('distribucion_agenda.index') }}" class="btn btn-outline-secondary">Cancelar</a>
       </div>
     </form>
   </div>

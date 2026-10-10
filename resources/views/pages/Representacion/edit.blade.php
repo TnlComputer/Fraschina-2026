@@ -188,9 +188,9 @@
               </div>
             </div>
 
-            <div class="d-flex justify-content-between">
+            <div class="form-acciones mt-3">
               <button type="submit" class="btn btn-primary">{{ __('Actualizar Representación') }}</button>
-              <a href="{{ route('representacion.index') }}" class="btn btn-secondary">{{ __('Cancelar') }}</a>
+              <a href="{{ route('representacion.index') }}" class="btn btn-outline-secondary">{{ __('Cancelar') }}</a>
             </div>
           </form>
         </div>

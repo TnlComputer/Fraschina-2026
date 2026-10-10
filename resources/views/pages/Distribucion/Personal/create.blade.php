@@ -12,10 +12,10 @@
     @csrf
     @include('pages.Distribucion.Personal.form')
 
-    <div class="d-flex justify-content-between">
+    <div class="form-acciones mt-3">
       <button type="submit" class="btn btn-primary">Guardar</button>
       <a href="{{ route('distribucion.show', ['distribucion' => $personal->distribucion_id]) }}"
-        class="btn btn-secondary">Cancelar</a>
+        class="btn btn-outline-secondary">Cancelar</a>
     </div>
   </form>
 </div>

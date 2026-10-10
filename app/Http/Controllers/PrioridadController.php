@@ -3,10 +3,28 @@
 namespace App\Http\Controllers;
 
 use App\Models\AuxPrioridades;
+use App\Http\Controllers\Concerns\CrudAuxiliar;
 use Illuminate\Http\Request;
 
 class PrioridadController extends Controller
 {
+  use CrudAuxiliar;
+
+  protected function auxiliar(): array
+  {
+    return [
+      'modelo' => AuxPrioridades::class,
+      'titulo' => 'Prioridad',
+      'femenino' => true,
+      'ruta' => 'prioridades',
+      'campos' => [
+        'nombre' => ['label' => 'Prioridad', 'requerido' => true, 'unico' => true],
+        'color' => ['label' => 'Color', 'tipo' => 'color'],
+      ],
+      'usado_en' => ['distribucion_agenda.prioridad_id'],
+    ];
+  }
+
   /**
    * Display a listing of the resource.
    */
@@ -29,52 +47,4 @@ class PrioridadController extends Controller
     return view('pages.Tools.Prioridad.index', compact('prioridades', 'name'));
   }
 
-
-  /**
-   * Show the form for creating a new resource.
-   */
-  public function create()
-  {
-    //
-  }
-
-  /**
-   * Store a newly created resource in storage.
-   */
-  public function store(Request $request)
-  {
-    //
-  }
-
-  /**
-   * Display the specified resource.
-   */
-  public function show(string $id)
-  {
-    //
-  }
-
-  /**
-   * Show the form for editing the specified resource.
-   */
-  public function edit(string $id)
-  {
-    //
-  }
-
-  /**
-   * Update the specified resource in storage.
-   */
-  public function update(Request $request, string $id)
-  {
-    //
-  }
-
-  /**
-   * Remove the specified resource from storage.
-   */
-  public function destroy(string $id)
-  {
-    //
-  }
 }

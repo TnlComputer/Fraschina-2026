@@ -43,9 +43,9 @@
         </div>
       </div>
     </div>
-    <div class="card-footer">
-      <button class="btn btn-success">Guardar</button>
-      <a href="{{ route('expedicion_cliente.index') }}" class="btn btn-secondary">Cancelar</a>
+    <div class="card-footer form-acciones">
+      <button class="btn btn-primary">Guardar</button>
+      <a href="{{ route('expedicion_cliente.index') }}" class="btn btn-outline-secondary">Cancelar</a>
     </div>
   </div>
 </form>

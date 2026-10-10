@@ -14,9 +14,9 @@
       {{-- Incluye el formulario común para crear/editar --}}
       @include('pages.Agro.Personal.form', ['action' => 'edit', 'personal' => $personal])
 
-      <div class="d-flex justify-content-between">
+      <div class="form-acciones mt-3">
         <button type="submit" class="btn btn-primary" id="saveButton">Actualizar</button>
-        <a href="{{ route('agro.show', ['agro' => $personal->agro_id]) }}" class="btn btn-secondary">Cancelar</a>
+        <a href="{{ route('agro.show', ['agro' => $personal->agro_id]) }}" class="btn btn-outline-secondary">Cancelar</a>
       </div>
     </form>
   </div>

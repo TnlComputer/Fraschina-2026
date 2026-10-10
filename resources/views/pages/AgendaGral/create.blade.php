@@ -69,9 +69,9 @@
               <textarea name="Observaciones" id="Observaciones" class="form-control"></textarea>
             </div>
 
-            <div class="mt-3">
-              <button type="submit" class="btn btn-success">Guardar</button>
-              <a href="{{ route('AgendaGral.index') }}" class="btn btn-secondary">Cancelar</a>
+            <div class="form-acciones mt-3">
+              <button type="submit" class="btn btn-primary">Guardar</button>
+              <a href="{{ route('AgendaGral.index') }}" class="btn btn-outline-secondary">Cancelar</a>
             </div>
           </form>
         </div>

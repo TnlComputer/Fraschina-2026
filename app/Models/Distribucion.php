@@ -54,7 +54,7 @@ class Distribucion extends Model
 
   public function auxCalles()
   {
-    return $this->belongsTo(AuxCalles::class, 'dire_calle_id', 'id');
+    return $this->belongsTo(AuxCalles::class, 'dire_calle_id', 'id')->withTrashed();
   }
 
   public function distribucionLineaPedidos()
@@ -69,52 +69,52 @@ class Distribucion extends Model
 
   public function auxcontacto()
   {
-    return $this->belongsTo(AuxContacto::class, 'contacto_id');
+    return $this->belongsTo(AuxContacto::class, 'contacto_id')->withTrashed();
   }
 
   public function auxveraz()
   {
-    return $this->belongsTo(AuxVeraz::class, 'veraz_id');
+    return $this->belongsTo(AuxVeraz::class, 'veraz_id')->withTrashed();
   }
 
   public function auxrubro()
   {
-    return $this->belongsTo(AuxRubros::class, 'rubro_id');
+    return $this->belongsTo(AuxRubros::class, 'rubro_id')->withTrashed();
   }
 
   public function auxestado()
   {
-    return $this->belongsTo(AuxEstados::class, 'estado_id');
+    return $this->belongsTo(AuxEstados::class, 'estado_id')->withTrashed();
   }
 
 
   public function auxtamanio()
   {
-    return $this->belongsTo(AuxTamanios::class, 'tamanio_id');
+    return $this->belongsTo(AuxTamanios::class, 'tamanio_id')->withTrashed();
   }
   public function auxmodo()
   {
-    return $this->belongsTo(AuxModos::class, 'modo_id');
+    return $this->belongsTo(AuxModos::class, 'modo_id')->withTrashed();
   }
 
   public function auxlocalidad()
   {
-    return $this->belongsTo(AuxLocalidades::class, 'localidad_id');
+    return $this->belongsTo(AuxLocalidades::class, 'localidad_id')->withTrashed();
   }
 
   public function auxmunicipio()
   {
-    return $this->belongsTo(AuxMunicipios::class, 'municipio_id');
+    return $this->belongsTo(AuxMunicipios::class, 'municipio_id')->withTrashed();
   }
 
   public function auxbarrio()
   {
-    return $this->belongsTo(AuxBarrios::class, 'barrio_id');
+    return $this->belongsTo(AuxBarrios::class, 'barrio_id')->withTrashed();
   }
 
   public function auxzona()
   {
-    return $this->belongsTo(AuxZonas::class, 'zona_id');
+    return $this->belongsTo(AuxZonas::class, 'zona_id')->withTrashed();
   }
 
 

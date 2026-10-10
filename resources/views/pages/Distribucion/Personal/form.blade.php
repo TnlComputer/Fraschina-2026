@@ -28,7 +28,7 @@
       @foreach ($distribuciones as $distribucion)
       <option value="{{ $distribucion->id }}" {{ old('distribucion_id', $personal->distribucion_id ?? '') ==
         $distribucion->id ? 'selected' : '' }}>
-        {{ implode(' - ', array_filter([$distribucion->nomfantasia, $distribucion->razonsocial])) }}
+        {{ unir($distribucion->nomfantasia, $distribucion->razonsocial) }}
       </option>
       @endforeach
     </select>

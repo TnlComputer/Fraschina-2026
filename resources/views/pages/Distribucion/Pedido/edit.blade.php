@@ -116,9 +116,11 @@
       </div>
 
       <!-- Los nuevos ítems se agregarán dinámicamente a la tabla -->
-      <button type="submit" class="btn btn-primary">Guardar Cambios</button>
-      <a href="{{ route('distribucion_reparto.index', ['fecha' => $pedido->fechaEntrega]) }}"
-        class="btn btn-secondary">Cancelar</a>
+      <div class="form-acciones mt-4 pt-3 border-top">
+        <button type="submit" class="btn btn-primary">Guardar cambios</button>
+        <a href="{{ route('distribucion_reparto.index', ['fecha' => $pedido->fechaEntrega]) }}"
+          class="btn btn-outline-secondary">Cancelar</a>
+      </div>
     </form>
   </div>
 </div>

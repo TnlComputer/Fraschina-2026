@@ -3,10 +3,27 @@
 namespace App\Http\Controllers;
 
 use App\Models\AuxCargos;
+use App\Http\Controllers\Concerns\CrudAuxiliar;
 use Illuminate\Http\Request;
 
 class CargoController extends Controller
 {
+  use CrudAuxiliar;
+
+  protected function auxiliar(): array
+  {
+    return [
+      'modelo' => AuxCargos::class,
+      'titulo' => 'Cargo',
+      'ruta' => 'cargos',
+      'campos' => [
+        'cargo' => ['label' => 'Cargo', 'requerido' => true, 'unico' => true],
+        'categoria_id' => ['label' => 'Categoría (número)', 'tipo' => 'number'],
+      ],
+      'usado_en' => ['agro_personal.cargo_id', 'distribucion_agenda.cargo_id', 'distribucion_personal.cargo_id', 'molino_personal.cargo_id', 'proveedor_personal.cargo_id', 'representacion_personal.cargo_id', 'transporte_personal.cargo_id'],
+    ];
+  }
+
   /**
    * Display a listing of the resource.
    */
@@ -29,51 +46,4 @@ class CargoController extends Controller
     return view('pages.Tools.Cargo.index', compact('cargos', 'name'));
   }
 
-  /**
-   * Show the form for creating a new resource.
-   */
-  public function create()
-  {
-    //
-  }
-
-  /**
-   * Store a newly created resource in storage.
-   */
-  public function store(Request $request)
-  {
-    //
-  }
-
-  /**
-   * Display the specified resource.
-   */
-  public function show(string $id)
-  {
-    //
-  }
-
-  /**
-   * Show the form for editing the specified resource.
-   */
-  public function edit(string $id)
-  {
-    //
-  }
-
-  /**
-   * Update the specified resource in storage.
-   */
-  public function update(Request $request, string $id)
-  {
-    //
-  }
-
-  /**
-   * Remove the specified resource from storage.
-   */
-  public function destroy(string $id)
-  {
-    //
-  }
 }

@@ -57,7 +57,7 @@
                         {{ $distribucion->dire_calle }} {{ $distribucion->dire_nro }}
                         @if($distribucion->piso) Piso {{ $distribucion->piso }} @endif
                         @if($distribucion->dpto) Dpto {{ $distribucion->dpto }} @endif
-                        @if($distribucion->codpost) - ({{ $distribucion->codpost }}) @endif
+                        @if($distribucion->codpost) ({{ $distribucion->codpost }}) @endif
                       </td>
                       <td>{{ $distribucion->barrio }}</td>
                       <td>{{ $distribucion->localidad }}</td>

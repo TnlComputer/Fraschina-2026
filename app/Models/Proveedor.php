@@ -15,22 +15,22 @@ class Proveedor extends Model
 
   public function barrio()
   {
-    return $this->belongsTo(AuxBarrios::class, 'barrio_id');
+    return $this->belongsTo(AuxBarrios::class, 'barrio_id')->withTrashed();
   }
 
   public function localidad()
   {
-    return $this->belongsTo(AuxLocalidades::class, 'localidad_id');
+    return $this->belongsTo(AuxLocalidades::class, 'localidad_id')->withTrashed();
   }
 
   public function municipio()
   {
-    return $this->belongsTo(AuxMunicipios::class, 'municipio_id');
+    return $this->belongsTo(AuxMunicipios::class, 'municipio_id')->withTrashed();
   }
 
   public function rubro()
   {
-    return $this->belongsTo(AuxRubros::class, 'rubro_id');
+    return $this->belongsTo(AuxRubros::class, 'rubro_id')->withTrashed();
   }
 
   public function personal()

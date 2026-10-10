@@ -86,9 +86,9 @@
             </div>
 
             <!-- Botones -->
-            <div class="d-flex justify-content-between">
-              <button type="submit" class="btn btn-success">Actualizar</button>
-              <a href="{{ route('AgendaGral.index') }}" class="btn btn-secondary">Cancelar</a>
+            <div class="form-acciones mt-3">
+              <button type="submit" class="btn btn-primary">Actualizar</button>
+              <a href="{{ route('AgendaGral.index') }}" class="btn btn-outline-secondary">Cancelar</a>
             </div>
           </form>
         </div>
