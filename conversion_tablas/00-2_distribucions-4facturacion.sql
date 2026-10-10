@@ -18,7 +18,8 @@ UPDATE fraschina_2024.distribucion_nropedidos p
             MAX(NULLIF(TRIM(impFac_Ped), '')) importe_factura,
             MAX(NULLIF(TRIM(chofer_Ped), '')) chofer,
             MAX(NULLIF(NULLIF(TRIM(orden_Ped), ''), '0')) orden,
-            MAX(NULLIF(TRIM(totalPedidoN), '')) total_pedido
+            MAX(NULLIF(TRIM(totalPedidoN), '')) total_pedido,
+            MAX(NULLIF(CAST(fecEntrega AS CHAR), '0000-00-00')) fecha_entrega
         FROM fraschin_backup.lineapedidos
         WHERE
             CAST(nroPed AS UNSIGNED) > 0
@@ -31,7 +32,10 @@ SET
     p.totalFactura = CAST(REPLACE(l.importe_factura, ',', '.') AS DECIMAL(12, 2)),
     p.chofer = LEFT(l.chofer, 2),
     p.orden = CAST(l.orden AS UNSIGNED),
-    p.total_sistema_anterior = CAST(REPLACE(l.total_pedido, ',', '.') AS DECIMAL(12, 2));
+    p.total_sistema_anterior = CAST(REPLACE(l.total_pedido, ',', '.') AS DECIMAL(12, 2)),
+    -- La fecha de entrega real es la de las líneas: el sistema anterior armaba el reparto con ella
+    -- y en muchos pedidos dejaba vacía (o sin actualizar) la del pedido.
+    p.fechaEntrega = IFNULL(l.fecha_entrega, p.fechaEntrega);
 
 -- Total de cada línea con IVA incluido
 UPDATE fraschina_2024.distribucion_linea_pedidos lp
@@ -58,6 +62,17 @@ UPDATE fraschina_2024.distribucion_nropedidos p
 SET
     p.totalPedido = IFNULL(l.suma, 0);
 
+-- Líneas "marcadoras" de tareas: en el sistema anterior un pedido de tareas tenía una línea de
+-- producto vacía con tareaEst_Ped = 1. No son productos: se ocultan (borrado lógico, quedan en la base).
+UPDATE fraschina_2024.distribucion_linea_pedidos lp
+    JOIN fraschin_backup.lineapedidos o ON o.id_linea = lp.id
+SET
+    lp.deleted_at = NOW()
+WHERE
+    o.tareaEst_Ped = 1
+    AND (lp.producto_id IS NULL OR lp.producto_id = 0)
+    AND lp.deleted_at IS NULL;
+
 -- Tipo de pedido según sus líneas: P (productos), T (tareas), PT (ambos).
 -- La conversión inicial dejaba 'D' y la impresión de Control filtra por P/PT.
 UPDATE fraschina_2024.distribucion_nropedidos p
@@ -67,9 +82,7 @@ SET
         AND EXISTS (SELECT 1 FROM fraschina_2024.distribucion_linea_tareas lt WHERE lt.pedido_id = p.id AND lt.deleted_at IS NULL) THEN 'PT'
         WHEN EXISTS (SELECT 1 FROM fraschina_2024.distribucion_linea_tareas lt WHERE lt.pedido_id = p.id AND lt.deleted_at IS NULL) THEN 'T'
         ELSE 'P'
-    END
-WHERE
-    p.tipo NOT IN ('P', 'T', 'PT');
+    END;
 
 -- Indicadores del cliente: el sistema usa 'SI' / 'NO'
 UPDATE fraschina_2024.distribucions

@@ -12,6 +12,28 @@ class DistribucionNroPedidos extends Model
 
   protected $guarded = [];
 
+  /**
+   * Pedidos con al menos un producto o una tarea. Los pedidos sin líneas (en el sistema anterior
+   * se les borraban todas) no van al reparto, aunque se conservan en la base.
+   */
+  public function scopeConLineas($query)
+  {
+    return $query->where(fn($q) => $q->whereHas('lineasPedidos')->orWhereHas('lineasTareas'));
+  }
+
+  /**
+   * Orden del reparto, igual que el sistema anterior: chofer, orden de entrega y número de pedido.
+   * Vale también para pedidos de solo tareas (el chofer y el orden son del pedido).
+   * Los pedidos todavía sin chofer u orden van primero, pendientes de asignar.
+   */
+  public function scopeOrdenReparto($query)
+  {
+    return $query
+      ->orderByRaw("COALESCE(chofer, '')")
+      ->orderByRaw('COALESCE(orden, 0)')
+      ->orderBy('id');
+  }
+
   // public function lineasPedidos()
   // {
   //   return $this->hasMany(DistribucionLineaPedidos::class, 'pedido_id');

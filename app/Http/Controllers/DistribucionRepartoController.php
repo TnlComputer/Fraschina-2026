@@ -27,10 +27,9 @@ class DistribucionRepartoController extends Controller
     $distribuciones = DistribucionNroPedidos::with(self::DIRECCION)
       ->where('status', 'A')
       ->whereDate('fechaEntrega', $fecha)
-      ->orderBy('orden', 'asc')
-      ->orderBy('fechaEntrega', 'desc')
-      ->orderBy('id', 'asc')
-      ->paginate(20);
+      ->conLineas()
+      ->ordenReparto()
+      ->get();
 
     return view('pages.Distribucion.Reparto.index', compact('distribuciones', 'fecha'));
   }
@@ -47,6 +46,7 @@ class DistribucionRepartoController extends Controller
     ]);
 
     $dias = DistribucionNroPedidos::where('status', 'A')
+      ->conLineas()
       ->whereDate('fechaEntrega', '>=', $request->desde)
       ->whereDate('fechaEntrega', '<=', $request->hasta)
       ->selectRaw('DATE(fechaEntrega) as dia, COUNT(*) as pedidos')
@@ -62,6 +62,7 @@ class DistribucionRepartoController extends Controller
       'distribucion',
       'lineasPedidos' => fn($query) => $query->orderBy('linea'),
       'lineasPedidos.producto',
+      'lineasTareas' => fn($query) => $query->orderBy('linea'),
       'lineasTareas.tarea',
     ])->find($id);
 
@@ -154,6 +155,7 @@ class DistribucionRepartoController extends Controller
     $distribuciones = DistribucionNroPedidos::with(array_merge(self::DIRECCION, [
       'lineasPedidos' => fn($query) => $query->orderBy('linea'),
       'lineasPedidos.producto',
+      'lineasTareas' => fn($query) => $query->orderBy('linea'),
       'lineasTareas.tarea',
       'distribucion.auxzona',
       'distribucion.auxcobro',
@@ -162,9 +164,8 @@ class DistribucionRepartoController extends Controller
     ]))
       ->where('status', 'A')
       ->whereDate('fechaEntrega', '=', $fecha)
-      ->orderBy('orden', 'asc')
-      ->orderBy('fechaEntrega', 'desc')
-      ->orderBy('id', 'asc')
+      ->conLineas()
+      ->ordenReparto()
       ->get();
 
     return $this->pdf(
@@ -182,9 +183,8 @@ class DistribucionRepartoController extends Controller
       ->where('status', 'A')
       ->whereIn('tipo', ['P', 'PT'])
       ->whereDate('fechaEntrega', '=', $fecha)
-      ->orderBy('orden', 'asc')
-      ->orderBy('fechaEntrega', 'desc')
-      ->orderBy('id', 'asc')
+      ->conLineas()
+      ->ordenReparto()
       ->get();
 
     return $this->pdf(

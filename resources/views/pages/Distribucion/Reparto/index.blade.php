@@ -241,7 +241,7 @@
 </div>
 <!-- Paginación -->
 <div class="d-flex justify-content-center">
-  {{ $distribuciones->appends(['fecha' => $fecha])->links() }}
+
 </div>
 
 </div>
