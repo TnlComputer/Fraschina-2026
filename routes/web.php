@@ -18,13 +18,19 @@ use App\Http\Controllers\DistribucionRepartoController;
 use App\Http\Controllers\DistribucionStockController;
 use App\Http\Controllers\EstadoController;
 use App\Http\Controllers\ExpedicionClienteController;
+use App\Http\Controllers\ExpedicionControlController;
 use App\Http\Controllers\ExpedicionController;
+use App\Http\Controllers\ExpedicionDiariaController;
 use App\Http\Controllers\ExpedicionGeneralController;
+use App\Http\Controllers\ExpedicionInformeController;
 use App\Http\Controllers\ExpedicionMolinoController;
 use App\Http\Controllers\ExpedicionMolinoTextoClienteController;
+use App\Http\Controllers\ExpedicionNotificacionController;
 use App\Http\Controllers\ExpedicionPedidoController;
+use App\Http\Controllers\ExpedicionPlanificacionController;
 use App\Http\Controllers\ExportarController;
 use App\Http\Controllers\FamiliaController;
+use App\Http\Controllers\FichasController;
 use App\Http\Controllers\HoraController;
 use App\Http\Controllers\LocalidadController;
 use App\Http\Controllers\ModoController;
@@ -172,15 +178,44 @@ Route::middleware(['auth', 'permission:permiso_6'])->group(function () {
     ->except(['create']);
 });
 
-// EXPEDICION (permiso_7)
+// EXPEDICION - Central de Pedidos (permiso_7)
 Route::middleware(['auth', 'permission:permiso_7'])->group(function () {
+  // Tablero
   Route::get('/expedicion', [ExpedicionController::class, 'index'])->name('expedicion.index');
+
+  // Pedidos
+  Route::get('/expedicion_pedido/condiciones', [ExpedicionPedidoController::class, 'condiciones'])->name('expedicion_pedido.condiciones');
+  Route::post('/expedicion_pedido/{pedido}/confirmar', [ExpedicionPedidoController::class, 'confirmar'])->name('expedicion_pedido.confirmar');
+  Route::post('/expedicion_pedido/{pedido}/estado', [ExpedicionPedidoController::class, 'estado'])->name('expedicion_pedido.estado');
+  Route::get('/expedicion_pedido/{pedido}/planilla', [ExpedicionPedidoController::class, 'planilla'])->name('expedicion_pedido.planilla');
+  Route::post('/expedicion_pedido/{pedido}/enviar', [ExpedicionPedidoController::class, 'enviar'])->name('expedicion_pedido.enviar');
+  Route::resource('/expedicion_pedido', ExpedicionPedidoController::class);
+
+  // Planificación semanal, control de entregas y Diaria
+  Route::get('/expedicion/planificacion', [ExpedicionPlanificacionController::class, 'index'])->name('expedicion_planificacion.index');
+  Route::get('/expedicion/control', [ExpedicionControlController::class, 'index'])->name('expedicion_control.index');
+  Route::put('/expedicion/control/{linea}', [ExpedicionControlController::class, 'update'])->name('expedicion_control.update');
+  Route::get('/expedicion/diaria', [ExpedicionDiariaController::class, 'index'])->name('expedicion_diaria.index');
+
+  // Informes
+  Route::get('/expedicion/informes/tolvas', [ExpedicionInformeController::class, 'tolvas'])->name('expedicion_informes.tolvas');
+  Route::get('/expedicion/informes/certificados', [ExpedicionInformeController::class, 'certificados'])->name('expedicion_informes.certificados');
+
+  // Avisos (destinatarios de mail/WhatsApp)
+  Route::get('/expedicion/avisos', [ExpedicionNotificacionController::class, 'index'])->name('expedicion_avisos.index');
+  Route::post('/expedicion/avisos', [ExpedicionNotificacionController::class, 'store'])->name('expedicion_avisos.store');
+  Route::patch('/expedicion/avisos/{destinatario}', [ExpedicionNotificacionController::class, 'update'])->name('expedicion_avisos.update');
+  Route::delete('/expedicion/avisos/{destinatario}', [ExpedicionNotificacionController::class, 'destroy'])->name('expedicion_avisos.destroy');
+
+  // Maestros y configuración
   Route::resource('/expedicion_cliente', ExpedicionClienteController::class);
   Route::resource('/expedicion_molino', ExpedicionMolinoController::class);
+  Route::resource('/expedicion_MTC', ExpedicionMolinoTextoClienteController::class);
+  Route::get('/expedicion/fichas', [FichasController::class, 'index'])->name('expedicion_fichas.index');
+
+  // Calidad (General)
   Route::get('/expedicion-general/export', [ExpedicionGeneralController::class, 'export'])->name('expedicion_general.export');
   Route::resource('/expedicion_general', ExpedicionGeneralController::class);
-  Route::resource('/expedicion_pedido', ExpedicionPedidoController::class);
-  Route::resource('/expedicion_MTC', ExpedicionMolinoTextoClienteController::class);
 });
 
 // AGENDA GENERAL (permiso_8)

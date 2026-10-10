@@ -379,27 +379,31 @@ return [
       'icon' => 'fas fa-fw fa-map-marked-alt',
       'can' => ['permiso_99', 'permiso_7'],
       'submenu' => [
+        ['text' => 'Tablero', 'url' => 'expedicion', 'icon' => 'fas fa-fw fa-tachometer-alt'],
+        ['text' => 'Pedidos', 'url' => 'expedicion_pedido', 'icon' => 'fas fa-fw fa-clipboard-list'],
+        ['text' => 'Planificación semanal', 'url' => 'expedicion/planificacion', 'icon' => 'far fa-fw fa-calendar-alt'],
+        ['text' => 'Control de entregas', 'url' => 'expedicion/control', 'icon' => 'fas fa-fw fa-truck'],
+        ['text' => 'Diaria', 'url' => 'expedicion/diaria', 'icon' => 'fas fa-fw fa-history'],
+        ['text' => 'Calidad (General)', 'url' => 'expedicion_general', 'icon' => 'fas fa-fw fa-flask'],
         [
-          'text' => 'Expedición Pedidos',
-          'url' => 'expedicion_pedido',
-          'icon' => 'fas fa-fw fa-map-marked-alt',
+          'text' => 'Informes',
+          'icon' => 'fas fa-fw fa-chart-bar',
+          'submenu' => [
+            ['text' => 'Tolvas y bolsas', 'url' => 'expedicion/informes/tolvas'],
+            ['text' => 'Certificados pendientes', 'url' => 'expedicion/informes/certificados'],
+          ],
         ],
         [
-          'text' => 'Expedición Molinos',
-          'url' => 'expedicion_molino',
-          'icon' => 'fas fa-fw fa-map-marked-alt',
+          'text' => 'Configuración',
+          'icon' => 'fas fa-fw fa-cogs',
+          'submenu' => [
+            ['text' => 'Clientes', 'url' => 'expedicion_cliente'],
+            ['text' => 'Molinos', 'url' => 'expedicion_molino'],
+            ['text' => 'Cliente-molino', 'url' => 'expedicion_MTC'],
+            ['text' => 'Avisos', 'url' => 'expedicion/avisos'],
+          ],
         ],
-        [
-          'text' => 'Expedición Clientes',
-          'url' => 'expedicion_cliente',
-          'icon' => 'fas fa-fw fa-map-marked-alt',
-        ],
-        [
-          'text' => 'Expedición General',
-          'url' => 'expedicion_general',
-          'icon' => 'fas fa-fw fa-map-marked-alt',
-        ],
-
+        ['text' => 'Fichas', 'url' => 'expedicion/fichas', 'icon' => 'fas fa-fw fa-folder-open'],
       ],
     ],
     [

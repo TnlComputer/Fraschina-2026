@@ -5,61 +5,24 @@ namespace App\Http\Controllers;
 use App\Models\Fichas;
 use Illuminate\Http\Request;
 
+/**
+ * Fichas: datos históricos importados de las planillas por cliente (cuenta corriente).
+ */
 class FichasController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
+  public function index(Request $request)
+  {
+    $clientes = Fichas::select('origen_tabla')->distinct()->orderBy('origen_tabla')->get();
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
+    $fichas = Fichas::query()
+      ->when($request->filled('origen_tabla'), fn($q) => $q->where('origen_tabla', $request->origen_tabla))
+      ->orderByDesc('id')
+      ->paginate(15)
+      ->withQueryString();
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+    // Dentro de la página, en orden cronológico
+    $fichas->setCollection($fichas->getCollection()->sortBy('id'));
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Fichas $fichas)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Fichas $fichas)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Fichas $fichas)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Fichas $fichas)
-    {
-        //
-    }
+    return view('pages.Expedicion.Fichas.index', compact('fichas', 'clientes'));
+  }
 }

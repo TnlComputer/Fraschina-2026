@@ -3,67 +3,84 @@
 namespace App\Http\Controllers;
 
 use App\Models\ExpedicionMolino;
+use App\Models\Molino;
 use Illuminate\Http\Request;
 
+/**
+ * Molinos de Expedición: sigla, vínculo con el molino, contacto y si la planilla muestra precio.
+ */
 class ExpedicionMolinoController extends Controller
 {
-  /**
-   * Display a listing of the resource.
-   */
   public function index(Request $request)
   {
-    $name = $request->name;
-    $expedicion_molinos = ExpedicionMolino::paginate(20);
-    // $expedicion_molinos = ExpedicionMolino::all();
-    //  dd($expedicion_molinos);
-    return view("pages.Expedicion.Molino.index", compact('expedicion_molinos', 'name'));
+    $name = trim((string) $request->get('name'));
+
+    $expedicion_molinos = ExpedicionMolino::with('molino:id,razonsocial')
+      ->when($name, fn($q) => $q->where(function ($q) use ($name) {
+        $q->where('sigla', 'like', "%{$name}%")
+          ->orWhereHas('molino', fn($m) => $m->where('razonsocial', 'like', "%{$name}%"));
+      }))
+      ->orderBy('sigla')
+      ->paginate(20)
+      ->withQueryString();
+
+    return view('pages.Expedicion.Molino.index', compact('expedicion_molinos', 'name'));
   }
 
-  /**
-   * Show the form for creating a new resource.
-   */
   public function create()
   {
-    //
+    return view('pages.Expedicion.Molino.form', ['molino' => new ExpedicionMolino(), 'molinos' => $this->molinos()]);
   }
 
-  /**
-   * Store a newly created resource in storage.
-   */
   public function store(Request $request)
   {
-    //
+    ExpedicionMolino::create($this->validar($request));
+
+    return redirect()->route('expedicion_molino.index')->with('success', 'Molino creado.');
   }
 
-  /**
-   * Display the specified resource.
-   */
-  public function show(ExpedicionMolino $expedicion_molinos)
+  public function show(string $id)
   {
-    //
+    return redirect()->route('expedicion_molino.edit', $id);
   }
 
-  /**
-   * Show the form for editing the specified resource.
-   */
-  public function edit(ExpedicionMolino $expedicion_molinos)
+  public function edit(ExpedicionMolino $expedicion_molino)
   {
-    //
+    return view('pages.Expedicion.Molino.form', ['molino' => $expedicion_molino, 'molinos' => $this->molinos()]);
   }
 
-  /**
-   * Update the specified resource in storage.
-   */
-  public function update(Request $request, ExpedicionMolino $expedicion_molinos)
+  public function update(Request $request, ExpedicionMolino $expedicion_molino)
   {
-    //
+    $expedicion_molino->update($this->validar($request));
+
+    return redirect()->route('expedicion_molino.index')->with('success', 'Molino actualizado.');
   }
 
-  /**
-   * Remove the specified resource from storage.
-   */
-  public function destroy(ExpedicionMolino $expedicion_molinos)
+  public function destroy(ExpedicionMolino $expedicion_molino)
   {
-    //
+    if ($expedicion_molino->pedidos()->exists()) {
+      return back()->with('error', 'El molino tiene pedidos: no se puede eliminar.');
+    }
+    $expedicion_molino->delete();
+
+    return redirect()->route('expedicion_molino.index')->with('success', 'Molino eliminado.');
+  }
+
+  private function molinos()
+  {
+    return Molino::where('status', 'A')->orderBy('razonsocial')->get(['id', 'razonsocial']);
+  }
+
+  private function validar(Request $request): array
+  {
+    $validated = $request->validate([
+      'sigla' => 'required|string|max:5',
+      'nroMolino_id' => 'nullable|exists:molinos,id',
+      'contMolino' => 'nullable|string|max:255',
+    ]);
+    // calificacion = 1: la planilla muestra el precio (criterio del sistema anterior)
+    $validated['calificacion'] = $request->boolean('calificacion') ? '1' : '0';
+
+    return $validated;
   }
 }

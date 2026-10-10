@@ -1,90 +1,41 @@
 @extends('adminlte::page')
 
+@section('title', 'Clientes de Expedición')
+
+@section('content_header')
+<div class="d-flex justify-content-between align-items-center">
+  <h1>Clientes de Expedición</h1>
+  <a href="{{ route('expedicion_cliente.create') }}" class="btn btn-primary"><i class="fas fa-plus"></i> Nuevo</a>
+</div>
+@endsection
+
 @section('content')
-<div class="container-fluid">
-  <div class="row">
-    <div class="col-12">
-      <div class="card-header">
-        <h3 class="card-title">{{ __('Expedición Cliente') }}</h3>
-      </div>
-      <div class="col-12">
-        <div class="py-2">
-          <div class="max-w-8xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-              <div class="p-2 text-gray-900 text-left text-sm">
+<div class="card">
+  <div class="card-body">
+    <form method="GET" class="form-inline mb-3">
+      <input type="text" name="name" value="{{ $name }}" placeholder="Buscar por sigla o razón social" class="form-control form-control-sm mr-2" style="min-width: 280px">
+      <button class="btn btn-sm btn-secondary">Buscar</button>
+    </form>
 
-                {{-- Selector de Cliente --}}
-                <form method="GET" action="{{ route('expedicion_cliente.index') }}" class="mb-3">
-                  @csrf
-                  <div class="d-flex align-items-center">
-                    <label for="cliente" class="m-2">Seleccionar Cliente </label>
-                    <select name="origen_tabla" id="cliente" class="form-control m-2" style="max-width: 300px;">
-                      <option value="">-- Seleccione un Cliente --</option>
-                      @foreach ($clientes as $cliente)
-                      <option value="{{ $cliente->origen_tabla }}" {{ request('origen_tabla')==$cliente->origen_tabla ?
-                        'selected' : '' }}>
-                        {{ $cliente->origen_tabla }}
-                      </option>
-                      @endforeach
-                    </select>
-                    <button type="submit" class="btn btn-primary">Filtrar</button>
-                  </div>
-                </form>
-
-                {{-- Solo mostrar la tabla si se ha seleccionado un cliente --}}
-                @if(request('origen_tabla'))
-                <table class="table table-sm table-striped table-bordered w-100">
-                  <tr>
-                    <th><strong>M</strong></th>
-                    <th><strong>PM</strong></th>
-                    <th><strong>*</strong></th>
-                    <th><strong>FE</strong></th>
-                    <th><strong>OR</strong></th>
-                    <th><strong>PL</strong></th>
-                    <th><strong>CA</strong></th>
-                    <th><strong>TB</strong></th>
-                    <th><strong>K</strong></th>
-                    <th><strong>P</strong></th>
-                    <th><strong>I</strong></th>
-                    <th><strong>D</strong></th>
-                    <th><strong>N</strong></th>
-                    <th><strong>FP</strong></th>
-                    <th><strong>PP</strong></th>
-                    <th><strong>O</strong></th>
-                    <th><strong>Ficha</strong></th>
-                  </tr>
-                  @foreach ($expedicion_clientes as $expedicion_cliente)
-                  <tr class="text-sm">
-                    <td align="right">{{ $expedicion_cliente->m }}</td>
-                    <td>{{ $expedicion_cliente->pn }}</td>
-                    <td>{{ $expedicion_cliente->es }}</td>
-                    <td>{{ \Carbon\Carbon::parse($expedicion_cliente->fe)->format('Ymd') }}</td>
-                    <td>{{ $expedicion_cliente->ord }}</td>
-                    <td>{{ $expedicion_cliente->pl }}</td>
-                    <td>{{ $expedicion_cliente->ca }}</td>
-                    <td>{{ $expedicion_cliente->tb }}</td>
-                    <td>{{ $expedicion_cliente->k }}</td>
-                    <td>{{ $expedicion_cliente->p }}</td>
-                    <td>{{ $expedicion_cliente->i }}</td>
-                    <td>{{ $expedicion_cliente->d }}</td>
-                    <td>{{ $expedicion_cliente->n }}</td>
-                    <td>{{ \Carbon\Carbon::parse($expedicion_cliente->fp)->format('Ymd') }}</td>
-                    <td>{{ $expedicion_cliente->pp }}</td>
-                    <td>{{ $expedicion_cliente->o }}</td>
-                    <td>{{ $expedicion_cliente->origen_tabla }}</td>
-                  </tr>
-                  @endforeach
-                </table>
-
-                {{ $expedicion_clientes->appends(request()->query())->links() }}
-                @endif
-
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <table class="table table-sm table-striped table-bordered">
+      <thead class="thead-light"><tr><th>Sigla</th><th>Cliente</th><th>Textos de la planilla</th><th></th></tr></thead>
+      <tbody>
+        @forelse ($clientes as $c)
+        <tr>
+          <td><strong>{{ $c->sigla }}</strong></td>
+          <td>{{ $c->representacion?->razonsocial ?? '—' }}</td>
+          <td class="small">{{ \Illuminate\Support\Str::limit(implode(' / ', $c->lineasTexto()), 120) }}</td>
+          <td class="text-nowrap">
+            <a href="{{ route('expedicion_cliente.edit', $c) }}" class="btn btn-xs btn-warning"><i class="fas fa-edit"></i></a>
+            <a href="{{ route('expedicion_MTC.index', ['cliente_id' => $c->id]) }}" class="btn btn-xs btn-outline-secondary" title="Configuración por molino">Molinos</a>
+          </td>
+        </tr>
+        @empty
+        <tr><td colspan="4" class="text-center text-muted">Sin clientes.</td></tr>
+        @endforelse
+      </tbody>
+    </table>
+    {{ $clientes->links() }}
   </div>
 </div>
 @endsection

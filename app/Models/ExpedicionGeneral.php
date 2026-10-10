@@ -16,4 +16,13 @@ class ExpedicionGeneral extends Model
   ];
 
   protected $guarded = [];
+
+  protected $casts = [
+    'revisado' => 'boolean',
+  ];
+
+  public function entrega()
+  {
+    return $this->belongsTo(ExpEntrega::class, 'entrega_id');
+  }
 }
