@@ -57,11 +57,11 @@
                 </tr>
                 <tr>
                   <th>Recibe x la mañana</th>
-                  <td>{{ $distribucion->desde }} {{ $distribucion->hasta }}</td>
+                  <td>{{ horario($distribucion->desde, $distribucion->hasta) }}</td>
                 </tr>
                 <tr>
                   <th>Recibe x la tarde</th>
-                  <td>{{ $distribucion->desde1 }} {{ $distribucion->hasta1 }}</td>
+                  <td>{{ horario($distribucion->desde1, $distribucion->hasta1) }}</td>
                 </tr>
                 <tr>
                   <th>Lunes Cerrado</th>
@@ -246,9 +246,9 @@
             @foreach($productos as $producto)
             <tr>
               <td>{{ $producto->nomproducto }}</td>
-              <td class=" text-right">{{ number_format($producto->precio, 2) }}</td>
-              <td class=" text-center">{{ \Carbon\Carbon::parse($producto->fecha)->format('d-m-Y') }}</td>
-              <td class=" text-center">{{ \Carbon\Carbon::parse($producto->fechaUEnt)->format('d-m-Y') }}</td>
+              <td class=" text-right">{{ numero($producto->precio, 2) }}</td>
+              <td class=" text-center">{{ fecha($producto->fecha) }}</td>
+              <td class=" text-center">{{ fecha($producto->fechaUEnt) }}</td>
               <td class="d-flex justify-content-center">
                 @can('permiso_12')
                 <a href="{{ route('distribucion_producto.edit', $producto->id) }}" class="btn-xs btn-warning mx-1"

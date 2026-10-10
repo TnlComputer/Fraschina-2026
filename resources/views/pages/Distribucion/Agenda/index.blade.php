@@ -110,8 +110,8 @@
         </div>
         <div class="modal-body">
           <strong>Razón Social:</strong> {{ $agenda->distribucion->razonsocial }} <br>
-          <strong>Fecha:</strong> {{ \Carbon\Carbon::parse($agenda->fecha)->format('d-m-Y') }} <br>
-          <strong>Hora:</strong> {{ \Carbon\Carbon::parse($agenda->hs)->format('H:i') }} <br>
+          <strong>Fecha:</strong> {{ fecha($agenda->fecha) }} <br>
+          <strong>Hora:</strong> {{ hora($agenda->hs) ?: '—' }} <br>
           <strong>Auto:</strong> {{ $agenda->distribucion->auto }} <br>
           <strong>Veráz:</strong> {{ $agenda->distribucion->auxveraz->estado ?? 'No disponible' }} <br>
           <strong>Estado:</strong> {{ $agenda->distribucion->auxestado->nomEstado ?? 'No disponible' }} <br>
@@ -128,10 +128,10 @@
           <span id="temas{{ $agenda->id }}">{{ $agenda->temas }}</span>
           <div id="full-temas{{ $agenda->id }}" style="display: none;">{{ $agenda->temas }}</div><br>
           <strong>Ult.Cotización /Venta:</strong> {{ $agenda->distribucion->telefono }} <br>
-          <strong>Fecha Ult.Cotización:</strong> {{ \Carbon\Carbon::parse($agenda->fecha)->format('d-m-Y') }} <br>
+          <strong>Fecha Ult.Cotización:</strong> {{ fecha($agenda->fecha) }} <br>
           <strong>Cotización:</strong> {{ $agenda->cotizacion }} <br>
           @php $ultimaEntrega = $agenda->distribucion->distribucionLineaPedidos->max('fechaEntrega'); @endphp
-          <strong>Fecha Ult.Entrega:</strong> {{ $ultimaEntrega ? \Carbon\Carbon::parse($ultimaEntrega)->format('d-m-Y') : '-' }} <br>
+          <strong>Fecha Ult.Entrega:</strong> {{ fecha($ultimaEntrega) }} <br>
           <strong>Información:</strong> {{ $agenda->distribucion->info }} <br>
 
           <hr class=" bg-green-600">
@@ -151,8 +151,7 @@
           <strong>Contacto Inicial</strong> {{ $agenda->distribucion->auxcontacto?->contacto }} <br>
 
           <hr class="bg-blue-900">
-          <strong>Horario Entrega Mañana:</strong> {{ $agenda->distribucion->desde }} - {{ $agenda->distribucion->hasta
-          }} <br>
+          <strong>Horario Entrega Mañana:</strong> {{ horario($agenda->distribucion->desde, $agenda->distribucion->hasta) }} <br>
           <strong>Horario Entrega Tarde :</strong> {{ $agenda->distribucion->desde1 }} - {{
           $agenda->distribucion->hasta1
           }}
@@ -185,8 +184,8 @@
               @foreach($agenda->distribucion->distribucionLineaPedidos as $pedido)
               <tr>
                 <td class=" text-center">{{ $pedido->pedido_id }}</td>
-                <td class=" text-center">{{ \Carbon\Carbon::parse($pedido->fecha)->format('d-m-Y') }}</td>
-                <td class=" text-center">{{ \Carbon\Carbon::parse($pedido->fechaEntrega )->format('d-m-Y') }}</td>
+                <td class=" text-center">{{ fecha($pedido->fecha) }}</td>
+                <td class=" text-center">{{ fecha($pedido->fechaEntrega) }}</td>
                 <td class=" text-center">{{ $pedido->cantidad }}</td>
                 <td>{{ $pedido->producto?->productoCDA ?? $pedido->producto_id }}</td>
                 <td class=" text-right">${{ $pedido->precio_unitario }}</td>

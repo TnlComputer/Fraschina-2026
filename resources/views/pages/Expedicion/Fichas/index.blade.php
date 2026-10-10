@@ -57,7 +57,7 @@
                     <td align="right">{{ $ficha->m }}</td>
                     <td>{{ $ficha->pn }}</td>
                     <td>{{ $ficha->es }}</td>
-                    <td>{{ \Carbon\Carbon::parse($ficha->fe)->format('Ymd') }}</td>
+                    <td>{{ fecha($ficha->fe) }}</td>
                     <td>{{ $ficha->ord }}</td>
                     <td>{{ $ficha->pl }}</td>
                     <td>{{ $ficha->ca }}</td>
@@ -67,7 +67,7 @@
                     <td>{{ $ficha->i }}</td>
                     <td>{{ $ficha->d }}</td>
                     <td>{{ $ficha->n }}</td>
-                    <td>{{ \Carbon\Carbon::parse($ficha->fp)->format('Ymd') }}</td>
+                    <td>{{ fecha($ficha->fp) }}</td>
                     <td>{{ $ficha->pp }}</td>
                     <td>{{ $ficha->o }}</td>
                     <td>{{ $ficha->origen_tabla }}</td>

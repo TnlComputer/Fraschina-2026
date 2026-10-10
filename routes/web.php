@@ -10,6 +10,7 @@ use App\Http\Controllers\BarrioController;
 use App\Http\Controllers\CalleController;
 use App\Http\Controllers\CargoController;
 use App\Http\Controllers\Contacto_inicialController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DistribucionAgendaController;
 use App\Http\Controllers\DistribucionController;
 use App\Http\Controllers\DistribucionPedidoController;
@@ -59,13 +60,10 @@ use App\Http\Controllers\VerazController;
 use App\Http\Controllers\ZonaController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-  return view('welcome');
-});
+// La raíz lleva al inicio (o al ingreso si no hay sesión)
+Route::get('/', fn() => redirect()->route(auth()->check() ? 'dashboard' : 'login'));
 
-Route::get('/dashboard', function () {
-  return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', DashboardController::class)->middleware(['auth', 'verified'])->name('dashboard');
 
 // PROFILE
 Route::middleware('auth')->group(function () {

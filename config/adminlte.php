@@ -18,7 +18,7 @@ return [
 
   'title' => 'Fraschina SRL',
   'title_prefix' => '',
-  'title_postfix' => '',
+  'title_postfix' => ' | Fraschina',
 
   /*
     |--------------------------------------------------------------------------
@@ -65,12 +65,12 @@ return [
     |
     */
 
-  'logo' => '<b>Frashina</b> srl',
+  'logo' => '<b>Fraschina</b> S.R.L.',
   'logo_img' => 'vendor/adminlte/dist/img/FraschinaLogo.png',
   'logo_img_class' => 'brand-image img-circle elevation-3',
   'logo_img_xl' => null,
   'logo_img_xl_class' => 'brand-image-xs',
-  'logo_img_alt' => 'Frashina Logo',
+  'logo_img_alt' => 'Fraschina',
 
   /*
     |--------------------------------------------------------------------------
@@ -319,7 +319,7 @@ return [
 
     ],
     [
-      'text' => 'Distribuciónes',
+      'text' => 'Distribuciones',
       'icon' => 'fas fa-fw fa-truck',
       'can' => ['permiso_99', 'permiso_2'],
       'submenu' => [
@@ -614,6 +614,17 @@ return [
     */
 
   'plugins' => [
+    // Estilos propios de la app (public/css/fraschina.css), en todas las páginas
+    'Fraschina' => [
+      'active' => true,
+      'files' => [
+        [
+          'type' => 'css',
+          'asset' => true,
+          'location' => 'css/fraschina.css?v=20261010b',
+        ],
+      ],
+    ],
     'Datatables' => [
       'active' => false,
       'files' => [

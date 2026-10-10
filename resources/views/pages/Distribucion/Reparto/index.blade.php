@@ -73,7 +73,7 @@
   @endforeach
 
   <!-- Tabla de distribuciones -->
-  <table class="table table-sm text-xs table-bordered w-100">
+  <table class="table table-sm text-xs table-bordered table-hover table-sticky w-100 reparto-tabla">
     <thead>
       <tr>
         <th class="text-center">Reparto</th>
@@ -94,7 +94,7 @@
       @foreach ($distribuciones as $distribucion)
       {{-- @if ($distribucion->tipo == 'P' || $distribucion->tipo == 'PT') --}}
 <tr>
-          <td class=" text-center">{{ $distribucion->fechaEntrega }}</td>
+          <td class=" text-center">{{ fecha($distribucion->fechaEntrega) }}</td>
           @if ($distribucion->tipo != 'T')
           <td>
             <a href="{{ route('distribucion_reparto.imprimirRecibo', ['id' => $distribucion->id]) }}"
@@ -150,17 +150,17 @@
 
             @if ($dif > 0.01)
             <input type="number" name="totalFactura" form="distribucion-form-{{ $distribucion->id }}" value="{{ $distribucion->totalFactura }}"
-              title="$ {{ number_format($distribucion->totalFactura - $distribucion->totalPedido, 2) }}"
+              title="$ {{ numero($distribucion->totalFactura - $distribucion->totalPedido, 2) }}"
               class="text-center text-xs bg-red factura-importe" data-label="Importe Factura" step="0.01"
               style="width: 90px;" />
             @else
             <input type="number" name="totalFactura" form="distribucion-form-{{ $distribucion->id }}" value="{{ $distribucion->totalFactura }}"
-              title="$ {{ number_format($distribucion->totalFactura - $distribucion->totalPedido, 2) }}"
+              title="$ {{ numero($distribucion->totalFactura - $distribucion->totalPedido, 2) }}"
               class="text-center text-xs factura-importe" data-label="Importe de Factura" step="0.01"
               style="width: 90px;" />
             @endif
           </td>
-          <td class="{{ \App\Models\Distribucion::esSi($distribucion->distribucion->fac_imp) ? 'bg-yellow-300' : '' }}">
+          <td class="text-center {{ \App\Models\Distribucion::esSi($distribucion->distribucion->fac_imp) ? 'reparto-imprimir' : '' }}">
             @if (\App\Models\Distribucion::esSi($distribucion->distribucion->fac_imp))
             <i class="fas fa-print text-success" title="Factura Impresa"></i>
             @else
@@ -236,6 +236,13 @@
 
       
     </tbody>
+    <tfoot>
+      <tr class="font-weight-bold">
+        <td colspan="7" class="text-right">{{ $distribuciones->count() }} pedidos · Total pedidos {{ pesos($distribuciones->sum('totalPedido')) }}</td>
+        <td class="text-center">{{ pesos($distribuciones->sum('totalFactura')) }}</td>
+        <td colspan="7" class="text-muted font-weight-normal">Facturado del día. Los pedidos sin chofer van primero.</td>
+      </tr>
+    </tfoot>
   </table>
 
 </div>

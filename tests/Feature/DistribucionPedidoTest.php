@@ -121,7 +121,7 @@ class DistribucionPedidoTest extends TestCase
         $pedido = $this->crearPedido();
 
         $this->actingAs($this->user)->get('/distribucion_reparto?fecha=2026-10-15')->assertOk()->assertSee('La Test');
-        $this->actingAs($this->user)->get("/distribucion_reparto/{$pedido->id}")->assertOk()->assertSee('1,105.00');
+        $this->actingAs($this->user)->get("/distribucion_reparto/{$pedido->id}")->assertOk()->assertSee('1.105,00');
         $this->actingAs($this->user)->get('/distribucion/reparto/imprimir?fecha=2026-10-15')
             ->assertOk()->assertHeader('Content-Type', 'application/pdf');
         $this->actingAs($this->user)->get('/distribucion/reparto/imprimir?fecha=15-10-2026')->assertSessionHasErrors('fecha');

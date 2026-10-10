@@ -102,7 +102,7 @@
 
 <body>
   <div class="title">
-    CONTROL RECAUDACIÓN : {{ \Carbon\Carbon::parse($fecha)->format('d-m-Y') }}
+    CONTROL RECAUDACIÓN : {{ fecha($fecha) }}
     {{-- <span style="float: right;">Página 1/1</span> --}}
   </div>
   <table style="width: 378px; margin-left: 325px;">
@@ -133,7 +133,7 @@
         <td class="t-izquierda">{{ $distribucion->distribucion->nomfantasia }}</td>
         <td class="t-izquierda">{{ $distribucion->distribucion->razonsocial }} </td>
         <td">{{ $distribucion->distribucion->auxpago->nombre ?? '' }}</td>
-          <td class="text-rigth">${{ number_format($distribucion->totalFactura, 2) }}</td>
+          <td class="text-rigth">${{ numero($distribucion->totalFactura, 2) }}</td>
           <td>{{ $distribucion->nroFactura }}</td>
           <td>{{ $distribucion->id }}</td>
           <td></td>

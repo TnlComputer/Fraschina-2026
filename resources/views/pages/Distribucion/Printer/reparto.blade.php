@@ -71,7 +71,7 @@
   @endphp
 
   <div class="header">
-    <h1>Planilla de Reparto - Fecha de entrega: <strong>{{ \Carbon\Carbon::parse($fecha)->format('d-m-Y') }}</strong>
+    <h1>Planilla de Reparto - Fecha de entrega: <strong>{{ fecha($fecha) }}</strong>
     </h1>
   </div>
 
@@ -138,7 +138,7 @@
       @endif
       <td class="text-center">{{ \App\Models\Distribucion::esSi($distribucion->distribucion->sabado) ? 'Sí' : 'No' }}</td>
       <td class="text-center">{{ \App\Models\Distribucion::esSi($distribucion->distribucion->lunes) ? 'Sí' : 'No' }}</td>
-      <td class="text-rigth">${{ number_format($distribucion->totalFactura, 2) }}</td>
+      <td class="text-rigth">${{ numero($distribucion->totalFactura, 2) }}</td>
   </table>
   <table class="table" style="padding-left:70px;">
     @if ($distribucion->tipo == 'P' || $distribucion->tipo == 'PT')
@@ -172,7 +172,7 @@
       <tr>
         <td>{{ $linea->producto->productoCDA }}</td>
         <td class="text-center">{{ $linea->cantidad }}</td>
-        <td class="text-right">$ {{ number_format($linea->precio_unitario, 2) }}</td>
+        <td class="text-right">$ {{ numero($linea->precio_unitario, 2) }}</td>
       </tr>
       @php
       $totalPorChofer[$distribucion->chofer] = ($totalPorChofer[$distribucion->chofer] ?? 0) + $linea->cantidad;

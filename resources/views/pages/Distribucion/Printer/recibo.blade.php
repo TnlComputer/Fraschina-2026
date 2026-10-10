@@ -225,7 +225,7 @@
         </thead>
         <tbody>
           <tr>
-            <td>{{ \Carbon\Carbon::parse($pedido->fechaFactura)->format('d-m-Y') }}</td>
+            <td>{{ fecha($pedido->fechaFactura) }}</td>
             <td>{{ $pedido->nroFactura }}</td>
             <td>{{ number_format($pedido->totalFactura, 2, ',', '.') }}</td>
           </tr>
@@ -401,7 +401,7 @@
         </thead>
         <tbody>
           <tr>
-            <td>{{ \Carbon\Carbon::parse($pedido->fechaFactura)->format('d-m-Y') }}</td>
+            <td>{{ fecha($pedido->fechaFactura) }}</td>
             <td>{{ $pedido->nroFactura }}</td>
             <td>{{ number_format($pedido->totalFactura, 2, ',', '.') }}</td>
           </tr>

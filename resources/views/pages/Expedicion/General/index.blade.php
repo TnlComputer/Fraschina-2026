@@ -19,7 +19,7 @@
   <div class="row">
     <div class="col-12">
       <div class="card-header">
-        <h3 class="card-title">{{ __('Expedicion General') }}</h3>
+        <h3 class="card-title">Calidad (General)</h3>
       </div>
       {{-- <div class="py-2"> --}}
         <form action="{{ route('expedicion_general.index') }}" method="GET">
@@ -118,7 +118,7 @@
                   @forelse($expedicion_general as $expedicion_gral)
                   <tr class="text-sm text-center w-full">
                     <td></td>
-                    <td>{{ \Carbon\Carbon::parse($expedicion_gral->fecha)->format('Ymd') }}</td>
+                    <td>{{ fecha($expedicion_gral->fecha) }}</td>
                     <td>{{ $expedicion_gral->mo }}</td>
                     <td>{{ $expedicion_gral->cl }}</td>
                     <td>{{ $expedicion_gral->modo }}</td>
@@ -171,7 +171,7 @@
                   @forelse($expedicion_general as $expedicion_gral)
                   <tr class="text-sm text-center w-full">
                     <td>U</td>
-                    <td>{{ \Carbon\Carbon::parse($expedicion_gral->fecha)->format('Ymd') }}</td>
+                    <td>{{ fecha($expedicion_gral->fecha) }}</td>
                     <td>{{ $expedicion_gral->mo }}</td>
                     <td>{{ $expedicion_gral->cl }}</td>
                     <td>{{ $expedicion_gral->modo }}</td>

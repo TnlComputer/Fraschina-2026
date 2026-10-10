@@ -59,7 +59,7 @@
               <input type="number" name="existing_cantidades[]" value="{{ $linea->cantidad }}" class="form-control"
                 required>
             </td>
-            <td class="linea-total">${{ number_format($linea->totalLinea,2) }}</td>
+            <td class="linea-total">{{ pesos($linea->totalLinea) }}</td>
             <td>
               <button type="button" class="btn btn-danger remove-row">X</button>
             </td>
@@ -201,7 +201,7 @@
         <td>
           <input type="number" name="new_cantidades[]" value="${cantidad}" class="form-control" required>
         </td>
-        <td class="linea-total">$${total.toFixed(2)}</td>
+        <td class="linea-total">${pesos(total)}</td>
         <td><button type="button" class="btn btn-danger remove-row">X</button></td>
       `;
     } else if (tipo === 'T') {
@@ -232,6 +232,11 @@ function ivaDe(ivacda) {
   return parseFloat(String(ivacda ?? '').replace(',', '.')) === 10.5 ? 10.5 : 21;
 }
 
+// Importe con formato argentino, igual que pesos() en el servidor: $ 1.234,56
+function pesos(n) {
+  return '$ ' + (Number(n) || 0).toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
 function calcularTotalLinea(precio, cantidad, iva) {
   return Math.round((parseFloat(precio) || 0) * (parseFloat(cantidad) || 0) * (1 + iva / 100) * 100) / 100;
 }
@@ -248,7 +253,7 @@ if (!precioInput || !cantidadInput || !totalCell) return;
 let iva = parseFloat(row.dataset.iva) || 21;
 let total = calcularTotalLinea(precioInput.value, cantidadInput.value, iva);
 
-totalCell.textContent = `$${total.toFixed(2)}`;
+totalCell.textContent = pesos(total);
 }
 
 // Escuchar cambios en los inputs de precios y cantidades
