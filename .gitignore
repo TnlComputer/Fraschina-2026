@@ -27,3 +27,7 @@ yarn-error.log
 
 # Seeder con usuarios reales (usar database/seeders/UsersTableSeeder.php.example)
 /database/seeders/UsersTableSeeder.php
+
+# Planillas con datos de la empresa (el repo es publico)
+*.xlsx
+*.xls

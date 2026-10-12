@@ -12,7 +12,7 @@ class FichasController extends Controller
 {
   public function index(Request $request)
   {
-    $clientes = Fichas::select('origen_tabla')->distinct()->orderBy('origen_tabla')->get();
+    $clientes = Fichas::select('origen_tabla')->distinct()->orderByRaw('CAST(origen_tabla AS UNSIGNED), origen_tabla')->get();
 
     $fichas = Fichas::query()
       ->when($request->filled('origen_tabla'), fn($q) => $q->where('origen_tabla', $request->origen_tabla))
