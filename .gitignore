@@ -31,3 +31,6 @@ yarn-error.log
 # Planillas con datos de la empresa (el repo es publico)
 *.xlsx
 *.xls
+*.rar
+*.zip
+*.7z

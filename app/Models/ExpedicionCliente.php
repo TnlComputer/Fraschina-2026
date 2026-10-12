@@ -29,7 +29,8 @@ class ExpedicionCliente extends Model
    */
   public function getNombreAttribute(): string
   {
-    $razon = $this->representacion?->razonsocial;
+    // razón social si está vinculado a una representación; si no, el nombre de las planillas
+    $razon = $this->representacion?->razonsocial ?? $this->nombre_planilla;
     return unir($this->sigla, $razon);
   }
 

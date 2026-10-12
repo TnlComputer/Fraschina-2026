@@ -23,6 +23,10 @@ class FichasController extends Controller
     // Dentro de la página, en orden cronológico
     $fichas->setCollection($fichas->getCollection()->sortBy('id'));
 
-    return view('pages.Expedicion.Fichas.index', compact('fichas', 'clientes'));
+    // Números reales de las planillas: ficha = número de cliente, M = código de molino
+    $nombresCliente = \App\Models\ExpedicionCliente::whereNotNull('numero')->pluck('nombre_planilla', 'numero');
+    $siglasMolino = \App\Models\ExpedicionMolino::whereNotNull('codigo')->pluck('sigla', 'codigo');
+
+    return view('pages.Expedicion.Fichas.index', compact('fichas', 'clientes', 'nombresCliente', 'siglasMolino'));
   }
 }

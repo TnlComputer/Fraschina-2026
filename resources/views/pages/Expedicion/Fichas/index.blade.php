@@ -18,11 +18,11 @@
                   <div class="d-flex align-items-center">
                     <label for="cliente" class="m-2">Seleccionar Cliente </label>
                     <select name="origen_tabla" id="cliente" class="form-control m-2" style="max-width: 300px;">
-                      <option value="">-- Seleccione un Cliente --</option>
+                      <option value="">-- Todas las fichas --</option>
                       @foreach ($clientes as $cliente)
                       <option value="{{ $cliente->origen_tabla }}" {{ request('origen_tabla')==$cliente->origen_tabla ?
                         'selected' : '' }}>
-                        {{ $cliente->origen_tabla }}
+                        {{ unir($cliente->origen_tabla, $nombresCliente[$cliente->origen_tabla] ?? null) }}
                       </option>
                       @endforeach
                     </select>
@@ -61,7 +61,7 @@
                   $otras = collect($orig)->filter(fn($v, $k) => str_starts_with($k, 'col_'))->implode(' · ');
                   @endphp
                   <tr class="text-sm">
-                    <td align="right">{!! $ver($ficha->m, 'M') !!}</td>
+                    <td align="right" class="text-nowrap">{!! $ver($ficha->m, 'M') !!}@if (isset($siglasMolino[$ficha->m])) <small class="text-muted">{{ $siglasMolino[$ficha->m] }}</small>@endif</td>
                     <td>{!! $ver($ficha->pn, 'PN') !!}</td>
                     <td>{{ $ficha->es }}</td>
                     <td class="text-nowrap">{!! $ver($ficha->fe ? fecha($ficha->fe) : null, 'FE') !!}</td>
@@ -77,7 +77,7 @@
                     <td class="text-nowrap">{!! $ver($ficha->fp ? fecha($ficha->fp) : null, 'FP') !!}</td>
                     <td>{!! $ver($ficha->pp, 'PP') !!}</td>
                     <td>{{ $ficha->o }}@if ($otras)<div class="text-muted small">{{ $otras }}</div>@endif</td>
-                    <td>{{ $ficha->origen_tabla }}</td>
+                    <td class="text-nowrap">{{ unir($ficha->origen_tabla, $nombresCliente[$ficha->origen_tabla] ?? null) }}</td>
                   </tr>
                   @endforeach
                 </table>

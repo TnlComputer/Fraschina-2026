@@ -70,7 +70,11 @@ class ImportarFichasTest extends TestCase
     $user = User::factory()->create();
     $user->givePermissionTo('permiso_7');
 
+    \App\Models\ExpedicionCliente::create(['numero' => 6, 'sigla' => 'GTOR', 'nombre_planilla' => 'G Tor']);
+    \App\Models\ExpedicionMolino::create(['codigo' => 1007, 'sigla' => 'MOLIN']);
+
     $this->actingAs($user)->get('/expedicion/fichas?origen_tabla=6')->assertOk()
-      ->assertSee('20202126')->assertSee('MALSU S.A.')->assertSee('576.576,00');
+      ->assertSee('20202126')->assertSee('MALSU S.A.')->assertSee('576.576,00')
+      ->assertSee('6 - G Tor')->assertSee('MOLIN');  // número real de la planilla con su nombre
   }
 }
