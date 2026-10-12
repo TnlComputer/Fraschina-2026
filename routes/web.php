@@ -35,6 +35,8 @@ use App\Http\Controllers\ExpedicionPlanificacionController;
 use App\Http\Controllers\ExportarController;
 use App\Http\Controllers\FamiliaController;
 use App\Http\Controllers\FichasController;
+use App\Http\Controllers\ExpedicionHistorialController;
+use App\Http\Controllers\MigracionDudaController;
 use App\Http\Controllers\HoraController;
 use App\Http\Controllers\LocalidadController;
 use App\Http\Controllers\ModoController;
@@ -204,6 +206,10 @@ Route::middleware(['auth', 'permission:permiso_7', 'accion'])->group(function ()
   Route::get('/expedicion/control', [ExpedicionControlController::class, 'index'])->name('expedicion_control.index');
   Route::put('/expedicion/control/{linea}', [ExpedicionControlController::class, 'update'])->name('expedicion_control.update');
   Route::get('/expedicion/diaria', [ExpedicionDiariaController::class, 'index'])->name('expedicion_diaria.index');
+  // Historial importado de las planillas (Diaria y Ctrol) y dudas de la migración para consultar con el cliente
+  Route::get('/expedicion/historial', [ExpedicionHistorialController::class, 'index'])->name('expedicion_historial.index');
+  Route::get('/expedicion/dudas', [MigracionDudaController::class, 'index'])->name('expedicion_dudas.index');
+  Route::put('/expedicion/dudas/{duda}', [MigracionDudaController::class, 'update'])->name('expedicion_dudas.update');
 
   // Informes
   Route::get('/expedicion/informes/tolvas', [ExpedicionInformeController::class, 'tolvas'])->name('expedicion_informes.tolvas');

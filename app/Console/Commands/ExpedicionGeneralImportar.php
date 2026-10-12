@@ -39,7 +39,7 @@ class ExpedicionGeneralImportar extends Command
     // Lo que ya hay, como multiconjunto de claves
     $existentes = [];
     foreach (DB::table('expedicion_general')->get() as $r) {
-      $k = $this->clave((array) $r);
+      $k = self::clave((array) $r);
       $existentes[$k] = ($existentes[$k] ?? 0) + 1;
     }
 
@@ -54,9 +54,9 @@ class ExpedicionGeneralImportar extends Command
       $leidos++;
       $r = ['fecha' => $fecha];
       foreach (self::COLUMNAS as $campo) {
-        $r[$campo] = $this->valor($campo, $d[$campo] ?? null);
+        $r[$campo] = self::valor($campo, $d[$campo] ?? null);
       }
-      $k = $this->clave($r);
+      $k = self::clave($r);
       if (($existentes[$k] ?? 0) > 0) {
         $existentes[$k]--;
         $coinciden++;
@@ -90,7 +90,7 @@ class ExpedicionGeneralImportar extends Command
 
 
 
-  private function valor(string $campo, mixed $v): mixed
+  public static function valor(string $campo, mixed $v): mixed
   {
     if (is_string($v)) {
       $v = trim($v);
@@ -108,7 +108,7 @@ class ExpedicionGeneralImportar extends Command
   }
 
   /** Clave para comparar un registro del Excel con uno de la base. */
-  private function clave(array $r): string
+  public static function clave(array $r): string
   {
     $partes = [substr((string) $r['fecha'], 0, 10)];
     foreach (['mo', 'cl', 'prod', 'p', 'l', 'w', 'gh', 'hum', 'cz', 'fn'] as $c) {

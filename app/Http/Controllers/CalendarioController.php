@@ -32,6 +32,10 @@ class CalendarioController extends Controller
         ->whereDate('fecha_entrega', '>=', $d)->whereDate('fecha_entrega', '<=', $h), 'fecha_entrega')],
       'exp_diaria' => ['permiso_7', fn($d, $h) => $porDia(ExpPedidoMovimiento::query()
         ->whereDate('created_at', '>=', $d)->whereDate('created_at', '<=', $h), 'created_at')],
+      'hist_diaria' => ['permiso_7', fn($d, $h) => $porDia(DB::table('exp_historial_diaria')
+        ->whereDate('fecha', '>=', $d)->whereDate('fecha', '<=', $h), 'fecha')],
+      'hist_control' => ['permiso_7', fn($d, $h) => $porDia(DB::table('exp_historial_control')
+        ->whereDate('fecha', '>=', $d)->whereDate('fecha', '<=', $h), 'fecha')],
       'auditoria' => ['permiso_99', fn($d, $h) => $porDia(DB::table('auditoria')
         ->where('created_at', '>=', "$d 00:00:00")->where('created_at', '<=', "$h 23:59:59"), 'created_at')],
     ];

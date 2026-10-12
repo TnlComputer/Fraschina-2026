@@ -384,7 +384,9 @@ return [
         ['text' => 'Planificación semanal', 'url' => 'expedicion/planificacion', 'icon' => 'far fa-fw fa-calendar-alt'],
         ['text' => 'Control de entregas', 'url' => 'expedicion/control', 'icon' => 'fas fa-fw fa-truck'],
         ['text' => 'Diaria', 'url' => 'expedicion/diaria', 'icon' => 'fas fa-fw fa-history'],
+        ['text' => 'Historial (planillas)', 'url' => 'expedicion/historial', 'icon' => 'fas fa-fw fa-archive'],
         ['text' => 'Calidad (General)', 'url' => 'expedicion_general', 'icon' => 'fas fa-fw fa-flask'],
+        ['text' => 'Dudas de migración', 'url' => 'expedicion/dudas', 'icon' => 'fas fa-fw fa-question-circle'],
         [
           'text' => 'Informes',
           'icon' => 'fas fa-fw fa-chart-bar',
