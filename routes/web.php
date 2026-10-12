@@ -10,6 +10,7 @@ use App\Http\Controllers\BarrioController;
 use App\Http\Controllers\CalleController;
 use App\Http\Controllers\CargoController;
 use App\Http\Controllers\Contacto_inicialController;
+use App\Http\Controllers\CalendarioController;
 use App\Http\Controllers\ConfiguracionController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DistribucionAgendaController;
@@ -65,6 +66,9 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', fn() => redirect()->route(auth()->check() ? 'dashboard' : 'login'));
 
 Route::get('/dashboard', DashboardController::class)->middleware(['auth', 'verified'])->name('dashboard');
+
+// Días con datos para marcar en los calendarios de filtro (cada fuente controla su permiso)
+Route::get('/calendario/dias', [CalendarioController::class, 'dias'])->middleware('auth')->name('calendario.dias');
 
 // PROFILE
 Route::middleware('auth')->group(function () {

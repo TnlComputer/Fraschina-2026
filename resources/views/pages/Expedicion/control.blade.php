@@ -7,7 +7,7 @@
   <h1>Control de entregas</h1>
   <form method="GET" class="form-inline">
     <a href="{{ route('expedicion_control.index', ['fecha' => $fecha->copy()->subDay()->toDateString()]) }}" class="btn btn-sm btn-outline-secondary mr-1">&laquo;</a>
-    <input type="date" name="fecha" value="{{ $fecha->toDateString() }}" class="form-control form-control-sm mr-1">
+    <input type="date" name="fecha" data-dias="exp_entregas" data-dias-enviar value="{{ $fecha->toDateString() }}" class="form-control form-control-sm mr-1">
     <button class="btn btn-sm btn-secondary mr-1">Ver</button>
     <a href="{{ route('expedicion_control.index', ['fecha' => $fecha->copy()->addDay()->toDateString()]) }}" class="btn btn-sm btn-outline-secondary">&raquo;</a>
   </form>
@@ -70,3 +70,5 @@
 </div>
 @endforeach
 @endsection
+
+@include('partials.calendario-dias')

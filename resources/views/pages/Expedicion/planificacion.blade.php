@@ -7,7 +7,7 @@
   <h1>Planificación semanal</h1>
   <form method="GET" class="form-inline">
     <a href="{{ route('expedicion_planificacion.index', ['semana' => $inicio->copy()->subWeek()->toDateString(), 'molino_id' => request('molino_id')]) }}" class="btn btn-sm btn-outline-secondary mr-1">&laquo; Anterior</a>
-    <input type="date" name="semana" value="{{ $inicio->toDateString() }}" class="form-control form-control-sm mr-1">
+    <input type="date" name="semana" data-dias="exp_entregas" data-dias-enviar value="{{ $inicio->toDateString() }}" class="form-control form-control-sm mr-1">
     <select name="molino_id" class="form-control form-control-sm mr-1">
       <option value="">Todos los molinos</option>
       @foreach ($molinos as $m)
@@ -77,3 +77,5 @@
 </div>
 @endif
 @endsection
+
+@include('partials.calendario-dias')

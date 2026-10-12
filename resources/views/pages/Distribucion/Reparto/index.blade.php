@@ -323,6 +323,7 @@
     altFormat: 'd/m/Y',
     altInputClass: fechaInput.className,
     allowInput: true,
+    disableMobile: true,  // en el celular también: el calendario nativo no marca los días con pedidos
     onReady: (sel, str, fp) => cargarMes(fp),
     onMonthChange: (sel, str, fp) => cargarMes(fp),
     onYearChange: (sel, str, fp) => cargarMes(fp),

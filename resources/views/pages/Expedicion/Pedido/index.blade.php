@@ -46,11 +46,11 @@
       </div>
       <div class="col-md-1">
         <label class="small mb-0">Desde</label>
-        <input type="date" name="desde" value="{{ request('desde') }}" class="form-control form-control-sm">
+        <input type="date" name="desde" data-dias="exp_pedidos" value="{{ request('desde') }}" class="form-control form-control-sm">
       </div>
       <div class="col-md-1">
         <label class="small mb-0">Hasta</label>
-        <input type="date" name="hasta" value="{{ request('hasta') }}" class="form-control form-control-sm">
+        <input type="date" name="hasta" data-dias="exp_pedidos" value="{{ request('hasta') }}" class="form-control form-control-sm">
       </div>
       <div class="col-md-1">
         <div class="form-check">
@@ -109,3 +109,5 @@
   </div>
 </div>
 @endsection
+
+@include('partials.calendario-dias')

@@ -12,11 +12,11 @@
     <form method="GET" class="form-row align-items-end mb-3">
       <div class="col-md-2">
         <label class="small mb-0">Desde</label>
-        <input type="date" name="desde" value="{{ request('desde') }}" class="form-control form-control-sm">
+        <input type="date" name="desde" data-dias="exp_diaria" value="{{ request('desde') }}" class="form-control form-control-sm">
       </div>
       <div class="col-md-2">
         <label class="small mb-0">Hasta</label>
-        <input type="date" name="hasta" value="{{ request('hasta') }}" class="form-control form-control-sm">
+        <input type="date" name="hasta" data-dias="exp_diaria" value="{{ request('hasta') }}" class="form-control form-control-sm">
       </div>
       <div class="col-md-2">
         <label class="small mb-0">N° de pedido</label>
@@ -64,3 +64,5 @@
   </div>
 </div>
 @endsection
+
+@include('partials.calendario-dias')

@@ -21,8 +21,8 @@
 
   <div class="div__buscar">
     <form method="GET" action="{{ route('distribucion_agenda.index') }}" class="form__buscar d-flex">
-      <input type="date" name="dia" class="form-control mr-1" style="max-width: 170px"
-        value="{{ in_array($filtro, ['hoy', 'manana']) ? '' : $filtro }}" title="Ver un día" onchange="this.form.submit()">
+      <input type="date" name="dia" class="form-control mr-1" style="max-width: 170px" data-dias="agenda" data-dias-enviar
+        value="{{ in_array($filtro, ['hoy', 'manana']) ? '' : $filtro }}" title="Ver un día">
       <input type="text" name="search" class="form-control" placeholder="Buscar cliente, tema, contacto..." value="{{ request('search') }}">
       <button class="btn btn-primary" type="submit"><i class="fas fa-search"></i></button>
     </form>
@@ -235,3 +235,5 @@
   }
 </script>
 @stop
+
+@include('partials.calendario-dias')

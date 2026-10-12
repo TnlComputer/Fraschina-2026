@@ -11,9 +11,9 @@
   <div class="card-body">
     <form method="GET" class="form-inline mb-3">
       <label class="mr-1">Desde</label>
-      <input type="date" name="desde" value="{{ $desde }}" class="form-control form-control-sm mr-2">
+      <input type="date" name="desde" data-dias="exp_entregas" value="{{ $desde }}" class="form-control form-control-sm mr-2">
       <label class="mr-1">Hasta</label>
-      <input type="date" name="hasta" value="{{ $hasta }}" class="form-control form-control-sm mr-2">
+      <input type="date" name="hasta" data-dias="exp_entregas" value="{{ $hasta }}" class="form-control form-control-sm mr-2">
       <button class="btn btn-sm btn-secondary">Ver</button>
     </form>
 
@@ -44,3 +44,5 @@
   </div>
 </div>
 @endsection
+
+@include('partials.calendario-dias')
