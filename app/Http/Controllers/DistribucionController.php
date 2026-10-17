@@ -14,6 +14,7 @@ class DistribucionController extends Controller
   public function index(Request $request)
   {
     $name = trim($request->get('name'));
+    $ver = in_array($request->get('ver'), ['visibles', 'eliminados', 'todos'], true) ? $request->get('ver') : 'visibles';
 
     // Consulta base ordenada por razonsocial. LEFT JOIN para no ocultar clientes
     // a los que les falta calle, barrio, localidad, municipio o zona.
@@ -39,26 +40,32 @@ class DistribucionController extends Controller
         'd.marcas',
         'd.info',
         'd.id',
+        'd.status',
         'auxCalle.calle as dire_calle',
         'auxB.nombrebarrio as barrio',
         'auxLoc.localidad as localidad',
         'auxMun.ciudadmunicipio as municipio',
         'auxZon.nombre as zona'
       )
-      ->where('d.status', '=', 'A') // Filtrar por estado activo
+      // Visibles (status A) / eliminados (status D: ocultos, conservan su historial) / todos
+      ->when($ver !== 'todos', fn($q) => $q->where('d.status', '=', $ver === 'eliminados' ? 'D' : 'A'))
       ->orderByRaw("COALESCE(NULLIF(d.nomfantasia, ''), d.razonsocial)"); // Por nombre de fantasía (como se los conoce)
 
     if ($name) {
       $query->where(function ($subQuery) use ($name) {
+        if (ctype_digit($name)) {
+          $subQuery->orWhere('d.id', (int) $name);   // número de cliente (código con el que lo llaman)
+        }
         $subQuery->orWhere('d.nomfantasia', 'like', '%' . $name . '%')
           ->orWhere('d.razonsocial', 'like', '%' . $name . '%')
           ->orWhere('d.clisg_id', 'like', '%' . $name . '%');
       });
     }
 
-    $distribuciones = $query->paginate(15);
+    $distribuciones = $query->paginate(15)->withQueryString();
+    $cantidades = DB::table('distribucions')->selectRaw("SUM(status = 'A') visibles, SUM(status = 'D') eliminados")->first();
 
-    return view('pages.Distribucion.index', compact('distribuciones', 'name'));
+    return view('pages.Distribucion.index', compact('distribuciones', 'name', 'ver', 'cantidades'));
   }
 
   public function show($id)
@@ -117,13 +124,13 @@ class DistribucionController extends Controller
           'auxMod.nombre as modo',
           'auxCon.contacto as contacto',
           'auxEst.nomEstado as estado',
+          'd.status',
           'auxVer.estado as veraz',
           'auxCob.accion as cobrar',
           'auxCar.nombre as cobro',
           'auxTPg.nombre as tpago',
         )
         ->where('d.id', '=', $id)
-        ->where('d.status', '=', 'A')
         ->first();
 
       // dd($id, $distribucion);
@@ -164,7 +171,13 @@ class DistribucionController extends Controller
         ->where('dp.status', '=', 'A')
         ->get();
 
-      return view('pages.Distribucion.show', compact('distribucion', 'personal', 'productos'));
+      // Cliente eliminado: cuántos movimientos conserva (por eso no se borra)
+      $historial = $distribucion && $distribucion->status === 'D' ? DB::selectOne(
+        'SELECT (SELECT COUNT(*) FROM distribucion_nropedidos WHERE distribucion_id = ?) pedidos,
+                (SELECT MAX(fecha) FROM distribucion_nropedidos WHERE distribucion_id = ?) ultimo,
+                (SELECT COUNT(*) FROM distribucion_agenda WHERE distribucion_id = ?) agenda', [$id, $id, $id]) : null;
+
+      return view('pages.Distribucion.show', compact('distribucion', 'personal', 'productos', 'historial'));
     } catch (\Exception $e) {
       report($e);
       // Redirigir en caso de error

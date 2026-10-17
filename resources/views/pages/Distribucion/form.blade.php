@@ -268,7 +268,7 @@
     </div>
     <!-- Estado -->
     <div class="col-md-2">
-      <label for="estado_id" class="form-label">Estado</label>
+      <label for="estado_id" class="form-label" title="Situación comercial del cliente (no lo oculta)">Estado comercial</label>
       <select name="estado_id" id="estado_id" class="form-control">
         @foreach ($estados as $estado)
         <option value="{{ $estado->id }}" {{ old('estado_id', $distribucion->estado_id ?? '') == $estado->id ?

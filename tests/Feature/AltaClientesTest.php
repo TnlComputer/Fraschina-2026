@@ -50,4 +50,21 @@ class AltaClientesTest extends TestCase
     $this->actingAs($this->user)->post('/distribucion', $datos)->assertSessionHasNoErrors();
     $this->assertSame(695, (int) DB::table('distribucions')->where('razonsocial', 'Panadería Nueva')->value('id'));
   }
+
+  public function test_listado_visibles_eliminados_y_busqueda_por_numero(): void
+  {
+    DB::table('distribucions')->insert([
+      ['id' => 120, 'razonsocial' => 'Panadería Activa', 'nomfantasia' => 'La Activa', 'status' => 'A'],
+      ['id' => 123, 'razonsocial' => 'Cliente eliminado (id 123)', 'nomfantasia' => 'Cliente eliminado (id 123)', 'status' => 'D'],
+    ]);
+    DB::table('distribucion_nropedidos')->insert(['id' => 5000, 'tipo' => 'P', 'distribucion_id' => 123, 'fecha' => '2019-05-02', 'status' => 'A']);
+
+    $this->actingAs($this->user)->get('/distribucion')->assertOk()->assertSee('La Activa')->assertDontSee('Cliente eliminado (id 123)');
+    $this->actingAs($this->user)->get('/distribucion?ver=eliminados')->assertOk()->assertSee('Cliente eliminado (id 123)')->assertDontSee('La Activa');
+    $this->actingAs($this->user)->get('/distribucion?ver=todos&name=123')->assertOk()->assertSee('Cliente eliminado (id 123)');
+    $this->actingAs($this->user)->get('/distribucion?name=120')->assertOk()->assertSee('La Activa');
+
+    $this->actingAs($this->user)->get('/distribucion/123')->assertOk()
+      ->assertSee('Cliente eliminado')->assertSee('conserva su historial')->assertSee('02/05/2019');
+  }
 }

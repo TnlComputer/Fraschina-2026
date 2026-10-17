@@ -16,7 +16,7 @@
                   <div class="div__nuevo">
                     @if (!(config('legado.origen') && config('legado.clientes_solo_en_anterior')))@can('permiso_11')<form action="{{ route('distribucion.create') }}">
                       <input class="btn btn-primary" type="submit" value="Nuevo cliente">
-                    </form>@endcan@endif
+                    </form>@endcan @endif
                   </div>
                   <div class="div__nuevo">
                     @can('permiso_11')<form action="{{ route('distribucion_pedido.create') }}">
@@ -26,16 +26,24 @@
                   <div class="div__buscar d-flex">
                     <form method="get" action="{{ route('distribucion.index') }}" class="form__buscar d-flex">
                       @csrf
-                      <input type="text" placeholder="Buscar por nombre" name="name" value="{{ $name }}"
+                      <input type="hidden" name="ver" value="{{ $ver }}">
+                      <input type="text" placeholder="Buscar por nombre o N.º de cliente" name="name" value="{{ $name }}"
                         class="form-control me-2" style="max-width: 350px;">
                       <input type="submit" value="Buscar" class="btn btn-secondary">
                     </form>
                   </div>
                 </div>
 
+                {{-- Visibles / eliminados (ocultos: el sistema anterior los borró pero conservan su historial) / todos --}}
+                <div class="btn-group btn-group-sm mb-2">
+                  @foreach (['visibles' => 'Visibles (' . (int) $cantidades->visibles . ')', 'eliminados' => 'Eliminados (' . (int) $cantidades->eliminados . ')', 'todos' => 'Todos'] as $valor => $texto)
+                  <a href="{{ route('distribucion.index', array_filter(['ver' => $valor, 'name' => $name])) }}" class="btn {{ $ver === $valor ? 'btn-secondary' : 'btn-outline-secondary' }}">{{ $texto }}</a>
+                  @endforeach
+                </div>
                 <table class="table table-sm table-striped table-bordered w-100">
                   <thead>
                     <tr>
+                      <th title="Número de cliente (código con el que se lo llama)">N.º</th>
                       <th>Nro. GS</th>
                       <th>Nombre Fantasía</th>
                       <th>Razón social</th>
@@ -49,10 +57,11 @@
                   </thead>
                   <tbody>
                     @forelse($distribuciones as $distribucion)
-                    <tr class="text-xs">
+                    <tr class="text-xs {{ $distribucion->status === 'D' ? 'text-muted' : '' }}">
+                      <td class="font-weight-bold">{{ $distribucion->id < 49999999 ? $distribucion->id : '' }}</td>
                       <td>{{ $distribucion->clisg_id != 0 ? $distribucion->clisg_id : '' }}</td>
                       <td>{{ $distribucion->nomfantasia }}</td>
-                      <td>{{ $distribucion->razonsocial }}</td>
+                      <td>{{ $distribucion->razonsocial }}@if ($distribucion->status === 'D') <span class="badge badge-secondary">Eliminado</span>@endif</td>
                       <td>
                         {{ $distribucion->dire_calle }} {{ $distribucion->dire_nro }}
                         @if($distribucion->piso) Piso {{ $distribucion->piso }} @endif
@@ -70,10 +79,14 @@
                           title="Ver">
                           <i class="fa-regular fa-eye fa-xs align-middle"></i>
                         </a>
+                        @if ($distribucion->status === 'A')
+                        @can('permiso_12')
                         <a href="{{ route('distribucion.edit', $distribucion->id) }}" class="btn-xs btn-warning m-1"
                           title="Editar">
                           <i class="fa-solid fa-pen-to-square fa-xs "></i>
                         </a>
+                        @endcan
+                        @can('permiso_13')
                         <form method="POST" action="{{ route('distribucion.destroy', $distribucion->id) }}"
                           onsubmit="return confirm('¿Estás seguro de eliminar este registro?');">
                           @csrf
@@ -82,11 +95,13 @@
                             <i class="fa-solid fa-trash fa-xs"></i>
                           </button>
                         </form>
+                        @endcan
+                        @endif
                       </td>
                     </tr>
                     @empty
                     <tr>
-                      <td colspan="10" class="text-center">No hay registros para mostrar...</td>
+                      <td colspan="11" class="text-center">No hay registros para mostrar...</td>
                     </tr>
                     @endforelse
                   </tbody>

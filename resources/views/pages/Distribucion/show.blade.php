@@ -10,6 +10,15 @@
 @endsection
 @section('content')
 <div class="container-fluid">
+  @if ($distribucion->status === 'D')
+  <div class="alert alert-secondary">
+    <i class="fas fa-eye-slash"></i> <strong>Cliente eliminado</strong> (no aparece en los listados ni al cargar pedidos).
+    @if ($historial)
+    Lo borró el sistema anterior, pero conserva su historial: {{ numero($historial->pedidos) }} pedido{{ $historial->pedidos == 1 ? '' : 's' }}@if ($historial->ultimo) (el último del {{ fecha($historial->ultimo) }})@endif
+    y {{ numero($historial->agenda) }} registro{{ $historial->agenda == 1 ? '' : 's' }} de agenda. Por eso no se borra.
+    @endif
+  </div>
+  @endif
   <div class="card">
     <div class="card-body">
       <div class="row">
@@ -48,8 +57,12 @@
                   <td>{{ $distribucion->cuit }}</td>
                 </tr>
                 <tr>
-                  <th>Estado</th>
-                  <td>{{ $distribucion->estado }}</td>
+                  <th title="Situación comercial del cliente">Estado comercial</th>
+                  <td>{{ sin_dato($distribucion->estado) }}</td>
+                </tr>
+                <tr>
+                  <th title="Si aparece en los listados y al cargar pedidos">Visible</th>
+                  <td>{!! $distribucion->status === 'D' ? '<span class="badge badge-secondary">Eliminado</span>' : '<span class="badge badge-success">Visible</span>' !!}</td>
                 </tr>
                 <tr>
                   <th>Veraz</th>
