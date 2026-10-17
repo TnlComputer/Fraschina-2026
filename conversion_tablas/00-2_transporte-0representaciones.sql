@@ -140,7 +140,7 @@ SELECT
     CUIT,
     Excenciones,
     Idiva,
-    INFOenParticular AS marcas, -- "Marca/s" en el sistema anterior
+    NULLIF(TRIM(INFOenParticular), "") AS marcas, -- "Marca/s" en el sistema anterior (vacío = NULL, como en la app)
     Info,
     Contacto,
     Horario,

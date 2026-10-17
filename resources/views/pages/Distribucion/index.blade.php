@@ -14,9 +14,9 @@
               <div class="p-2 text-gray-900 text-left text-xs">
                 <div class="barra__index d-flex justify-content-between align-items-center mb-3">
                   <div class="div__nuevo">
-                    @can('permiso_11')<form action="{{ route('distribucion.create') }}">
+                    @if (!(config('legado.origen') && config('legado.clientes_solo_en_anterior')))@can('permiso_11')<form action="{{ route('distribucion.create') }}">
                       <input class="btn btn-primary" type="submit" value="Nuevo cliente">
-                    </form>@endcan
+                    </form>@endcan@endif
                   </div>
                   <div class="div__nuevo">
                     @can('permiso_11')<form action="{{ route('distribucion_pedido.create') }}">

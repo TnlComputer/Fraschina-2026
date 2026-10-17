@@ -18,3 +18,9 @@ foreach (['manana' => 'expedicion.consulta_manana', 'tarde' => 'expedicion.consu
     ->at(config($hora))
     ->when(fn() => (bool) config('expedicion.consultas_activas'));
 }
+
+// Actualización desde el sistema anterior (altas, modificaciones y bajas), todas las noches
+Schedule::command('legado:sincronizar')
+  ->dailyAt(config('legado.hora'))
+  ->when(fn() => config('legado.activo') && config('legado.origen'))
+  ->withoutOverlapping(120);

@@ -37,9 +37,12 @@ WHERE
         FROM fraschina_2024.distribucions
     );
 
--- Cliente comodín para pedidos sin cliente (cliente 0 en el sistema anterior)
+-- Cliente comodín para pedidos sin cliente (cliente 0 en el sistema anterior).
+-- Id fijo y muy alto: el sistema anterior nunca llega a ese número, así no choca con clientes nuevos
+-- y la actualización diaria (legado:sincronizar) lo reconoce siempre igual.
 INSERT INTO
     fraschina_2024.distribucions (
+        id,
         razonsocial,
         nomfantasia,
         info,
@@ -48,6 +51,7 @@ INSERT INTO
         updated_at
     )
 VALUES (
+        49999999,
         'Sin cliente (sistema anterior)',
         'Sin cliente (sistema anterior)',
         'Agrupa pedidos que en el sistema anterior no tenían cliente asignado.',

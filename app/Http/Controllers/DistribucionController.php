@@ -174,6 +174,9 @@ class DistribucionController extends Controller
 
   public function create()
   {
+    if ($aviso = $this->altaBloqueada()) {
+      return $aviso;
+    }
     // Obtener datos auxiliares ordenados
     $calles = tabla_aux('auxcalles')->orderBy('calle')->get();
     $barrios = tabla_aux('auxbarrios')->orderBy('nombrebarrio')->get();
@@ -217,6 +220,9 @@ class DistribucionController extends Controller
 
   public function store(Request $request)
   {
+    if ($aviso = $this->altaBloqueada()) {
+      return $aviso;
+    }
     // Validación de datos
     $validated = $request->validate($this->reglas(), $this->mensajes());
 
@@ -236,7 +242,11 @@ class DistribucionController extends Controller
     $validated['status'] = 'A';
 
     // Crear la distribución
-    Distribucion::create($validated);
+    // El id es el número de cliente (código con el que lo llaman): sigue la numeración del sistema anterior,
+    // sin contar los registros técnicos de la migración (ids desde 49.999.999).
+    $cliente = new Distribucion($validated);
+    $cliente->id = (int) Distribucion::where('id', '<', 49999999)->max('id') + 1;
+    $cliente->save();
 
     $name = $request->razonsocial ? $request->razonsocial : $request->nomfantasia;
 
@@ -389,5 +399,18 @@ class DistribucionController extends Controller
       'hasta1.date_format' => 'El campo "hasta1" debe estar en el formato HH:mm.',
       'tamanio_id' => 'El campo "tamaño" es obligatorio',
     ];
+  }
+
+  /**
+   * Mientras convivan los dos sistemas los clientes nuevos se dan de alta en el sistema anterior y llegan solos
+   * cada noche con el mismo número (legado:sincronizar). Así nunca se repite un número de cliente.
+   */
+  private function altaBloqueada()
+  {
+    if (config('legado.origen') && config('legado.clientes_solo_en_anterior')) {
+      return redirect()->route('distribucion.index')->with('warning',
+        'Mientras se use el sistema anterior, los clientes nuevos se dan de alta allá: llegan solos a este sistema cada noche con el mismo número.');
+    }
+    return null;
   }
 }

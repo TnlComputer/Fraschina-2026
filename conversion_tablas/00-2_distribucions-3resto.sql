@@ -104,9 +104,12 @@ WHERE
 GROUP BY
     l.nro;
 
--- Borradores: líneas sin número de pedido, agrupadas por cliente y fecha en pedidos dados de baja
+-- Borradores: líneas sin número de pedido, agrupadas por cliente y fecha en pedidos dados de baja.
+-- Id fijo calculado del cliente y la fecha (50000000 + cliente * 20000 + días desde 2000): no choca con los
+-- pedidos nuevos del sistema anterior y es el mismo en cada conversión (actualización diaria).
 INSERT INTO
     fraschina_2024.distribucion_nropedidos (
+        id,
         tipo,
         distribucion_id,
         fecha,
@@ -117,6 +120,7 @@ INSERT INTO
         updated_at
     )
 SELECT
+    50000000 + IF(b.cliente >= 49999999, 0, b.cliente) * 20000 + IF(b.fecha IS NULL, 0, GREATEST(DATEDIFF(b.fecha, '2000-01-01') + 1, 0)),
     'D',
     b.cliente,
     b.fecha,
