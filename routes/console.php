@@ -19,8 +19,6 @@ foreach (['manana' => 'expedicion.consulta_manana', 'tarde' => 'expedicion.consu
     ->when(fn() => (bool) config('expedicion.consultas_activas'));
 }
 
-// Actualización desde el sistema anterior (altas, modificaciones y bajas), todas las noches
-Schedule::command('legado:sincronizar')
-  ->dailyAt(config('legado.hora'))
-  ->when(fn() => config('legado.activo') && config('legado.origen'))
-  ->withoutOverlapping(120);
+// Actualización desde el sistema anterior: NO va por el programador. En el hosting tiene su propia línea de cron
+// (02:00), que no depende de proc_open:
+//   0 2 * * *  /usr/local/bin/php /home/fraschin/domains/2026.fraschina.com.ar/app/artisan legado:sincronizar >> .../storage/logs/legado.log 2>&1

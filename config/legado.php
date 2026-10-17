@@ -15,9 +15,7 @@ return [
   // (su número es el código con el que los llaman). Decisión del 17/10/2026.
   'clientes_solo_en_anterior' => (bool) env('LEGADO_CLIENTES_SOLO_EN_ANTERIOR', true),
 
-  // Correr todas las noches (si hay origen configurado)
-  'activo' => (bool) env('LEGADO_SINCRONIZAR', true),
-  'hora' => env('LEGADO_HORA', '02:00'),
+  // Corre todas las noches a las 02:00 por una línea de cron propia en el hosting (ver routes/console.php).
 
   // Scripts de conversión (en orden). Los de Expedición (00-4, 01, 02) no: esos datos vienen de las planillas.
   'scripts' => [

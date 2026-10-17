@@ -140,12 +140,19 @@ class LegadoSincronizar extends Command
       }
     }
 
+    // Nombres reales de las tablas del sistema anterior: en Linux distinguen mayúsculas (auxChofer, CDagenda...)
+    $nombres = [];
+    foreach (DB::select('SELECT table_name t FROM information_schema.tables WHERE table_schema = ?', [$origen]) as $r) {
+      $nombres[strtolower($r->t)] = $r->t;
+    }
+
     $modo = DB::selectOne('SELECT @@SESSION.sql_mode m')->m;
     DB::statement("SET SESSION sql_mode = 'NO_ENGINE_SUBSTITUTION'");
     try {
       foreach (config('legado.scripts') as $s) {
         $sql = file_get_contents(base_path("conversion_tablas/$s"));
-        $sql = preg_replace('/\bfraschin_backup\./i', "`$origen`.", $sql);
+        $sql = preg_replace_callback('/\bfraschin_backup\.`?(\w+)`?/i',
+          fn($m) => "`$origen`.`" . ($nombres[strtolower($m[1])] ?? $m[1]) . '`', $sql);
         $sql = preg_replace('/\bfraschina_2024\./i', "`{$this->app}`.{$prefijo}", $sql);
         // tablas que algún script escribe sin indicar la base
         $sql = preg_replace('/(INTO\s+)(proveedor_aux_productos|representacion_aux_productos)\b/i', "$1`{$this->app}`.{$prefijo}$2", $sql);
