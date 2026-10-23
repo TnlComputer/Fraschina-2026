@@ -87,7 +87,14 @@ class DistribucionRepartoController extends Controller
   public function show($id)
   {
     $pedido = DistribucionNroPedidos::with([
-      'distribucion',
+      'distribucion.auxCalles',
+      'distribucion.auxbarrio',
+      'distribucion.auxlocalidad',
+      'distribucion.auxmunicipio',
+      'distribucion.auxzona',
+      'distribucion.auxcobro',
+      'distribucion.auxpago',
+      'distribucion.auxtcobro',
       'lineasPedidos' => fn($query) => $query->orderBy('linea'),
       'lineasPedidos.producto',
       'lineasTareas' => fn($query) => $query->orderBy('linea'),

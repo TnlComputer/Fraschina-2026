@@ -5,46 +5,93 @@
 @section('content')
 @php
 $total = 0;
+$cliente = $pedido->distribucion;
+// Cambiar / retirar se guardan como '*' o 'SI' (igual que el sistema anterior)
+$marcado = fn($v) => in_array(strtoupper(trim((string) $v)), ['*', 'SI', 'S'], true);
 @endphp
 <div class="container">
   <h1>Detalles del Pedido</h1>
 
   <div class="card">
-    <div class="card-header bg-primary text-white">
-      Información del Pedido
+    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+      <span>Pedido {{ $pedido->id }} · Entrega {{ fecha($pedido->fechaEntrega) }}</span>
+      <a href="{{ route('distribucion_pedido.edit', ['distribucion_pedido' => $pedido->id, 'fecha' => $pedido->fechaEntrega]) }}"
+        class="btn btn-xs btn-light" title="Editar Pedido">
+        <i class="fas fa-pen fs-xs text-blue"></i> Editar
+      </a>
     </div>
     <div class="card-body">
-      <table class="table table-bordered">
+      <div class="row">
+        {{-- Datos para hacer la factura: los mismos que mostraba la grilla de reparto del sistema anterior --}}
+        <div class="col-md-6">
+          <table class="table table-sm table-bordered">
+            <tr>
+              <th style="width: 35%">Nombre Fantasía</th>
+              <td>{{ $cliente?->nomfantasia }}</td>
+            </tr>
+            <tr>
+              <th>Razón Social</th>
+              <td>{{ $cliente?->razonsocial }}</td>
+            </tr>
+            <tr>
+              <th>CUIT</th>
+              <td>{{ $cliente?->cuit ?: '—' }}</td>
+            </tr>
+            <tr>
+              <th>Dirección</th>
+              <td>
+                {{ $cliente?->auxCalles?->calle }} {{ $cliente?->dire_nro }} {{ $cliente?->piso }} {{ $cliente?->dpto }}<br>
+                {{ unir($cliente?->auxbarrio?->nombrebarrio, $cliente?->auxmunicipio?->ciudadmunicipio, $cliente?->auxlocalidad?->localidad) }}
+                @if ($cliente?->auxzona?->nombre)
+                · Zona {{ $cliente->auxzona->nombre }}
+                @endif
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="col-md-6">
+          <table class="table table-sm table-bordered">
+            <tr>
+              <th style="width: 35%">Cobrar</th>
+              <td>{{ trim((string) $cliente?->auxcobro?->accion) ?: '—' }}</td>
+            </tr>
+            <tr>
+              <th>Cobranza</th>
+              <td>{{ trim((string) $cliente?->auxpago?->nombre) ?: '—' }}</td>
+            </tr>
+            <tr>
+              <th>Modo de Pago</th>
+              <td>{{ trim((string) $cliente?->auxtcobro?->nombre) ?: '—' }}</td>
+            </tr>
+            <tr>
+              <th>Factura</th>
+              <td>
+                {{ $pedido->nroFactura ?: '—' }} · {{ fecha($pedido->fechaFactura) }} · {{ pesos($pedido->totalFactura, 2) }}
+                @if (abs($pedido->totalFactura - $pedido->totalPedido) > 0.01)
+                <span class="badge badge-danger ml-1" title="Importe de factura menos total del pedido">
+                  Diferencia {{ pesos($pedido->totalFactura - $pedido->totalPedido, 2) }}
+                </span>
+                @endif
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+      <table class="table table-sm table-bordered mb-0">
         <tr>
-          <th class="w-25">Pedido</th>
-          <td>{{ $pedido->id }}</td>
-        </tr>
-        <tr>
-          <th>Fecha de Entrega</th>
-          <td>{{ $pedido->fechaEntrega }}</td>
-        </tr>
-        <tr>
-          <th>Cliente</th>
-          <td>{{ $pedido->distribucion->nomfantasia }}</td>
-        </tr>
-        <tr>
-          <th>Total</th>
+          <th class="w-25">Horario Entrega</th>
           <td>
-            <a href="{{ route('distribucion_pedido.edit', ['distribucion_pedido' => $pedido->id, 'fecha' => $pedido->fechaEntrega]) }}"
-              class="btn btn-xs" title="Editar Pedido">
-              <i class="fas fa-pen fs-xs text-blue"></i>
-            </a>
+            Mañana: {{ horario($cliente?->desde, $cliente?->hasta) }} · Tarde: {{ horario($cliente?->desde1, $cliente?->hasta1) }}
+            · Lun cerrado: {{ $cliente?->lunes ?: '—' }} · Sáb recibe: {{ $cliente?->sabado ?: '—' }}
           </td>
-
-          <td>${{ numero($pedido->totalPedido, 2) }}</td>
         </tr>
         <tr>
-          <th>Estado</th>
-          <td>
-            <span class="badge {{ $pedido->estado == 'pendiente' ? 'bg-warning' : 'bg-success' }}">
-              {{ ucfirst($pedido->estado) }}
-            </span>
-          </td>
+          <th>Observaciones Recepción</th>
+          <td>{{ $cliente?->obsrecep ?: '—' }}</td>
+        </tr>
+        <tr>
+          <th>Comentarios del Pedido</th>
+          <td>{{ $pedido->observaciones ?: '—' }}</td>
         </tr>
       </table>
     </div>
@@ -60,7 +107,7 @@ $total = 0;
           <th class=" text-right">Precio Unitario</th>
           <th class=" text-right">Subtotal</th>
           <th class=" text-right">c/Iva</th>
-
+          <th class=" text-center">Cambiar / Retirar</th>
         </tr>
       </thead>
       <tbody>
@@ -71,25 +118,42 @@ $total = 0;
         $total = $total + $precioConIva;
         @endphp
         <tr>
-          {{-- <td>{{ $detalle->pedido_id }}- {{$detalle->id}}</td> --}}
           <td>{{ $detalle->producto?->productoCDA }}</td>
-          <!-- Asumiendo que tienes una relación 'producto' en el modelo de línea -->
           <td class=" text-center">{{ numero($detalle->cantidad, 0) }}</td>
           <td class=" text-right">${{ numero($detalle->precio_unitario, 2) }}</td>
           <td class=" text-right">${{ numero($precio, 2) }}</td>
           <td class=" text-right">${{ numero($precioConIva, 2) }}</td>
-          {{-- <td class=" text-center">{{ $detalle->linea }}</td> --}}
+          <td class=" text-center">
+            @if ($marcado($detalle->cambiar))
+            <span class="badge badge-warning">SIN CARGO</span>
+            @endif
+            @if ($marcado($detalle->retirar))
+            <span class="badge badge-info">RETIRAR</span>
+            @endif
+          </td>
         </tr>
         @endforeach
+      </tbody>
       <tfoot>
         <tr>
           <th colspan="4" class="text-right">Total</th>
           <td class="text-right">${{ numero($total, 2) }}</td>
+          <td></td>
         </tr>
       </tfoot>
-      </tbody>
     </table>
   </div>
+
+  @if ($pedido->lineasTareas->isNotEmpty())
+  <div class="mt-4">
+    <h4>Tareas</h4>
+    <ul>
+      @foreach ($pedido->lineasTareas as $t)
+      <li>{{ $t->tarea?->tarea }}{{ $t->detalles ? ' — ' . $t->detalles : '' }}</li>
+      @endforeach
+    </ul>
+  </div>
+  @endif
 
   <div class="mt-4">
     <a href="{{ route('distribucion_reparto.index', ['fecha' => $pedido->fechaEntrega]) }}" class="btn btn-secondary">

@@ -146,21 +146,12 @@
               class=" text-center text-xs factura-nro" data-label="Nro. Factura" style="width: 60px;" />
           </td>
           <td class="text-center">
-            @php
-            $dif = abs($distribucion->totalFactura - $distribucion->totalPedido);
-            @endphp
-
-            @if ($dif > 0.01)
+            {{-- En rojo cuando el importe de la factura no coincide con el total del pedido (como el sistema anterior) --}}
             <input type="number" name="totalFactura" form="distribucion-form-{{ $distribucion->id }}" value="{{ $distribucion->totalFactura }}"
-              title="$ {{ numero($distribucion->totalFactura - $distribucion->totalPedido, 2) }}"
-              class="text-center text-xs bg-red factura-importe" data-label="Importe Factura" step="0.01"
-              style="width: 90px;" />
-            @else
-            <input type="number" name="totalFactura" form="distribucion-form-{{ $distribucion->id }}" value="{{ $distribucion->totalFactura }}"
-              title="$ {{ numero($distribucion->totalFactura - $distribucion->totalPedido, 2) }}"
-              class="text-center text-xs factura-importe" data-label="Importe de Factura" step="0.01"
-              style="width: 90px;" />
-            @endif
+              data-total-pedido="{{ $distribucion->totalPedido }}"
+              title="Diferencia: $ {{ numero($distribucion->totalFactura - $distribucion->totalPedido, 2) }}"
+              class="text-center text-xs factura-importe {{ abs($distribucion->totalFactura - $distribucion->totalPedido) > 0.01 ? 'factura-difiere' : '' }}"
+              data-label="Importe Factura" step="0.01" style="width: 90px;" />
           </td>
           <td class="text-center {{ \App\Models\Distribucion::esSi($distribucion->distribucion->fac_imp) ? 'reparto-imprimir' : '' }}">
             @if (\App\Models\Distribucion::esSi($distribucion->distribucion->fac_imp))
@@ -387,6 +378,18 @@ function verificarDatos(event, url) {
 }
 
 
+
+  // Importe de factura: se pone en rojo mientras se escribe si no coincide con el total del pedido
+  function numeroAr(n) {
+    return n.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+  document.querySelectorAll('.factura-importe').forEach(input => {
+    input.addEventListener('input', () => {
+      const dif = (parseFloat(input.value) || 0) - (parseFloat(input.dataset.totalPedido) || 0);
+      input.classList.toggle('factura-difiere', Math.abs(dif) > 0.01);
+      input.title = `Diferencia: $ ${numeroAr(dif)}`;
+    });
+  });
 
   // Evitar que el formulario se envíe al presionar Enter accidentalmente
   document.querySelector('form').addEventListener('keydown', function(event) {
