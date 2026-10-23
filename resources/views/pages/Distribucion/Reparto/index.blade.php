@@ -73,7 +73,7 @@
   </form>
   @endforeach
 
-  {{-- Plantillas de los carteles que aparecen al pasar el mouse: productos (ojo e importe, lo usan para facturar) y entrega (orden) --}}
+  {{-- Plantillas de los carteles que aparecen al pasar el mouse: productos (importe, lo usan para facturar) y entrega (orden) --}}
   <div class="d-none">
     @foreach ($distribuciones as $distribucion)
     @if ($distribucion->lineasPedidos->isNotEmpty())
@@ -166,7 +166,7 @@
           </td>
           <td>
             <a href="{{ route('distribucion_reparto.show', ['distribucion_reparto' => $distribucion->id]) }}"
-              class="btn btn-xs reparto-productos" data-pedido="{{ $distribucion->id }}">
+              class="btn btn-xs" title="Ver Pedido">
               <i class="fas fa-eye fs-xs text-success"></i>
             </a>
           </td>
@@ -452,7 +452,7 @@ function verificarDatos(event, url) {
     });
   });
 
-  // Carteles al pasar el mouse: productos del pedido (ojo e importe), datos de entrega (orden) y ficha del cliente (nombres)
+  // Carteles al pasar el mouse: productos del pedido (importe), datos de entrega (orden) y ficha del cliente (nombres)
   // jQuery y Bootstrap se cargan al final de la página: esperar a que estén
   document.addEventListener('DOMContentLoaded', function () {
     $('.reparto-productos, .reparto-entrega, .reparto-cliente').each(function () {
