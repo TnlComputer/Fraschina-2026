@@ -67,7 +67,7 @@ $marcado = fn($v) => in_array(strtoupper(trim((string) $v)), ['*', 'SI', 'S'], t
               <th>Factura</th>
               <td>
                 {{ $pedido->nroFactura ?: '—' }} · {{ fecha($pedido->fechaFactura) }} · {{ pesos($pedido->totalFactura, 2) }}
-                @if (abs($pedido->totalFactura - $pedido->totalPedido) > 0.01)
+                @if ((float) $pedido->totalFactura != 0 && abs($pedido->totalFactura - $pedido->totalPedido) > 0.01)
                 <span class="badge badge-danger ml-1" title="Importe de factura menos total del pedido">
                   Diferencia {{ pesos($pedido->totalFactura - $pedido->totalPedido, 2) }}
                 </span>

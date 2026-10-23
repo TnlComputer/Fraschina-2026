@@ -146,11 +146,11 @@
               class=" text-center text-xs factura-nro" data-label="Nro. Factura" style="width: 60px;" />
           </td>
           <td class="text-center">
-            {{-- En rojo cuando el importe de la factura no coincide con el total del pedido (como el sistema anterior) --}}
+            {{-- En rojo cuando el importe de la factura no coincide con el total del pedido; sin importe cargado no se marca --}}
             <input type="number" name="totalFactura" form="distribucion-form-{{ $distribucion->id }}" value="{{ $distribucion->totalFactura }}"
               data-total-pedido="{{ $distribucion->totalPedido }}"
               title="Diferencia: $ {{ numero($distribucion->totalFactura - $distribucion->totalPedido, 2) }}"
-              class="text-center text-xs factura-importe {{ abs($distribucion->totalFactura - $distribucion->totalPedido) > 0.01 ? 'factura-difiere' : '' }}"
+              class="text-center text-xs factura-importe {{ (float) $distribucion->totalFactura != 0 && abs($distribucion->totalFactura - $distribucion->totalPedido) > 0.01 ? 'factura-difiere' : '' }}"
               data-label="Importe Factura" step="0.01" style="width: 90px;" />
           </td>
           <td class="text-center {{ \App\Models\Distribucion::esSi($distribucion->distribucion->fac_imp) ? 'reparto-imprimir' : '' }}">
@@ -379,14 +379,15 @@ function verificarDatos(event, url) {
 
 
 
-  // Importe de factura: se pone en rojo mientras se escribe si no coincide con el total del pedido
+  // Importe de factura: se pone en rojo mientras se escribe si no coincide con el total del pedido (vacío no se marca)
   function numeroAr(n) {
     return n.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   }
   document.querySelectorAll('.factura-importe').forEach(input => {
     input.addEventListener('input', () => {
-      const dif = (parseFloat(input.value) || 0) - (parseFloat(input.dataset.totalPedido) || 0);
-      input.classList.toggle('factura-difiere', Math.abs(dif) > 0.01);
+      const importe = parseFloat(input.value) || 0;
+      const dif = importe - (parseFloat(input.dataset.totalPedido) || 0);
+      input.classList.toggle('factura-difiere', importe !== 0 && Math.abs(dif) > 0.01);
       input.title = `Diferencia: $ ${numeroAr(dif)}`;
     });
   });
