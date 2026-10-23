@@ -73,7 +73,7 @@
   </form>
   @endforeach
 
-  {{-- Productos de cada pedido, para el cartel que aparece al pasar el mouse por el ojo o el importe (lo usan para facturar) --}}
+  {{-- Plantillas de los carteles que aparecen al pasar el mouse: productos (ojo e importe, lo usan para facturar) y entrega (orden) --}}
   <div class="d-none">
     @foreach ($distribuciones as $distribucion)
     @if ($distribucion->lineasPedidos->isNotEmpty())
@@ -102,6 +102,17 @@
       </table>
     </div>
     @endif
+    {{-- Datos de entrega del cliente, para el cartel del campo Orden --}}
+    @php $cli = $distribucion->distribucion; @endphp
+    <div id="entrega-pedido-{{ $distribucion->id }}">
+      <table class="table table-sm table-bordered mb-0 text-xs">
+        <tr><th>Horario Entrega</th><td>Mañana: {{ horario($cli?->desde, $cli?->hasta) }}<br>Tarde: {{ horario($cli?->desde1, $cli?->hasta1) }}</td></tr>
+        <tr><th>Lun Cerrado</th><td>{{ $cli?->lunes ?: '—' }}</td></tr>
+        <tr><th>Sáb Recibe</th><td>{{ $cli?->sabado ?: '—' }}</td></tr>
+        <tr><th>Obs. Recepción</th><td class="popover-texto">{{ $cli?->obsrecep ?: '—' }}</td></tr>
+        <tr><th>Comentarios</th><td class="popover-texto">{{ $distribucion->observaciones ?: '—' }}</td></tr>
+      </table>
+    </div>
     @endforeach
   </div>
 
@@ -203,7 +214,7 @@
               style="width: 30px;" />
           </td>
           <td class="text-center">
-            <input type="number" name="orden" form="distribucion-form-{{ $distribucion->id }}" value="{{ $distribucion->orden }}" class="text-center text-xs"
+            <input type="number" name="orden" form="distribucion-form-{{ $distribucion->id }}" value="{{ $distribucion->orden }}" class="text-center text-xs reparto-entrega" data-pedido="{{ $distribucion->id }}"
               style="width: 40px;" />
           </td>
           {{-- @else
@@ -424,11 +435,12 @@ function verificarDatos(event, url) {
     });
   });
 
-  // Cartel con los productos del pedido al pasar el mouse por el ojo o por el importe de la factura
+  // Carteles al pasar el mouse: productos del pedido (ojo e importe) y datos de entrega del cliente (orden)
   // jQuery y Bootstrap se cargan al final de la página: esperar a que estén
   document.addEventListener('DOMContentLoaded', function () {
-    $('.reparto-productos').each(function () {
-      const plantilla = document.getElementById('productos-pedido-' + this.dataset.pedido);
+    $('.reparto-productos, .reparto-entrega').each(function () {
+      const tipo = this.classList.contains('reparto-entrega') ? 'entrega' : 'productos';
+      const plantilla = document.getElementById(tipo + '-pedido-' + this.dataset.pedido);
       if (!plantilla) return;
       $(this).popover({
         trigger: 'hover',

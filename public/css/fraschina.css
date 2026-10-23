@@ -96,6 +96,7 @@ input.form-control[type="number"] { text-align: right; }
 .reparto-tabla td input.factura-difiere { background: #dc3545; color: #fff; border-color: #b02a37; font-weight: 700; }
 .popover-productos { max-width: 520px; }
 .popover-productos td, .popover-productos th { white-space: nowrap; padding: .15rem .35rem; }
+.popover-productos td.popover-texto { white-space: normal; min-width: 260px; }
 .reparto-imprimir { background: #fff3cd !important; }
 .reparto-tareas { background: #f6f9fc; }
 
