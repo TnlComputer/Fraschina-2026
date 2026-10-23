@@ -21,7 +21,13 @@ Venta y reparto a clientes propios (panaderías, comercios, industrias).
   totales se calculan con IVA (10,5 % o 21 % según el producto).
 - **Reparto:** planilla del día ordenada por chofer y orden de entrega, con datos de factura
   (fecha, número, importe), aviso de factura impresa y calendario que resalta los días con
-  pedidos. Impresión de la planilla de reparto, de control y de recibos en PDF.
+  pedidos. El importe de factura se marca en rojo cuando no coincide con el total del pedido
+  (vacío no se marca). Al pasar el mouse se ven datos para facturar y entregar: productos,
+  cantidad, precio unitario y total (sobre el importe), horario, días y observaciones de
+  recepción (sobre el orden) y la ficha del cliente con CUIT, dirección y forma de cobro (sobre
+  el nombre). *Ver pedido* muestra el pedido completo con los datos de facturación.
+  Impresión de la planilla de reparto, de control y de recibos en PDF, y vista para el chofer
+  en el celular.
 
 ### Expedición — Central de Pedidos
 Pedidos de clientes que se pasan a los molinos.
@@ -60,7 +66,7 @@ Pedidos de clientes que se pasan a los molinos.
 
 ## Tecnología
 
-- PHP 8.2+ · Laravel 11 · MySQL 8
+- PHP 8.3+ · Laravel 13 · MySQL 8 / MariaDB 10.6
 - AdminLTE (Bootstrap 4) · Vite · Tailwind
 - spatie/laravel-permission (roles y permisos) · dompdf (PDF) · maatwebsite/excel (Excel)
 - Interfaz y mensajes en español; zona horaria America/Argentina/Buenos_Aires
@@ -86,11 +92,22 @@ versiona: copiar `UsersTableSeeder.php.example`, completarlo y definir `SEED_USE
 
 ### Tareas programadas
 Respaldo diario en Excel de la Central de Pedidos y consultas automáticas a molinos. En el
-servidor hace falta un cron cada minuto:
+servidor hace falta un cron cada minuto (con el PHP 8.3 del servidor):
 
 ```
 * * * * * cd /ruta/al/sistema && php artisan schedule:run >> /dev/null 2>&1
 ```
+
+Mientras convivan los dos sistemas, la actualización desde el sistema anterior corre en un
+cron propio, de noche:
+
+```
+0 2 * * * cd /ruta/al/sistema && php artisan legado:sincronizar >> storage/logs/legado.log 2>&1
+```
+
+Trae solo lo que cambió desde la noche anterior; si un registro también se modificó en la app
+nueva, no lo pisa y lo deja como duda de migración para revisar por pantalla. Con
+`--simular` muestra qué haría sin cambiar nada.
 
 ### Migración de datos desde el sistema anterior
 Los scripts de `conversion_tablas/` convierten la base del sistema anterior a la estructura
@@ -99,11 +116,16 @@ borradores se conservan como registros dados de baja). Se ejecutan en orden sobr
 recién migrada.
 
 ### Tests
-Los tests usan SQLite en memoria y nunca tocan la base real:
+Los tests usan SQLite en memoria y nunca tocan la base real (requieren la extensión
+`pdo_sqlite`):
 
 ```bash
-php vendor/phpunit/phpunit/phpunit
+php -d extension=pdo_sqlite vendor/bin/phpunit
 ```
+
+### Seguridad de dependencias
+Revisar periódicamente con `composer audit` y `npm audit`, y mantener Laravel dentro de una
+versión con soporte de seguridad.
 
 ---
 
