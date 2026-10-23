@@ -104,6 +104,23 @@
     @endif
     {{-- Datos de entrega del cliente, para el cartel del campo Orden --}}
     @php $cli = $distribucion->distribucion; @endphp
+    {{-- Ficha del cliente, para el cartel del nombre de fantasía y la razón social --}}
+    <div id="cliente-pedido-{{ $distribucion->id }}">
+      <table class="table table-sm table-bordered mb-0 text-xs">
+        <tr><th>Nombre Fantasía</th><td class="popover-texto">{{ $cli?->nomfantasia }}</td></tr>
+        <tr><th>Razón Social</th><td class="popover-texto">{{ $cli?->razonsocial }}</td></tr>
+        <tr><th>Cliente</th><td>{{ $cli?->id }}</td></tr>
+        <tr><th>CUIT</th><td>{{ $cli?->cuit ?: '—' }}</td></tr>
+        <tr><th>Dirección</th><td class="popover-texto">{{ $cli?->auxCalles?->calle }} {{ $cli?->dire_nro }} {{ $cli?->piso }} {{ $cli?->dpto }}
+          @if ($cli?->dire_obs)<br>{{ $cli->dire_obs }}@endif</td></tr>
+        <tr><th>Barrio / Localidad</th><td class="popover-texto">{{ unir($cli?->auxbarrio?->nombrebarrio, $cli?->auxmunicipio?->ciudadmunicipio, $cli?->auxlocalidad?->localidad) ?: '—' }}</td></tr>
+        <tr><th>Zona</th><td>{{ trim((string) $cli?->auxzona?->nombre) ?: '—' }}</td></tr>
+        <tr><th>Teléfono</th><td class="popover-texto">{{ $cli?->telefono ?: '—' }}</td></tr>
+        <tr><th>Cobrar</th><td>{{ trim((string) $cli?->auxcobro?->accion) ?: '—' }}</td></tr>
+        <tr><th>Cobranza</th><td>{{ trim((string) $cli?->auxpago?->nombre) ?: '—' }}</td></tr>
+        <tr><th>Modo de Pago</th><td>{{ trim((string) $cli?->auxtcobro?->nombre) ?: '—' }}</td></tr>
+      </table>
+    </div>
     <div id="entrega-pedido-{{ $distribucion->id }}">
       <table class="table table-sm table-bordered mb-0 text-xs">
         <tr><th>Horario Entrega</th><td>Mañana: {{ horario($cli?->desde, $cli?->hasta) }}<br>Tarde: {{ horario($cli?->desde1, $cli?->hasta1) }}</td></tr>
@@ -224,7 +241,7 @@
           <td>{{ $distribucion->tipo }}</td>
           <!-- En la vista donde quieres mostrar el modal -->
           <td>
-            <button type="button" class="btn btn-xs" data-toggle="modal"
+            <button type="button" class="btn btn-xs reparto-cliente" data-toggle="modal" data-pedido="{{ $distribucion->id }}"
               data-target="#infoModal_{{ $distribucion->id }}">
               {{ $distribucion->distribucion->nomfantasia }}
             </button>
@@ -264,7 +281,7 @@
             </div>
           </div>
 
-          <td>{{ $distribucion->distribucion->razonsocial }}</td>
+          <td><span class="reparto-cliente" data-pedido="{{ $distribucion->id }}">{{ $distribucion->distribucion->razonsocial }}</span></td>
         </tr>
         @endforeach
 
@@ -435,11 +452,11 @@ function verificarDatos(event, url) {
     });
   });
 
-  // Carteles al pasar el mouse: productos del pedido (ojo e importe) y datos de entrega del cliente (orden)
+  // Carteles al pasar el mouse: productos del pedido (ojo e importe), datos de entrega (orden) y ficha del cliente (nombres)
   // jQuery y Bootstrap se cargan al final de la página: esperar a que estén
   document.addEventListener('DOMContentLoaded', function () {
-    $('.reparto-productos, .reparto-entrega').each(function () {
-      const tipo = this.classList.contains('reparto-entrega') ? 'entrega' : 'productos';
+    $('.reparto-productos, .reparto-entrega, .reparto-cliente').each(function () {
+      const tipo = ['entrega', 'cliente'].find(t => this.classList.contains('reparto-' + t)) || 'productos';
       const plantilla = document.getElementById(tipo + '-pedido-' + this.dataset.pedido);
       if (!plantilla) return;
       $(this).popover({
