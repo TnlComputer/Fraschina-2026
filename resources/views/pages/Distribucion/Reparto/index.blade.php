@@ -73,6 +73,38 @@
   </form>
   @endforeach
 
+  {{-- Productos de cada pedido, para el cartel que aparece al pasar el mouse por el ojo o el importe (lo usan para facturar) --}}
+  <div class="d-none">
+    @foreach ($distribuciones as $distribucion)
+    @if ($distribucion->lineasPedidos->isNotEmpty())
+    <div id="productos-pedido-{{ $distribucion->id }}">
+      <table class="table table-sm table-bordered mb-0 text-xs">
+        <thead>
+          <tr><th>Producto</th><th class="text-center">Cant.</th><th class="text-right">P. Unit.</th><th class="text-right">Total c/IVA</th></tr>
+        </thead>
+        <tbody>
+          @foreach ($distribucion->lineasPedidos as $linea)
+          <tr>
+            <td>
+              {{ $linea->producto?->productoCDA }}
+              @if (in_array(trim((string) $linea->cambiar), ['*', 'SI'], true)) <span class="badge badge-warning">SIN CARGO</span> @endif
+              @if (in_array(trim((string) $linea->retirar), ['*', 'SI'], true)) <span class="badge badge-info">RETIRAR</span> @endif
+            </td>
+            <td class="text-center">{{ numero($linea->cantidad, 0) }}</td>
+            <td class="text-right">{{ pesos($linea->precio_unitario) }}</td>
+            <td class="text-right">{{ pesos($linea->totalLinea) }}</td>
+          </tr>
+          @endforeach
+        </tbody>
+        <tfoot>
+          <tr><th colspan="3" class="text-right">Total pedido</th><th class="text-right">{{ pesos($distribucion->totalPedido) }}</th></tr>
+        </tfoot>
+      </table>
+    </div>
+    @endif
+    @endforeach
+  </div>
+
   <!-- Tabla de distribuciones -->
   <div class="reparto-scroll">
   <table class="table table-sm text-xs table-bordered table-hover table-sticky w-100 reparto-tabla">
@@ -106,7 +138,7 @@
           </td>
           <td>
             <a href="{{ route('distribucion_reparto.show', ['distribucion_reparto' => $distribucion->id]) }}"
-              class="btn btn-xs" title="Ver Pedido">
+              class="btn btn-xs reparto-productos" data-pedido="{{ $distribucion->id }}">
               <i class="fas fa-eye fs-xs text-success"></i>
             </a>
           </td>
@@ -148,9 +180,9 @@
           <td class="text-center">
             {{-- En rojo cuando el importe de la factura no coincide con el total del pedido; sin importe cargado no se marca --}}
             <input type="number" name="totalFactura" form="distribucion-form-{{ $distribucion->id }}" value="{{ $distribucion->totalFactura }}"
-              data-total-pedido="{{ $distribucion->totalPedido }}"
+              data-total-pedido="{{ $distribucion->totalPedido }}" data-pedido="{{ $distribucion->id }}"
               title="Diferencia: $ {{ numero($distribucion->totalFactura - $distribucion->totalPedido, 2) }}"
-              class="text-center text-xs factura-importe {{ (float) $distribucion->totalFactura != 0 && abs($distribucion->totalFactura - $distribucion->totalPedido) > 0.01 ? 'factura-difiere' : '' }}"
+              class="text-center text-xs factura-importe reparto-productos {{ (float) $distribucion->totalFactura != 0 && abs($distribucion->totalFactura - $distribucion->totalPedido) > 0.01 ? 'factura-difiere' : '' }}"
               data-label="Importe Factura" step="0.01" style="width: 90px;" />
           </td>
           <td class="text-center {{ \App\Models\Distribucion::esSi($distribucion->distribucion->fac_imp) ? 'reparto-imprimir' : '' }}">
@@ -389,6 +421,26 @@ function verificarDatos(event, url) {
       const dif = importe - (parseFloat(input.dataset.totalPedido) || 0);
       input.classList.toggle('factura-difiere', importe !== 0 && Math.abs(dif) > 0.01);
       input.title = `Diferencia: $ ${numeroAr(dif)}`;
+    });
+  });
+
+  // Cartel con los productos del pedido al pasar el mouse por el ojo o por el importe de la factura
+  // jQuery y Bootstrap se cargan al final de la página: esperar a que estén
+  document.addEventListener('DOMContentLoaded', function () {
+    $('.reparto-productos').each(function () {
+      const plantilla = document.getElementById('productos-pedido-' + this.dataset.pedido);
+      if (!plantilla) return;
+      $(this).popover({
+        trigger: 'hover',
+        placement: 'right',
+        html: true,
+        sanitize: false, // el contenido viene de la plantilla del servidor, ya escapado
+        container: 'body',
+        boundary: 'window',
+        title: 'Pedido ' + this.dataset.pedido,
+        content: plantilla.innerHTML,
+        template: '<div class="popover popover-productos" role="tooltip"><div class="arrow"></div><h3 class="popover-header"></h3><div class="popover-body p-1"></div></div>',
+      });
     });
   });
 

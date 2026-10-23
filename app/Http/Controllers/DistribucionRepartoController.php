@@ -25,6 +25,7 @@ class DistribucionRepartoController extends Controller
     $fecha = $this->fechaValida($request);
 
     $distribuciones = DistribucionNroPedidos::with(self::DIRECCION)
+      ->with(['lineasPedidos' => fn($query) => $query->orderBy('linea'), 'lineasPedidos.producto'])
       ->where('status', 'A')
       ->whereDate('fechaEntrega', $fecha)
       ->conLineas()
