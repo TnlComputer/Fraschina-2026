@@ -252,6 +252,73 @@ input.form-control[type="number"] { text-align: right; }
   .reparto-scroll { overflow-x: auto; }
 }
 
+/* ---------- Reparto (oficina) en pantallas chicas: una tarjeta por pedido ---------- */
+@media (max-width: 767.98px) {
+  .reparto-barra { flex-direction: column; align-items: stretch !important; gap: .5rem; }
+  .reparto-acciones { display: grid; grid-template-columns: repeat(2, 1fr); gap: .4rem; }
+  .reparto-acciones .btn { margin: 0 !important; }
+  .reparto-fechas { width: 100%; }
+  .reparto-fechas .form-control { flex: 1; min-width: 0; width: auto !important; }
+  .reparto-fechas .btn { margin: 0 0 0 .3rem !important; }
+
+  .reparto-scroll { overflow-x: visible; }
+  .reparto-tabla, .reparto-tabla tbody, .reparto-tabla tfoot { display: block; border: 0; }
+  .reparto-tabla thead { display: none; }
+  .reparto-tabla tbody tr {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-areas:
+      "fant fant fant ped"
+      "razon razon razon tipo"
+      "chofer orden imp imp"
+      "ffac ffac nfac nfac"
+      "ifac ifac ifac ifac"
+      "recibo ver editar guardar";
+    gap: .35rem .5rem;
+    background: #fff;
+    border: 1px solid var(--fr-borde, #dee2e6);
+    border-radius: .5rem;
+    padding: .6rem .7rem;
+    margin-bottom: .75rem;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, .05);
+  }
+  .reparto-tabla tbody td { display: block; border: 0 !important; padding: 0 !important; text-align: left !important; background: none !important; }
+  .reparto-tabla td.c-fecha, .reparto-tabla td.c-vacio { display: none; }
+  .reparto-tabla td.c-fantasia { grid-area: fant; }
+  .reparto-tabla td.c-fantasia .btn { padding: 0; font-size: 1.05rem; font-weight: 700; text-align: left; white-space: normal; }
+  .reparto-tabla td.c-pedido { grid-area: ped; text-align: right !important; color: var(--fr-marca); font-size: .85rem; white-space: nowrap; }
+  .reparto-tabla td.c-razon { grid-area: razon; color: #6c757d; font-weight: 400; font-size: .85rem; }
+  .reparto-tabla td.c-tipo { grid-area: tipo; text-align: right !important; color: #6c757d; font-size: .85rem; }
+  .reparto-tabla td.c-chofer { grid-area: chofer; }
+  .reparto-tabla td.c-orden { grid-area: orden; }
+  .reparto-tabla td.c-imp { grid-area: imp; align-self: end; text-align: right !important; font-size: 1.1rem; }
+  .reparto-tabla td.c-imp.reparto-imprimir { background: none !important; }
+  .reparto-tabla td.c-ffac { grid-area: ffac; }
+  .reparto-tabla td.c-nfac { grid-area: nfac; }
+  .reparto-tabla td.c-ifac { grid-area: ifac; }
+  .reparto-tabla td.c-recibo { grid-area: recibo; }
+  .reparto-tabla td.c-ver { grid-area: ver; }
+  .reparto-tabla td.c-editar { grid-area: editar; }
+  .reparto-tabla td.c-guardar { grid-area: guardar; }
+  /* Rótulo arriba de cada campo */
+  .reparto-tabla td[data-label]::before {
+    content: attr(data-label); display: block; font-size: .7rem; font-weight: 600;
+    color: #6c757d; text-transform: uppercase; letter-spacing: .02em; margin-bottom: .1rem;
+  }
+  /* Campos a todo el ancho y con letra de 16px (el iPhone no hace zoom al tocarlos) */
+  .reparto-tabla td input { width: 100% !important; font-size: 16px !important; padding: .3rem .4rem; text-align: left !important; }
+  .reparto-tabla td.c-chofer input, .reparto-tabla td.c-orden input { text-align: center !important; }
+  /* Botones de acción grandes para el dedo */
+  .reparto-tabla td.c-recibo .btn, .reparto-tabla td.c-ver .btn, .reparto-tabla td.c-editar .btn, .reparto-tabla td.c-guardar .btn {
+    display: flex; align-items: center; justify-content: center; width: 100%; min-height: 2.6rem; margin: 0 !important;
+    border: 1px solid var(--fr-borde, #dee2e6); border-radius: .4rem; background: #f8f9fa;
+  }
+  .reparto-tabla td .btn i.fs-xs { font-size: 1.1rem !important; }
+  .reparto-tabla tfoot tr { display: flex; flex-direction: column; gap: .25rem; padding: .25rem .2rem; }
+  .reparto-tabla tfoot td { display: block; border: 0 !important; padding: 0 !important; text-align: left !important; }
+  .popover-productos { max-width: calc(100vw - 16px); }
+}
+
 /* Vistas escritas con clases de Bootstrap 5 (form-select, form-label) sobre AdminLTE / Bootstrap 4 */
 .form-select {
   display: block; width: 100%; height: calc(2.25rem + 2px); padding: .375rem 1.75rem .375rem .75rem;

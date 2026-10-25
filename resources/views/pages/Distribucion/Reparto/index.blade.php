@@ -20,28 +20,22 @@
 <div class="container">
   <h1>Distribución Reparto</h1>
 
-  <!-- Botones para filtrar por fechas -->
-  <div class="mb-3 d-flex justify-content-between align-items-center">
-    <!-- Botón Nuevo Pedido a la Izquierda -->
-    <div>
-      </a>@can('permiso_11')<a href="{{ route('distribucion_pedido.create') }}" class="btn btn-primary ml-3">
+  <!-- Botones y fecha (en el celular se acomodan en dos renglones) -->
+  <div class="mb-3 d-flex justify-content-between align-items-center reparto-barra">
+    <div class="reparto-acciones">
+      @can('permiso_11')<a href="{{ route('distribucion_pedido.create') }}" class="btn btn-primary">
         <i class="fas fa-plus"></i> Nuevo Pedido
-      </a>@endcan <!-- Formulario de búsqueda -->
-    </div>
-    <!-- Botón Reparto Impresion -->
-    <div>
-      <a href="{{ route('distribucion_reparto.movil', ['fecha' => $fecha]) }}" class="btn btn-outline-primary mr-1" title="Vista para el chofer (celular)"><i class="fas fa-mobile-screen"></i> Chofer</a>
+      </a>@endcan
+      <a href="{{ route('distribucion_reparto.movil', ['fecha' => $fecha]) }}" class="btn btn-outline-primary" title="Vista para el chofer (celular)"><i class="fas fa-mobile-screen"></i> Chofer</a>
       <a href="{{ route('distribucion_reparto.imprimirReparto', ['fecha' => $fecha]) }}" title="Impresión Reparto"
         target="_blank" class="btn btn-info"><i class="fas fa-print"></i>
         Reparto
       </a>
-    </div> <!-- Botón Control Impresion -->
     {{-- <div>
       <a href="{{ route('distribucion_reparto.imprimirControl', ['fecha' => $fecha]) }}" title="Impresi´on Control"
         target="_blank" class="btn btn-secondary"><i class="fas fa-print"></i> Control
       </a>
     </div> --}}
-    <div>
       <a href="#"
         onclick="verificarDatos(event, '{{ route('distribucion_reparto.imprimirControl', ['fecha' => $fecha]) }}')"
         title="Impresión Control" class="btn btn-secondary">
@@ -50,16 +44,16 @@
     </div>
     <!-- Formulario y Botones de Cambio de Fecha a la derecha -->
     <form method="GET" action="{{ route('distribucion_reparto.index') }}" id="fecha-form"
-      class="d-flex align-items-center">
+      class="d-flex align-items-center reparto-fechas">
       <!-- Campo de Fecha -->
       <input type="text" name="fecha" id="fecha-input" value="{{ $fecha }}" autocomplete="off"
         class="form-control d-inline-block w-auto h-100" style="height: calc(2.25rem + 2px); background: #fff;"
         title="Los días en negrita tienen pedidos">
 
       <!-- Botones de Cambio de Fecha -->
-      <button type="submit" class="btn btn-success mx-1 h-100">Buscar por Fecha</button>
-      <button type="button" class="btn btn-secondary mx-1 h-100" id="anterior-btn">Día Anterior</button>
-      <button type="button" class="btn btn-info mx-1 h-100" id="posterior-btn">Día Posterior</button>
+      <button type="submit" class="btn btn-success mx-1 h-100 d-none d-md-inline-block">Buscar por Fecha</button>
+      <button type="button" class="btn btn-secondary mx-1 h-100" id="anterior-btn" title="Día Anterior"><i class="fas fa-chevron-left d-md-none"></i><span class="d-none d-md-inline">Día Anterior</span></button>
+      <button type="button" class="btn btn-info mx-1 h-100" id="posterior-btn" title="Día Posterior"><i class="fas fa-chevron-right d-md-none"></i><span class="d-none d-md-inline">Día Posterior</span></button>
       <button type="button" class="btn btn-primary mx-1 h-100" id="hoy-btn">Hoy</button>
     </form>
   </div>
@@ -156,31 +150,31 @@
       @foreach ($distribuciones as $distribucion)
       {{-- @if ($distribucion->tipo == 'P' || $distribucion->tipo == 'PT') --}}
 <tr>
-          <td class=" text-center">{{ fecha($distribucion->fechaEntrega) }}</td>
+          <td class="text-center c-fecha">{{ fecha($distribucion->fechaEntrega) }}</td>
           @if ($distribucion->tipo != 'T')
-          <td>
+          <td class="c-recibo">
             <a href="{{ route('distribucion_reparto.imprimirRecibo', ['id' => $distribucion->id]) }}"
               class="btn btn-xs mx-1" title="Impresi´on Recibo" target="_blank">
               <i class="fas fa-print fs-xs text-info"></i>
             </a>
           </td>
-          <td>
+          <td class="c-ver">
             <a href="{{ route('distribucion_reparto.show', ['distribucion_reparto' => $distribucion->id]) }}"
               class="btn btn-xs" title="Ver Pedido">
               <i class="fas fa-eye fs-xs text-success"></i>
             </a>
           </td>
 
-          <td>
+          <td class="c-editar">
             <a href="{{ route('distribucion_pedido.edit', ['distribucion_pedido' => $distribucion->id]) }}"
               class="btn btn-xs" title="Editar Pedido">
               <i class="fas fa-pen fs-xs text-blue"></i>
             </a>
           </td>
           @else
-          <td></td>
-          <td></td>
-          <td>
+          <td class="c-vacio"></td>
+          <td class="c-vacio"></td>
+          <td class="c-editar">
             <a href="{{ route('distribucion_pedido.edit', ['distribucion_pedido' => $distribucion->id]) }}"
               class="btn btn-xs" title="Editar Pedido">
               <i class="fas fa-pen fs-xs text-blue"></i>
@@ -192,20 +186,20 @@
             </a> --}}
           </td>
           @endif
-          <td><button type="submit" form="distribucion-form-{{ $distribucion->id }}" class="btn btn-xs" title="Guardar factura, chofer y orden">
+          <td class="c-guardar"><button type="submit" form="distribucion-form-{{ $distribucion->id }}" class="btn btn-xs" title="Guardar factura, chofer y orden">
               <i class="fas fa-sync-alt fs-xs text-orange"></i>
             </button>
           </td>
           @if ($distribucion->tipo != 'T')
-          <td class="text-center">
+          <td class="text-center c-ffac" data-label="Fecha factura">
             <input type="date" name="fechaFactura" form="distribucion-form-{{ $distribucion->id }}" value="{{ $distribucion->fechaFactura }}"
               class="text-center text-xs factura-fecha" data-label="Fecha Factura" style="width: 100px;" />
           </td>
-          <td class="text-center">
+          <td class="text-center c-nfac" data-label="Nro. factura">
             <input type="text" name="nroFactura" form="distribucion-form-{{ $distribucion->id }}" value="{{ $distribucion->nroFactura }}"
               class=" text-center text-xs factura-nro" data-label="Nro. Factura" style="width: 60px;" />
           </td>
-          <td class="text-center">
+          <td class="text-center c-ifac" data-label="Importe factura">
             {{-- En rojo cuando el importe de la factura no coincide con el total del pedido; sin importe cargado no se marca --}}
             <input type="number" name="totalFactura" form="distribucion-form-{{ $distribucion->id }}" value="{{ $distribucion->totalFactura }}"
               data-total-pedido="{{ $distribucion->totalPedido }}" data-pedido="{{ $distribucion->id }}"
@@ -213,34 +207,34 @@
               class="text-center text-xs factura-importe reparto-productos {{ (float) $distribucion->totalFactura != 0 && abs($distribucion->totalFactura - $distribucion->totalPedido) > 0.01 ? 'factura-difiere' : '' }}"
               data-label="Importe Factura" step="0.01" style="width: 90px;" />
           </td>
-          <td class="text-center {{ \App\Models\Distribucion::esSi($distribucion->distribucion->fac_imp) ? 'reparto-imprimir' : '' }}">
+          <td class="text-center c-imp {{ \App\Models\Distribucion::esSi($distribucion->distribucion->fac_imp) ? 'reparto-imprimir' : '' }}">
             @if (\App\Models\Distribucion::esSi($distribucion->distribucion->fac_imp))
-            <i class="fas fa-print text-success" title="Factura Impresa"></i>
+            <i class="fas fa-print text-success" title="Factura Impresa"></i><span class="d-md-none small ml-1 text-success">Impresa</span>
             @else
-            <i class="fas fa-times-circle text-danger" title="Factura No Impresa"></i>
+            <i class="fas fa-times-circle text-danger" title="Factura No Impresa"></i><span class="d-md-none small ml-1 text-danger">No impresa</span>
             @endif
           </td>
           @else
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
+          <td class="c-vacio"></td>
+          <td class="c-vacio"></td>
+          <td class="c-vacio"></td>
+          <td class="c-vacio"></td>
           @endif
-          <td class="text-center">
+          <td class="text-center c-chofer" data-label="Chofer">
             <input type="text" name="chofer" form="distribucion-form-{{ $distribucion->id }}" value="{{ $distribucion->chofer }}" class="text-center text-xs"
               style="width: 30px;" />
           </td>
-          <td class="text-center">
+          <td class="text-center c-orden" data-label="Orden">
             <input type="number" name="orden" form="distribucion-form-{{ $distribucion->id }}" value="{{ $distribucion->orden }}" class="text-center text-xs reparto-entrega" data-pedido="{{ $distribucion->id }}"
               style="width: 40px;" />
           </td>
           {{-- @else
           <td colspan="11"></td>
           @endif --}}
-          <td>{{ $distribucion->id }}</td>
-          <td>{{ $distribucion->tipo }}</td>
+          <td class="c-pedido"><span class="d-md-none">N° </span>{{ $distribucion->id }}</td>
+          <td class="c-tipo">{{ $distribucion->tipo }}</td>
           <!-- En la vista donde quieres mostrar el modal -->
-          <td>
+          <td class="c-fantasia">
             <button type="button" class="btn btn-xs reparto-cliente" data-toggle="modal" data-pedido="{{ $distribucion->id }}"
               data-target="#infoModal_{{ $distribucion->id }}">
               {{ $distribucion->distribucion->nomfantasia }}
@@ -281,7 +275,7 @@
             </div>
           </div>
 
-          <td><span class="reparto-cliente" data-pedido="{{ $distribucion->id }}">{{ $distribucion->distribucion->razonsocial }}</span></td>
+          <td class="c-razon"><span class="reparto-cliente" data-pedido="{{ $distribucion->id }}">{{ $distribucion->distribucion->razonsocial }}</span></td>
         </tr>
         @endforeach
 
@@ -290,7 +284,7 @@
     <tfoot>
       <tr class="font-weight-bold">
         <td colspan="7" class="text-right">{{ $distribuciones->count() }} pedidos · Total pedidos {{ pesos($distribuciones->sum('totalPedido')) }}</td>
-        <td class="text-center">{{ pesos($distribuciones->sum('totalFactura')) }}</td>
+        <td class="text-center"><span class="d-md-none">Facturado </span>{{ pesos($distribuciones->sum('totalFactura')) }}</td>
         <td colspan="7" class="text-muted font-weight-normal">Facturado del día. Los pedidos sin chofer van primero.</td>
       </tr>
     </tfoot>
@@ -461,7 +455,7 @@ function verificarDatos(event, url) {
       if (!plantilla) return;
       $(this).popover({
         trigger: 'hover',
-        placement: 'right',
+        placement: window.innerWidth < 768 ? 'bottom' : 'right',
         html: true,
         sanitize: false, // el contenido viene de la plantilla del servidor, ya escapado
         container: 'body',
