@@ -19,6 +19,7 @@ $titulo = ($editando ? 'Editar ' : (($cfg['femenino'] ?? false) ? 'Nueva ' : 'Nu
   <div class="card" style="max-width: 760px">
     <div class="card-body">
       @foreach ($cfg['campos'] as $columna => $campo)
+      {{-- getAttributes(): el valor guardado, aunque el modelo tenga una relación con el mismo nombre (DistribucionTareas::tarea) --}}
       @php $tipo = $campo['tipo'] ?? 'text'; @endphp
 
       @if ($tipo === 'usos')
@@ -55,7 +56,7 @@ $titulo = ($editando ? 'Editar ' : (($cfg['femenino'] ?? false) ? 'Nueva ' : 'Nu
       <div class="form-group">
         <label for="{{ $columna }}">{{ $campo['label'] }}@if ($campo['requerido'] ?? false) <span class="text-danger">*</span>@endif</label>
         <input type="{{ $tipo === 'number' ? 'number' : ($tipo === 'time' ? 'time' : 'text') }}" name="{{ $columna }}" id="{{ $columna }}"
-          value="{{ old($columna, $tipo === 'time' ? hora($registro->getAttribute($columna)) : $registro->getAttribute($columna)) }}"
+          value="{{ old($columna, $tipo === 'time' ? hora($registro->getAttributes()[$columna] ?? null) : ($registro->getAttributes()[$columna] ?? null)) }}"
           class="form-control @error($columna) is-invalid @enderror" @if ($tipo === 'text') maxlength="{{ $campo['max'] ?? 150 }}" @endif
           @if ($campo['requerido'] ?? false) required @endif @if ($loop->first) autofocus @endif
           @if ($tipo !== 'text') style="max-width: 220px" @endif>

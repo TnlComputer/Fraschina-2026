@@ -622,14 +622,19 @@ return [
     */
 
   'plugins' => [
-    // Estilos propios de la app (public/css/fraschina.css), en todas las páginas
+    // Estilos y ajustes propios de la app (public/css/fraschina.css y public/js/fraschina.js), en todas las páginas
     'Fraschina' => [
       'active' => true,
       'files' => [
         [
           'type' => 'css',
           'asset' => true,
-          'location' => 'css/fraschina.css?v=20261024b',
+          'location' => 'css/fraschina.css?v=20261025a',
+        ],
+        [
+          'type' => 'js',
+          'asset' => true,
+          'location' => 'js/fraschina.js?v=20261025a',
         ],
       ],
     ],

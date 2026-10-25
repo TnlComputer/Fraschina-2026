@@ -5,7 +5,7 @@
   <div class="row">
     <div class="col-12">
       <div class="card-header">
-        <h3 class="card-title">{{ __('Zonaes') }}</h3>
+        <h3 class="card-title">{{ __('Zonas') }}</h3>
       </div>
       <div class="col-12">
         <div class="py-2">

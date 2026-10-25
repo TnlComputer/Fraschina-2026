@@ -142,18 +142,13 @@
                 @endcan
                 @can('permiso_13')
                 <form method="POST" action="{{ route('proveedor_personal.destroy', $persona->id) }}"
-                  onsubmit="return confirmDelete({{ $persona->id }});">
+                  onsubmit="return confirm('¿Estás seguro de eliminar este registro?');">
                   @csrf
                   @method('DELETE')
                   <button type="submit" class="btn btn-danger btn-xs mx-1" title="Eliminar">
                     <i class="fa-solid fa-trash fa-xs"></i>
                   </button>
                 </form>
-                <script>
-                  function confirmDelete(id) {
-                    return confirm(`¿Estás seguro de eliminar este registro?`);
-                  }
-                </script>
                 @endcan
               </td>
             </tr>
