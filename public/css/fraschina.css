@@ -319,6 +319,43 @@ input.form-control[type="number"] { text-align: right; }
   .popover-productos { max-width: calc(100vw - 16px); }
 }
 
+/* ---------- Agenda General ---------- */
+.agenda-tabla .agenda-tel { white-space: nowrap; }
+.agenda-tabla .c-acciones { width: 1%; white-space: nowrap; }
+.agenda-tabla .c-nombre { font-weight: 700; }
+.agenda-tabla .c-empresa { color: var(--fr-marca); font-weight: 600; }
+.agenda-tabla .c-profesion { color: #6c757d; }
+.agenda-tabla td.c-mail a { word-break: break-all; }
+.agenda-tabla td.c-obs { min-width: 16rem; }
+.agenda-tabla td.c-direccion { min-width: 9rem; }
+.agenda-tabla td.c-contacto { min-width: 12rem; }
+@media (max-width: 767.98px) {
+  .agenda-tabla, .agenda-tabla tbody { display: block; border: 0; }
+  .agenda-tabla thead { display: none; }
+  .agenda-tabla tbody tr {
+    display: block; position: relative;
+    background: #fff !important;
+    border: 1px solid var(--fr-borde); border-radius: .5rem;
+    padding: .6rem .7rem; margin-bottom: .75rem;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, .05);
+    font-size: .9rem;
+  }
+  .agenda-tabla tbody td { display: block; border: 0 !important; padding: .1rem 0 !important; }
+  .agenda-tabla tbody td:empty { display: none; }
+  .agenda-tabla .c-nombre { font-size: 1.05rem; padding-right: 5rem; }
+  .agenda-tabla td.c-obs { min-width: 0; }
+  .agenda-tabla td.c-telefonos { margin-top: .3rem; }
+  /* Teléfonos grandes para tocar y llamar */
+  .agenda-tabla .agenda-tel { padding: .2rem 0; }
+  .agenda-tabla .agenda-tel a { font-size: 1.05rem; font-weight: 600; }
+  .agenda-tabla .agenda-tel a::before { content: '\f095'; font-family: 'Font Awesome 6 Free', 'Font Awesome 5 Free'; font-weight: 900; font-size: .85em; margin-right: .35rem; }
+  .agenda-tabla td.c-obs { color: #6c757d; font-style: italic; }
+  .agenda-tabla td.c-acciones { position: absolute; top: .55rem; right: .6rem; width: auto; padding: 0 !important; }
+  .agenda-tabla td.c-acciones .d-flex { gap: .4rem; }
+  .agenda-tabla td.c-acciones .btn-xs { display: inline-flex; align-items: center; justify-content: center; width: 2.2rem; height: 2.2rem; border-radius: .4rem; }
+  .agenda-tabla td.c-acciones form { margin: 0; }
+}
+
 /* Vistas escritas con clases de Bootstrap 5 (form-select, form-label) sobre AdminLTE / Bootstrap 4 */
 .form-select {
   display: block; width: 100%; height: calc(2.25rem + 2px); padding: .375rem 1.75rem .375rem .75rem;

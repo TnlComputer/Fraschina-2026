@@ -101,6 +101,23 @@ if (!function_exists('unir')) {
   }
 }
 
+if (!function_exists('telefonos')) {
+  /**
+   * Separa un campo de teléfonos en números para llamar desde el celular:
+   * "4501-4728 / 4502-8319" → [['4501-4728', 'tel:45014728'], ['4502-8319', 'tel:45028319']].
+   * "(02983) 431081/3" queda como un solo número. Sin un número reconocible, el enlace es null.
+   */
+  function telefonos($valor): array
+  {
+    $partes = preg_split('~\s+/\s*|\s*/\s+|[,;]~', trim((string) $valor), -1, PREG_SPLIT_NO_EMPTY);
+    return array_map(function ($parte) {
+      $parte = trim($parte);
+      $numero = preg_replace('~[^0-9+]~', '', explode('/', $parte)[0]);
+      return [$parte, strlen($numero) >= 6 ? 'tel:' . $numero : null];
+    }, $partes);
+  }
+}
+
 if (!function_exists('tabla_aux')) {
   /**
    * Consulta de una tabla auxiliar sin los valores eliminados; $actual (id o ids) se incluye igual,
