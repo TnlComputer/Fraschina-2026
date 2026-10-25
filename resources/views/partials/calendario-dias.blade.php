@@ -40,6 +40,15 @@
       const hasta = ymd(new Date(fp.currentYear, fp.currentMonth + 1, 7));
       try {
         const r = await fetch(`${url}?fuente=${encodeURIComponent(fuente)}&desde=${desde}&hasta=${hasta}`, { headers: { Accept: 'application/json' } });
+        // Sesión vencida (pasa en el celular con la pestaña abierta de días): recargar lleva al login.
+        // Una sola vez, para no quedar recargando si el problema es otro.
+        if (r.status === 401 || r.status === 419) {
+          try {
+            if (!sessionStorage.getItem('recarga-sesion')) { sessionStorage.setItem('recarga-sesion', '1'); return window.location.reload(); }
+          } catch (e) {}
+          throw new Error(r.status);
+        }
+        try { sessionStorage.removeItem('recarga-sesion'); } catch (e) {}
         if (!r.ok) throw new Error(r.status);
         Object.assign(c.dias, await r.json());
       } catch (e) {
