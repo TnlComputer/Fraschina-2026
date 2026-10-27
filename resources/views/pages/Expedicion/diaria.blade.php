@@ -9,7 +9,7 @@
 @section('content')
 <div class="card">
   <div class="card-body">
-    <form method="GET" class="form-row align-items-end mb-3">
+    <form method="GET" class="form-row align-items-end mb-3" data-buscar-al-escribir>
       <div class="col-md-2">
         <label class="small mb-0">Desde</label>
         <input type="date" name="desde" data-dias="exp_diaria" value="{{ request('desde') }}" class="form-control form-control-sm">

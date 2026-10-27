@@ -12,7 +12,7 @@
 @section('content')
 <div class="card">
   <div class="card-body">
-    <form method="GET" action="{{ route('expedicion_pedido.index') }}" class="form-row align-items-end mb-3">
+    <form method="GET" action="{{ route('expedicion_pedido.index') }}" data-buscar-al-escribir class="form-row align-items-end mb-3">
       <div class="col-md-1">
         <label class="small mb-0">Número</label>
         <input type="number" name="numero" value="{{ request('numero') }}" class="form-control form-control-sm">
@@ -28,7 +28,7 @@
       </div>
       <div class="col-md-2">
         <label class="small mb-0">Molino</label>
-        <select name="molino_id" class="form-control form-control-sm">
+        <select name="molino_id" class="form-control form-control-sm" data-buscador>
           <option value="">Todos</option>
           @foreach ($molinos as $m)
           <option value="{{ $m->id }}" @selected(request('molino_id') == $m->id)>{{ $m->nombre }}</option>
@@ -37,7 +37,7 @@
       </div>
       <div class="col-md-2">
         <label class="small mb-0">Cliente</label>
-        <select name="cliente_id" class="form-control form-control-sm">
+        <select name="cliente_id" class="form-control form-control-sm" data-buscador>
           <option value="">Todos</option>
           @foreach ($clientes as $c)
           <option value="{{ $c->id }}" @selected(request('cliente_id') == $c->id)>{{ $c->nombre }}</option>

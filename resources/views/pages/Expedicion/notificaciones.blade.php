@@ -21,7 +21,7 @@
       @csrf
       <div class="col-md-2">
         <label class="small mb-0">Molino</label>
-        <select name="expedicion_molino_id" class="form-control form-control-sm">
+        <select name="expedicion_molino_id" class="form-control form-control-sm" data-buscador>
           <option value="">Todos</option>
           @foreach ($molinos as $m)
           <option value="{{ $m->id }}" @selected(old('expedicion_molino_id') == $m->id)>{{ $m->sigla }}</option>
@@ -30,7 +30,7 @@
       </div>
       <div class="col-md-2">
         <label class="small mb-0">Cliente</label>
-        <select name="expedicion_cliente_id" class="form-control form-control-sm">
+        <select name="expedicion_cliente_id" class="form-control form-control-sm" data-buscador>
           <option value="">Todos</option>
           @foreach ($clientes as $c)
           <option value="{{ $c->id }}" @selected(old('expedicion_cliente_id') == $c->id)>{{ $c->sigla }}</option>

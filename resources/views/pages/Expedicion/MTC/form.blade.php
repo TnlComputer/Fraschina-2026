@@ -15,7 +15,7 @@
       <div class="form-row">
         <div class="col-md-4">
           <label>Cliente *</label>
-          <select name="expClie_id" class="form-control" required>
+          <select name="expClie_id" class="form-control" required data-buscador>
             <option value="">Seleccione</option>
             @foreach ($clientes as $c)
             <option value="{{ $c->id }}" @selected(old('expClie_id', $config->expClie_id ?? request('cliente_id')) == $c->id)>{{ $c->nombre }}</option>
@@ -24,7 +24,7 @@
         </div>
         <div class="col-md-4">
           <label>Molino *</label>
-          <select name="expMolino_id" class="form-control" required>
+          <select name="expMolino_id" class="form-control" required data-buscador>
             <option value="">Seleccione</option>
             @foreach ($molinos as $m)
             <option value="{{ $m->id }}" @selected(old('expMolino_id', $config->expMolino_id) == $m->id)>{{ $m->nombre }}</option>

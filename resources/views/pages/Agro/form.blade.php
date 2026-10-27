@@ -85,7 +85,7 @@
   <!-- Barrio -->
   <div class="col-md-4 mb-3">
     <label for="barrio_id" class="form-label">Barrio</label>
-    <select class="form-control @error('barrio_id') is-invalid @enderror" id="barrio_id" name="barrio_id">
+    <select class="form-control @error('barrio_id') is-invalid @enderror" id="barrio_id" name="barrio_id" data-buscador>
       <option value="">Seleccione un barrio</option>
       @foreach($barrios as $barrio)
       <option value="{{ $barrio->id }}" {{ old('barrio_id', $agro->barrio_id ?? '') == $barrio->id ? 'selected' : ''
@@ -104,7 +104,7 @@
   <!-- Municipio -->
   <div class="col-md-4 mb-3">
     <label for="municipio_id" class="form-label">Municipio</label>
-    <select class="form-control @error('municipio_id') is-invalid @enderror" id="municipio_id" name="municipio_id">
+    <select class="form-control @error('municipio_id') is-invalid @enderror" id="municipio_id" name="municipio_id" data-buscador>
       <option value="">Seleccione un municipio</option>
       @foreach($municipios as $municipio)
       <option value="{{ $municipio->id }}" {{ old('municipio_id', $agro->municipio_id ?? '') == $municipio->id ?
@@ -123,7 +123,7 @@
   <!-- Localidad -->
   <div class="col-md-4 mb-3">
     <label for="localidad_id" class="form-label">Localidad</label>
-    <select class="form-control @error('localidad_id') is-invalid @enderror" id="localidad_id" name="localidad_id">
+    <select class="form-control @error('localidad_id') is-invalid @enderror" id="localidad_id" name="localidad_id" data-buscador>
       <option value="">Seleccione una localidad</option>
       @foreach($localidades as $localidad)
       <option value="{{ $localidad->id }}" {{ old('localidad_id', $agro->localidad_id ?? '') == $localidad->id ?
@@ -202,7 +202,7 @@
   <!-- Rubro -->
   <div class="col-md-4 mb-3">
     <label for="rubro_id" class="form-label">Rubro</label>
-    <select class="form-control @error('rubro_id') is-invalid @enderror" id="rubro_id" name="rubro_id">
+    <select class="form-control @error('rubro_id') is-invalid @enderror" id="rubro_id" name="rubro_id" data-buscador>
       <option value="">Seleccione un rubro</option>
       @foreach($rubros as $rubro)
       <option value="{{ $rubro->id }}" {{ old('rubro_id', $agro->rubro_id ?? '') == $rubro->id ? 'selected' : ''

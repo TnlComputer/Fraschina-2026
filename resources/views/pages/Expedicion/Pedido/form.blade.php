@@ -31,7 +31,7 @@ $lineas = old('lineas', $editando ? $pedido->lineas->map(fn($l) => array_merge($
       <div class="form-row">
         <div class="col-md-3">
           <label>Cliente</label>
-          <select name="expedicion_cliente_id" id="cliente" class="form-control" required>
+          <select name="expedicion_cliente_id" id="cliente" class="form-control" required data-buscador>
             <option value="">Seleccione</option>
             @foreach ($clientes as $c)
             <option value="{{ $c->id }}" @selected(old('expedicion_cliente_id', $pedido->expedicion_cliente_id) == $c->id)>{{ $c->nombre }}</option>
@@ -40,7 +40,7 @@ $lineas = old('lineas', $editando ? $pedido->lineas->map(fn($l) => array_merge($
         </div>
         <div class="col-md-3">
           <label>Molino</label>
-          <select name="expedicion_molino_id" id="molino" class="form-control" required>
+          <select name="expedicion_molino_id" id="molino" class="form-control" required data-buscador>
             <option value="">Seleccione</option>
             @foreach ($molinos as $m)
             <option value="{{ $m->id }}" @selected(old('expedicion_molino_id', $pedido->expedicion_molino_id) == $m->id)>{{ $m->nombre }}</option>

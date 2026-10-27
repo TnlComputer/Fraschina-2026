@@ -16,7 +16,7 @@
         <!-- Campo Producto -->
         <div class="col-md-6 mb-3">
           <label for="producto_id" class="form-label">Producto</label>
-          <select class="form-control @error('producto_id') is-invalid @enderror" id="producto_id" name="producto_id">
+          <select class="form-control @error('producto_id') is-invalid @enderror" id="producto_id" name="producto_id" data-buscador>
             <option value="">Seleccione un producto</option>
             @foreach($productosAux as $productoAux)
             <option value="{{ $productoAux->id }}" {{ old('producto_id') == $productoAux->id ?

@@ -19,7 +19,7 @@ $mol = fn($c) => $c ? $c . ' ' . ($molinos[$c] ?? '') : '';
   <li class="nav-item"><a class="nav-link {{ $vista === 'control' ? 'active' : '' }}" href="{{ route('expedicion_historial.index', ['vista' => 'control']) }}">Control de entregas</a></li>
 </ul>
 
-<form method="GET" class="card card-body py-2 mb-3">
+<form method="GET" class="card card-body py-2 mb-3" data-buscar-al-escribir>
   <input type="hidden" name="vista" value="{{ $vista }}">
   <div class="form-row align-items-end">
     @if ($vista === 'diaria')
@@ -36,11 +36,11 @@ $mol = fn($c) => $c ? $c . ' ' . ($molinos[$c] ?? '') : '';
     <div class="col-6 col-md-2 mb-2"><label class="small mb-0">Hasta</label>
       <input type="date" name="hasta" value="{{ request('hasta') }}" class="form-control form-control-sm" data-dias="{{ $vista === 'control' ? 'hist_control' : 'hist_diaria' }}"></div>
     <div class="col-6 col-md-2 mb-2"><label class="small mb-0">Molino</label>
-      <select name="molino" class="form-control form-control-sm"><option value="">Todos</option>
+      <select name="molino" class="form-control form-control-sm" data-buscador><option value="">Todos</option>
         @foreach ($molinos as $codigo => $sigla)<option value="{{ $codigo }}" @selected(request('molino') == $codigo)>{{ $codigo }} {{ $sigla }}</option>@endforeach
       </select></div>
     <div class="col-6 col-md-2 mb-2"><label class="small mb-0">Cliente</label>
-      <select name="cliente" class="form-control form-control-sm"><option value="">Todos</option>
+      <select name="cliente" class="form-control form-control-sm" data-buscador><option value="">Todos</option>
         @foreach ($clientes as $numero => $nombre)<option value="{{ $numero }}" @selected(request('cliente') == $numero)>{{ $numero }} {{ $nombre }}</option>@endforeach
       </select></div>
     @if ($vista === 'diaria')

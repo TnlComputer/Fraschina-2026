@@ -12,14 +12,14 @@
 @section('content')
 <div class="card">
   <div class="card-body">
-    <form method="GET" class="form-inline mb-3">
-      <select name="cliente_id" class="form-control form-control-sm mr-2">
+    <form method="GET" class="form-inline mb-3" data-buscar-al-escribir>
+      <select name="cliente_id" class="form-control form-control-sm mr-2" data-buscador>
         <option value="">Todos los clientes</option>
         @foreach ($clientes as $c)
         <option value="{{ $c->id }}" @selected(request('cliente_id') == $c->id)>{{ $c->nombre }}</option>
         @endforeach
       </select>
-      <select name="molino_id" class="form-control form-control-sm mr-2">
+      <select name="molino_id" class="form-control form-control-sm mr-2" data-buscador>
         <option value="">Todos los molinos</option>
         @foreach ($molinos as $m)
         <option value="{{ $m->id }}" @selected(request('molino_id') == $m->id)>{{ $m->nombre }}</option>

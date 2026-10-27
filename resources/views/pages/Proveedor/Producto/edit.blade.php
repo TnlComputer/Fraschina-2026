@@ -17,7 +17,7 @@
       <div class="row">
         <div class="col-md-6 mb-3">
           <label for="producto_id" class="form-label">Producto</label>
-          <select class="form-control" id="producto_id" name="producto_id" required>
+          <select class="form-control" id="producto_id" name="producto_id" required data-buscador>
             <option value="">Seleccione un producto</option>
             @foreach($productosAux as $productoAux)
             <option value="{{ $productoAux->id }}" {{ (int) old('producto_id', $producto->producto_id) === (int)

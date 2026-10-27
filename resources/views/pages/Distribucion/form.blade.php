@@ -33,7 +33,7 @@
       <div class="col-md-3">
         <label for="dire_calle_id" class="form-label">Calle</label>
         <select name="dire_calle_id" id="dire_calle_id"
-          class="form-control @error('dire_calle_id') is-invalid @enderror">
+          class="form-control @error('dire_calle_id') is-invalid @enderror" data-buscador>
           <option value="">Seleccione una calle</option>
           @foreach ($calles as $calle)
           <option value="{{ $calle->id }}" {{ old('dire_calle_id', $distribucion->dire_calle_id ?? '') == $calle->id ?
@@ -81,7 +81,7 @@
       <!-- Campos aux* -->
       <div class="col-md-3">
         <label for="barrio_id" class="form-label">Barrio</label>
-        <select name="barrio_id" id="barrio_id" class="form-control @error('auxbarrio') is-invalid @enderror">
+        <select name="barrio_id" id="barrio_id" class="form-control @error('auxbarrio') is-invalid @enderror" data-buscador>
           <option value="">Seleccione un Barrio</option>
           @foreach ($barrios as $barrio)
           <option value="{{ $barrio->id }}" {{ old('barrio_id', $distribucion->barrio_id ?? '') == $barrio->id ?
@@ -95,7 +95,7 @@
 
       <div class="col-md-3">
         <label for="municipio_id" class="form-label">Municipio</label>
-        <select name="municipio_id" id="municipio_id" class="form-control @error('municipio_id') is-invalid @enderror">
+        <select name="municipio_id" id="municipio_id" class="form-control @error('municipio_id') is-invalid @enderror" data-buscador>
           <option value="">Seleccione un Municipio</option>
           @foreach ($municipios as $municipio)
           <option value="{{ $municipio->id }}" {{ old('municipio_id', $distribucion->municipio_id ?? '') ==
@@ -109,7 +109,7 @@
 
       <div class="col-md-3">
         <label for="localidad_id" class="form-label">Localidad</label>
-        <select name="localidad_id" id="localidad_id" class="form-control @error('localidad_id') is-invalid @enderror">
+        <select name="localidad_id" id="localidad_id" class="form-control @error('localidad_id') is-invalid @enderror" data-buscador>
           <option value="">Seleccione una Localidad</option>
           @foreach ($localidades as $localidad)
           <option value="{{ $localidad->id }}" {{ old('localidad_id', $distribucion->localidad_id ?? '') ==
@@ -123,7 +123,7 @@
 
       <div class="col-md-3">
         <label for="zona_id" class="form-label">Zona</label>
-        <select name="zona_id" id="zona_id" class="form-control @error('zona_id') is-invalid @enderror">
+        <select name="zona_id" id="zona_id" class="form-control @error('zona_id') is-invalid @enderror" data-buscador>
           <option value="">Seleccione una Zona</option>
           @foreach ($zonas as $zona)
           <option value="{{ $zona->id }}" {{ old('zona_id', $distribucion->zona_id ?? '') == $zona->id ? 'selected' : ''
@@ -170,7 +170,7 @@
       <!-- Rubro, Tamaño y Modo -->
       <div class="col-md-3">
         <label for="rubro_id" class="form-label">Rubro</label>
-        <select name="rubro_id" id="rubro_id" class="form-control @error('rubro_id') is-invalid @enderror">
+        <select name="rubro_id" id="rubro_id" class="form-control @error('rubro_id') is-invalid @enderror" data-buscador>
           <option value="">Seleccione un Rubro</option>
           @foreach ($rubros as $rubro)
           <option value="{{ $rubro->id }}" {{ old('rubro_id', $distribucion->rubro_id ?? '') == $rubro->id ?

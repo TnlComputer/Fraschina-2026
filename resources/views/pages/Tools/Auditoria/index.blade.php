@@ -18,10 +18,10 @@ $colores = [
 @endphp
 <div class="card">
   <div class="card-body">
-    <form method="GET" class="form-row align-items-end mb-3">
+    <form method="GET" class="form-row align-items-end mb-3" data-buscar-al-escribir>
       <div class="col-md-2">
         <label class="small mb-0">Usuario</label>
-        <select name="user_id" class="form-control form-control-sm">
+        <select name="user_id" class="form-control form-control-sm" data-buscador>
           <option value="">Todos</option>
           @foreach ($usuarios as $u)
           <option value="{{ $u->id }}" @selected(request('user_id') == $u->id)>{{ $u->name }}</option>

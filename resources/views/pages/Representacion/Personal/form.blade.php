@@ -38,7 +38,7 @@
   </div>
   <div class="col-md-4 form-group">
     <label for="profesion_id">Profesión</label>
-    <select name="profesion_id" id="profesion_id" class="form-control @error('profesion_id') is-invalid @enderror">
+    <select name="profesion_id" id="profesion_id" class="form-control @error('profesion_id') is-invalid @enderror" data-buscador>
       <option value="">Seleccione una profesión</option>
       @foreach ($profesiones as $profesion)
       <option value="{{ $profesion->id }}" @selected(old('profesion_id', $personal->profesion_id) == $profesion->id)>{{ sin_dato($profesion->nombreprofesion) }}</option>

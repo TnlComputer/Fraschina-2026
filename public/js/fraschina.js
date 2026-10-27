@@ -13,9 +13,10 @@
  * el <select> original sigue siendo el que se envía y dispara 'change' como siempre.
  *
  * Buscar mientras se escribe: en los listados (form.form__buscar o form[data-buscar-al-escribir])
- * el texto del buscador se envía solo al dejar de tipear; se pide la misma página al servidor y se
- * reemplaza únicamente el listado (el buscador queda como está, con el cursor). La dirección se
- * actualiza para que recargar, paginar o volver atrás conserven la búsqueda.
+ * el texto del buscador se envía solo al dejar de tipear, y los desplegables, fechas y casillas de
+ * los filtros al cambiarlos; se pide la misma página al servidor y se reemplaza únicamente el listado
+ * (el filtro queda como está, con el cursor). La dirección se actualiza para que recargar, paginar o
+ * volver atrás conserven la búsqueda. Si la página no tiene listado todavía, el cambio envía el filtro.
  */
 (function () {
   'use strict';
@@ -94,7 +95,8 @@
           const vacia = select.querySelector('option[value=""]');
           new TomSelect(select, {
             maxOptions: null,          // toda la lista, no solo las primeras 50
-            allowEmptyOption: false,
+            // En filtros y campos optativos la opción vacía ("Todos", "Seleccione…") se puede volver a elegir
+            allowEmptyOption: !select.required,
             placeholder: vacia ? vacia.textContent.trim() : 'Escriba para buscar…',
             searchField: ['text'],
             render: { no_results: function () { return '<div class="no-results">Sin coincidencias</div>'; } },
@@ -117,13 +119,13 @@
 
   function prepararBusquedaAlEscribir() {
     document.querySelectorAll(FORMS_BUSCAR).forEach(function (form, indice) {
-      // El buscador es el campo de texto con nombre (los calendarios agregan campos de texto sin nombre)
-      const campo = form.querySelector('input[type=text][name]:not([readonly]), input[type=search][name]');
+      // Campos de texto con nombre (los calendarios agregan campos de texto sin nombre)
+      const TEXTOS = 'input[type=text][name]:not([readonly]), input[type=search][name], input[type=number][name]';
       const destino = zonaResultados(form);
-      if (!campo || !destino) return;
       let espera, pedido;
 
       async function buscar() {
+        if (!destino) return form.submit();
         const url = new URL(form.getAttribute('action') || location.href, location.href);
         url.search = new URLSearchParams(new FormData(form)).toString();
         url.searchParams.delete('_token');
@@ -152,10 +154,19 @@
         }
       }
 
-      campo.setAttribute('autocomplete', 'off');
-      campo.addEventListener('input', function () {
+      function programar(demora) {
         clearTimeout(espera);
-        espera = setTimeout(buscar, 350);
+        espera = setTimeout(buscar, demora);
+      }
+
+      // Texto: al dejar de tipear (sin listado en la página, se busca con Enter como siempre)
+      if (destino) form.querySelectorAll(TEXTOS).forEach(c => c.setAttribute('autocomplete', 'off'));
+      form.addEventListener('input', function (e) {
+        if (destino && e.target.matches(TEXTOS)) programar(350);
+      });
+      // Desplegables, casillas y fechas (el calendario deja la fecha en un campo oculto que avisa el cambio)
+      form.addEventListener('change', function (e) {
+        if (e.target.name && !e.target.matches(TEXTOS + ', input[type=text]')) programar(50);
       });
     });
   }

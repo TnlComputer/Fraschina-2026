@@ -17,7 +17,7 @@
       <!-- Selección de Producto -->
       <div class="form-group">
         <label for="producto_id">Producto</label>
-        <select name="producto_id" id="producto_id" class="form-control form-control-sm" required>
+        <select name="producto_id" id="producto_id" class="form-control form-control-sm" required data-buscador>
           <option value="">-- Seleccionar Producto --</option>
           @foreach($productos as $producto)
           <option value="{{ $producto->id }}">{{ $producto->nombre }}</option>

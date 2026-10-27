@@ -22,7 +22,7 @@
 <div class="row">
   <div class="col-md-12 mb-3">
     <label for="molino_id" class="form-label">Molino</label>
-    <select name="molino_id" id="molino_id" class="form-control @error('molino_id') is-invalid @enderror" required>
+    <select name="molino_id" id="molino_id" class="form-control @error('molino_id') is-invalid @enderror" required data-buscador>
       <option value="">Seleccione un Molino</option>
       @foreach ($molinos as $molino)
       <option value="{{ $molino->id }}" {{ old('molino_id', $personal->molino_id ?? '') ==
@@ -74,7 +74,7 @@
   <div class="col-md-6 mb-3">
     <label for="profesion_id" class="form-label">Profesión</label>
     <select name="profesion_id" id="profesion_id" class="form-control @error('profesion_id') is-invalid @enderror"
-      required>
+      required data-buscador>
       <option value="">Seleccione una profesión</option>
       @foreach ($profesiones as $profesion)
       <option value="{{ $profesion->id }}" {{ old('profesion_id', $personal->profesion_id ?? '') ==

@@ -34,7 +34,7 @@
             <div class="mb-3">
               <!-- Profesión/Especialidad/Oficio -->
               <label for="cod_prof" class="form-label">Profesión/Especialidad/Oficio</label>
-              <select name="cod_prof" id="cod_prof" class="form-select">
+              <select name="cod_prof" id="cod_prof" class="form-select" data-buscador>
                 @foreach ($profesiones as $profesion)
                 <option value="{{ $profesion->id }}" {{ $agenda->cod_prof == $profesion->id ? 'selected' : '' }}>
                   {{ sin_dato($profesion->nombreprofesion) }}

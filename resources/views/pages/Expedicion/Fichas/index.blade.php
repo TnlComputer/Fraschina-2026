@@ -14,10 +14,10 @@
               <div class="p-2 text-gray-900 text-left text-sm">
 
                 {{-- Selector de Cliente --}}
-                <form method="GET" action="{{ route('expedicion_fichas.index') }}" class="mb-3">
+                <form method="GET" action="{{ route('expedicion_fichas.index') }}" class="mb-3" data-buscar-al-escribir>
                   <div class="d-flex align-items-center">
                     <label for="cliente" class="m-2">Seleccionar Cliente </label>
-                    <select name="origen_tabla" id="cliente" class="form-control m-2" style="max-width: 300px;">
+                    <select name="origen_tabla" id="cliente" class="form-control m-2" style="max-width: 300px;" data-buscador>
                       <option value="">-- Todas las fichas --</option>
                       @foreach ($clientes as $cliente)
                       <option value="{{ $cliente->origen_tabla }}" {{ request('origen_tabla')==$cliente->origen_tabla ?

@@ -415,3 +415,7 @@ input.form-control[type="number"] { text-align: right; }
 .form-select:focus { border-color: #80bdff; outline: 0; }
 .form-select.is-invalid { border-color: #dc3545; }
 .form-label { display: inline-block; margin-bottom: .5rem; }
+
+/* Selectores con buscador (Tom Select) en filtros en línea: que no queden angostos */
+.form-inline .ts-wrapper { min-width: 220px; }
+.form-inline .ts-wrapper.mr-2 { margin-right: .5rem; }

@@ -90,7 +90,7 @@
               <!-- Ubicación -->
               <div class="col-md-3 mb-3">
                 <label for="barrio_id" class="form-label">Barrio</label>
-                <select name="barrio_id" id="barrio_id" class="form-select @error('barrio_id') is-invalid @enderror">
+                <select name="barrio_id" id="barrio_id" class="form-select @error('barrio_id') is-invalid @enderror" data-buscador>
                   <option value="">Seleccione un barrio</option>
                   @foreach ($barrios as $barrio)
                   <option value="{{ $barrio->id }}" @if (old('barrio_id', $representacion->barrio_id) == $barrio->id)
@@ -104,7 +104,7 @@
               <div class="col-md-3 mb-3">
                 <label for="municipio_id" class="form-label">Municipio</label>
                 <select name="municipio_id" id="municipio_id"
-                  class="form-select @error('municipio_id') is-invalid @enderror">
+                  class="form-select @error('municipio_id') is-invalid @enderror" data-buscador>
                   <option value="">Seleccione un municipio</option>
                   @foreach ($municipios as $municipio)
                   <option value="{{ $municipio->id }}" @if (old('municipio_id', $representacion->municipio_id) ==
@@ -118,7 +118,7 @@
               <div class="col-md-3 mb-3">
                 <label for="localidad_id" class="form-label">Localidad</label>
                 <select name="localidad_id" id="localidad_id"
-                  class="form-select @error('localidad_id') is-invalid @enderror">
+                  class="form-select @error('localidad_id') is-invalid @enderror" data-buscador>
                   <option value="">Seleccione una localidad</option>
                   @foreach ($localidades as $localidad)
                   <option value="{{ $localidad->id }}" @if (old('localidad_id', $representacion->localidad_id) ==
@@ -131,7 +131,7 @@
               </div>
               <div class="col-md-3 mb-3">
                 <label for="zona_id" class="form-label">Zona</label>
-                <select name="zona_id" id="zona_id" class="form-select @error('zona_id') is-invalid @enderror">
+                <select name="zona_id" id="zona_id" class="form-select @error('zona_id') is-invalid @enderror" data-buscador>
                   <option value="">Seleccione una zona</option>
                   @foreach ($zonas as $zona)
                   <option value="{{ $zona->id }}" @if (old('zona_id', $representacion->zona_id) == $zona->id) selected

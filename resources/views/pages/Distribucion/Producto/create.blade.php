@@ -15,7 +15,7 @@
       <div class="row">
         <div class="col-md-6 mb-3">
           <label for="producto_id" class="form-label">Producto</label>
-          <select class="form-control" id="producto_id" name="producto_id">
+          <select class="form-control" id="producto_id" name="producto_id" data-buscador>
             <option value="">Seleccione un producto</option>
             @foreach($productos as $producto)
             <option value="{{ $producto->id }}" {{ old('producto_id')==$producto->id ? 'selected' : '' }}>

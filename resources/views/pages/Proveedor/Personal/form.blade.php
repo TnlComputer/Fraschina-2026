@@ -23,7 +23,7 @@
   <div class="col-md-12 mb-3">
     <label for="proveedor_id" class="form-label">Proveedor</label>
     <select name="proveedor_id" id="proveedor_id" class="form-control @error('proveedor_id') is-invalid @enderror"
-      required>
+      required data-buscador>
       <option value="">Seleccione un Proveedor</option>
       @foreach ($proveedores as $proveedor)
       <option value="{{ $proveedor->id }}" {{ old('proveedor_id', $personal->proveedor_id ?? '') ==
@@ -75,7 +75,7 @@
   <div class="col-md-6 mb-3">
     <label for="profesion_id" class="form-label">Profesión</label>
     <select name="profesion_id" id="profesion_id" class="form-control @error('profesion_id') is-invalid @enderror"
-      required>
+      required data-buscador>
       <option value="">Seleccione una profesión</option>
       @foreach ($profesiones as $profesion)
       <option value="{{ $profesion->id }}" {{ old('profesion_id', $personal->profesion_id ?? '') ==

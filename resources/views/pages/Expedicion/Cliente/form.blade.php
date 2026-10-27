@@ -19,7 +19,7 @@
         </div>
         <div class="col-md-6">
           <label>Cliente (Representación)</label>
-          <select name="representacion_id" class="form-control">
+          <select name="representacion_id" class="form-control" data-buscador>
             <option value="">Sin vincular</option>
             @foreach ($representaciones as $r)
             <option value="{{ $r->id }}" @selected(old('representacion_id', $cliente->representacion_id) == $r->id)>{{ $r->razonsocial }}</option>
