@@ -7,6 +7,10 @@
  *  - El resto de las tablas queda dentro de un contenedor con desplazamiento lateral, para que no
  *    ensanchen la página (si no, la barra superior se estira y el contenido se corta).
  * Una tabla puede excluirse de las tarjetas con la clase .sin-tarjetas.
+ *
+ * Selectores con buscador: un <select data-buscador> se puede escribir para filtrar la lista
+ * (por nombre, razón social o número). Usa Tom Select, que se carga solo si la página lo necesita;
+ * el <select> original sigue siendo el que se envía y dispara 'change' como siempre.
  */
 (function () {
   'use strict';
@@ -65,6 +69,41 @@
     });
   }
 
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', preparar);
-  else preparar();
+  const TOM_SELECT = 'https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/';
+
+  function cargar(url, tipo) {
+    return new Promise(function (listo, error) {
+      const el = document.createElement(tipo === 'css' ? 'link' : 'script');
+      if (tipo === 'css') { el.rel = 'stylesheet'; el.href = url; } else { el.src = url; }
+      el.onload = listo; el.onerror = error;
+      document.head.appendChild(el);
+    });
+  }
+
+  function prepararBuscadores() {
+    const selects = document.querySelectorAll('select[data-buscador]');
+    if (!selects.length) return;
+    Promise.all([cargar(TOM_SELECT + 'css/tom-select.bootstrap4.min.css', 'css'), cargar(TOM_SELECT + 'js/tom-select.complete.min.js', 'js')])
+      .then(function () {
+        selects.forEach(function (select) {
+          const vacia = select.querySelector('option[value=""]');
+          new TomSelect(select, {
+            maxOptions: null,          // toda la lista, no solo las primeras 50
+            allowEmptyOption: false,
+            placeholder: vacia ? vacia.textContent.trim() : 'Escriba para buscar…',
+            searchField: ['text'],
+            render: { no_results: function () { return '<div class="no-results">Sin coincidencias</div>'; } },
+          });
+        });
+      })
+      .catch(function () { /* sin conexión al CDN: queda la lista común */ });
+  }
+
+  function iniciar() {
+    preparar();
+    prepararBuscadores();
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', iniciar);
+  else iniciar();
 })();

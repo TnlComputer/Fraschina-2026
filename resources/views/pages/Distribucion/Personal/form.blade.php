@@ -23,12 +23,12 @@
   <div class="col-md-12 mb-3">
     <label for="distribucion_id" class="form-label">Distribución</label>
     <select name="distribucion_id" id="distribucion_id"
-      class="form-control @error('distribucion_id') is-invalid @enderror" required>
+      class="form-control @error('distribucion_id') is-invalid @enderror" required data-buscador>
       <option value="">Seleccione una distribución</option>
       @foreach ($distribuciones as $distribucion)
       <option value="{{ $distribucion->id }}" {{ old('distribucion_id', $personal->distribucion_id ?? '') ==
         $distribucion->id ? 'selected' : '' }}>
-        {{ unir($distribucion->nomfantasia, $distribucion->razonsocial) }}
+        {{ $distribucion->id }} · {{ unir($distribucion->nomfantasia, $distribucion->razonsocial) }}
       </option>
       @endforeach
     </select>

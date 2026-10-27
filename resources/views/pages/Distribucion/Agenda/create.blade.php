@@ -17,17 +17,11 @@
       <div class="form-row">
         <div class="form-group col-md-4">
           <label for="distribucion_id">Distribución</label>
-          <select name="distribucion_id" id="distribucion_id" class="form-control">
+          <select name="distribucion_id" id="distribucion_id" class="form-control" data-buscador>
             <option value="">Seleccione una Distribución</option>
             @foreach($distribuciones as $distribucion)
             <option value="{{ $distribucion->id }}">
-              @if(!empty($distribucion->nomfantasia) && !empty($distribucion->razonsocial))
-              {{ unir($distribucion->nomfantasia, $distribucion->razonsocial) }}
-              @elseif(!empty($distribucion->nomfantasia))
-              {{ $distribucion->nomfantasia }}
-              @elseif(!empty($distribucion->razonsocial))
-              {{ $distribucion->razonsocial }}
-              @endif
+              {{ $distribucion->id }} · {{ unir($distribucion->nomfantasia, $distribucion->razonsocial) }}
             </option>
             @endforeach
           </select>
