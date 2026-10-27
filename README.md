@@ -65,6 +65,14 @@ registro, cada dato con su rótulo) y ninguna tabla ensancha la página. Lo resu
 puede quedar afuera de las tarjetas con la clase `sin-tarjetas`, y un `<select>` largo se vuelve
 buscable con el atributo `data-buscador`.
 
+### Buscar mientras se escribe
+En los listados (Distribución, Agenda, Agenda General, Molinos, Transporte, Tools, Clientes de
+Expedición, etc.) el buscador filtra solo al dejar de tipear, sin apretar "Buscar" y sin recargar
+la página: busca en todos los registros, el cursor queda en el buscador y la dirección conserva
+la búsqueda al paginar, recargar o volver atrás. Lo aplica `public/js/fraschina.js` a todo
+`form.form__buscar` o `form[data-buscar-al-escribir]`. Los filtros de varios campos (Pedidos de
+Expedición, Diaria, Auditoría, Historial) siguen con su botón Filtrar.
+
 ### Seguridad y trazabilidad
 - **Permisos por sección:** cada usuario ve y opera solo los módulos que su rol habilita.
 - **Nada se borra:** las bajas marcan el registro como eliminado y lo ocultan; la información
