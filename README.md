@@ -17,6 +17,9 @@ Venta y reparto a clientes propios (panaderías, comercios, industrias).
   cobro, situación crediticia, productos y precios por cliente.
 - **Agenda:** registro de llamados y contactos con cada cliente, con prioridad, acción,
   cotización y sus últimos pedidos a la vista.
+- **Elegir cliente:** en pedidos, agenda y personal el cliente se busca escribiendo parte del
+  nombre de fantasía, de la razón social o el número de cliente; la lista se filtra mientras se
+  escribe y sin escribir nada se despliega completa.
 - **Pedidos:** alta y modificación de pedidos con productos y tareas (cambios, retiros). Los
   totales se calculan con IVA (10,5 % o 21 % según el producto).
 - **Reparto:** planilla del día ordenada por chofer y orden de entrega, con datos de factura
@@ -27,7 +30,7 @@ Venta y reparto a clientes propios (panaderías, comercios, industrias).
   recepción (sobre el orden) y la ficha del cliente con CUIT, dirección y forma de cobro (sobre
   el nombre). *Ver pedido* muestra el pedido completo con los datos de facturación.
   Impresión de la planilla de reparto, de control y de recibos en PDF, y vista para el chofer
-  en el celular.
+  en el celular. En el celular cada pedido se ve como una tarjeta con los mismos campos.
 
 ### Expedición — Central de Pedidos
 Pedidos de clientes que se pasan a los molinos.
@@ -50,9 +53,17 @@ Pedidos de clientes que se pasan a los molinos.
 ### Otros módulos
 - **Molinos, Proveedores, Representación, Agro y Transporte:** fichas de empresas, personal de
   contacto y productos.
-- **Agenda General:** contactos generales.
+- **Agenda General:** contactos generales. En el celular los teléfonos se tocan para llamar y
+  el mail para escribir.
 - **Tools:** tablas auxiliares (calles, barrios, zonas, rubros, etc.), usuarios, roles y
   permisos, exportación de tablas a Excel.
+
+### Uso en el celular
+Todas las pantallas se adaptan al ancho del celular. Los listados se ven como tarjetas (una por
+registro, cada dato con su rótulo) y ninguna tabla ensancha la página. Lo resuelven
+`public/css/fraschina.css` y `public/js/fraschina.js` para todas las pantallas a la vez; una tabla
+puede quedar afuera de las tarjetas con la clase `sin-tarjetas`, y un `<select>` largo se vuelve
+buscable con el atributo `data-buscador`.
 
 ### Seguridad y trazabilidad
 - **Permisos por sección:** cada usuario ve y opera solo los módulos que su rol habilita.
@@ -67,7 +78,7 @@ Pedidos de clientes que se pasan a los molinos.
 ## Tecnología
 
 - PHP 8.3+ · Laravel 13 · MySQL 8 / MariaDB 10.6
-- AdminLTE (Bootstrap 4) · Vite · Tailwind
+- AdminLTE (Bootstrap 4) · Vite · Tailwind · Tom Select (buscadores) · flatpickr (calendarios)
 - spatie/laravel-permission (roles y permisos) · dompdf (PDF) · maatwebsite/excel (Excel)
 - Interfaz y mensajes en español; zona horaria America/Argentina/Buenos_Aires
 
