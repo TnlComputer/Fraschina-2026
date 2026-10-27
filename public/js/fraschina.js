@@ -11,6 +11,11 @@
  * Selectores con buscador: un <select data-buscador> se puede escribir para filtrar la lista
  * (por nombre, razón social o número). Usa Tom Select, que se carga solo si la página lo necesita;
  * el <select> original sigue siendo el que se envía y dispara 'change' como siempre.
+ *
+ * Buscar mientras se escribe: en los listados (form.form__buscar o form[data-buscar-al-escribir])
+ * el texto del buscador se envía solo al dejar de tipear; se pide la misma página al servidor y se
+ * reemplaza únicamente el listado (el buscador queda como está, con el cursor). La dirección se
+ * actualiza para que recargar, paginar o volver atrás conserven la búsqueda.
  */
 (function () {
   'use strict';
@@ -99,9 +104,66 @@
       .catch(function () { /* sin conexión al CDN: queda la lista común */ });
   }
 
+  const FORMS_BUSCAR = 'form.form__buscar, form[data-buscar-al-escribir]';
+
+  // Zona de resultados: el primer ancestro del formulario que también contiene el listado
+  function zonaResultados(form) {
+    let nivel = 0;
+    for (let el = form.parentElement; el && el !== document.body; el = el.parentElement, nivel++) {
+      if (el.querySelector('table, .pagination, .card-body > p')) return { zona: el, nivel: nivel };
+    }
+    return null;
+  }
+
+  function prepararBusquedaAlEscribir() {
+    document.querySelectorAll(FORMS_BUSCAR).forEach(function (form, indice) {
+      // El buscador es el campo de texto con nombre (los calendarios agregan campos de texto sin nombre)
+      const campo = form.querySelector('input[type=text][name]:not([readonly]), input[type=search][name]');
+      const destino = zonaResultados(form);
+      if (!campo || !destino) return;
+      let espera, pedido;
+
+      async function buscar() {
+        const url = new URL(form.getAttribute('action') || location.href, location.href);
+        url.search = new URLSearchParams(new FormData(form)).toString();
+        url.searchParams.delete('_token');
+        if (pedido) pedido.abort();
+        pedido = new AbortController();
+        try {
+          const r = await fetch(url, { headers: { Accept: 'text/html' }, signal: pedido.signal });
+          // Sesión vencida u otra respuesta inesperada: búsqueda común (lleva al login si hace falta)
+          if (!r.ok || r.redirected) return form.submit();
+          const doc = new DOMParser().parseFromString(await r.text(), 'text/html');
+          let nuevaZona = doc.querySelectorAll(FORMS_BUSCAR)[indice];
+          for (let i = 0; nuevaZona && i <= destino.nivel; i++) nuevaZona = nuevaZona.parentElement;
+          if (!nuevaZona) return form.submit();
+          // Se reemplaza todo lo de la zona menos la rama que contiene el buscador
+          const rama = [...destino.zona.children].find(h => h.contains(form));
+          const ramaNueva = [...nuevaZona.children].find(h => h.querySelector(FORMS_BUSCAR));
+          [...destino.zona.children].forEach(h => { if (h !== rama) h.remove(); });
+          const antes = [...nuevaZona.children].slice(0, [...nuevaZona.children].indexOf(ramaNueva));
+          const despues = [...nuevaZona.children].slice([...nuevaZona.children].indexOf(ramaNueva) + 1);
+          antes.forEach(h => destino.zona.insertBefore(document.adoptNode(h), rama));
+          despues.forEach(h => destino.zona.appendChild(document.adoptNode(h)));
+          history.replaceState(null, '', url);
+          preparar();
+        } catch (e) {
+          if (e.name !== 'AbortError') form.submit();
+        }
+      }
+
+      campo.setAttribute('autocomplete', 'off');
+      campo.addEventListener('input', function () {
+        clearTimeout(espera);
+        espera = setTimeout(buscar, 350);
+      });
+    });
+  }
+
   function iniciar() {
     preparar();
     prepararBuscadores();
+    prepararBusquedaAlEscribir();
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', iniciar);

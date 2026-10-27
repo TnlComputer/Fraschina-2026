@@ -12,7 +12,7 @@
 @section('content')
 <div class="card">
   <div class="card-body">
-    <form method="GET" class="form-inline mb-3">
+    <form method="GET" class="form-inline mb-3" data-buscar-al-escribir>
       <input type="text" name="name" value="{{ $name }}" placeholder="Buscar por sigla o razón social" class="form-control form-control-sm mr-2" style="min-width: 280px">
       <button class="btn btn-sm btn-secondary">Buscar</button>
     </form>

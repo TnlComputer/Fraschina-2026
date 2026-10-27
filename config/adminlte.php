@@ -634,7 +634,7 @@ return [
         [
           'type' => 'js',
           'asset' => true,
-          'location' => 'js/fraschina.js?v=20261027a',
+          'location' => 'js/fraschina.js?v=20261027b',
         ],
       ],
     ],
