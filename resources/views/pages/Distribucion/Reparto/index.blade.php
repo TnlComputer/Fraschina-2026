@@ -186,10 +186,8 @@
             </a> --}}
           </td>
           @endif
-          <td class="c-guardar"><button type="submit" form="distribucion-form-{{ $distribucion->id }}" class="btn btn-xs" title="Guardar factura, chofer y orden">
-              <i class="fas fa-sync-alt fs-xs text-orange"></i>
-            </button>
-          </td>
+          {{-- Factura, chofer y orden se guardan solos al salir del campo; acá se ve si se guardó --}}
+          <td class="c-guardar text-center"><span class="reparto-estado" id="estado-pedido-{{ $distribucion->id }}" title="Se guarda solo al salir del campo"></span></td>
           @if ($distribucion->tipo != 'T')
           <td class="text-center c-ffac" data-label="Fecha factura">
             <input type="date" name="fechaFactura" form="distribucion-form-{{ $distribucion->id }}" value="{{ $distribucion->fechaFactura }}"
@@ -454,6 +452,50 @@ function verificarDatos(event, url) {
       input.classList.toggle('factura-difiere', importe !== 0 && Math.abs(dif) > 0.01);
       input.title = `Diferencia: $ ${numeroAr(dif)}`;
     });
+  });
+
+  // Guardado automático: al salir de un campo (o con Enter) se guarda la fila sin recargar la página.
+  // Si se cambia otro campo de la misma fila mientras se guarda, se vuelve a guardar al terminar.
+  const guardandoFila = {}, pendienteFila = {};
+  function marcarEstado(id, clase, titulo) {
+    const span = document.getElementById('estado-pedido-' + id);
+    if (!span) return;
+    span.innerHTML = clase ? `<i class="fas ${clase} fs-xs"></i>` : '';
+    span.title = titulo;
+  }
+  async function guardarFila(form) {
+    const id = form.id.replace('distribucion-form-', '');
+    if (guardandoFila[id]) { pendienteFila[id] = true; return; }
+    guardandoFila[id] = true;
+    marcarEstado(id, 'fa-spinner fa-spin text-muted', 'Guardando...');
+    try {
+      const r = await fetch(form.action, {
+        method: 'POST',
+        headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+        body: new FormData(form), // incluye los campos de la fila (form="...") y el _method PUT
+      });
+      if (r.ok) {
+        marcarEstado(id, 'fa-check text-success', 'Guardado a las ' + new Date().toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' }));
+      } else {
+        const datos = await r.json().catch(() => ({}));
+        const errores = datos.errors ? Object.values(datos.errors).flat().join('\n') : 'Error ' + r.status;
+        marcarEstado(id, 'fa-exclamation-triangle text-danger', 'No se guardó: ' + errores);
+        Swal.fire({ title: 'No se guardó el pedido ' + id, text: errores, icon: 'error' });
+      }
+    } catch (e) {
+      marcarEstado(id, 'fa-exclamation-triangle text-danger', 'No se guardó: sin conexión');
+      Swal.fire({ title: 'No se guardó el pedido ' + id, text: 'Revisá la conexión y volvé a cambiar el dato.', icon: 'error' });
+    }
+    guardandoFila[id] = false;
+    if (pendienteFila[id]) { pendienteFila[id] = false; guardarFila(form); }
+  }
+  document.querySelectorAll('.reparto-tabla input[form^="distribucion-form-"]').forEach(input => {
+    input.addEventListener('change', () => guardarFila(input.form));
+    input.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); input.blur(); } });
+  });
+  // Avisar si se quiere salir de la página mientras algo se está guardando
+  window.addEventListener('beforeunload', e => {
+    if (Object.values(guardandoFila).some(Boolean)) { e.preventDefault(); e.returnValue = ''; }
   });
 
   // Carteles al pasar el mouse: productos del pedido (importe), datos de entrega (orden) y ficha del cliente (nombres)

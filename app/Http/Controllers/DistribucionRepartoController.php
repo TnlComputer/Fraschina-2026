@@ -129,6 +129,11 @@ class DistribucionRepartoController extends Controller
     $pedido->orden = $validated['orden'] ?? null;
     $pedido->save();
 
+    // Guardado automático desde el listado (sin recargar la página)
+    if ($request->expectsJson()) {
+      return response()->json(['ok' => true]);
+    }
+
     return redirect()->route('distribucion_reparto.index', ['fecha' => $validated['fecha'] ?? null])
       ->with('success', 'Distribución actualizada correctamente');
   }

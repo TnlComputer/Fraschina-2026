@@ -159,7 +159,9 @@ class DistribucionPedidoTest extends TestCase
             ->assertOk()
             ->assertSee('name="nroFactura" form="distribucion-form-' . $pedido->id . '"', false)
             ->assertSee('name="chofer" form="distribucion-form-' . $pedido->id . '"', false)
-            ->assertSee('Factura No Impresa');
+            ->assertSee('id="estado-pedido-' . $pedido->id . '"', false)
+            ->assertDontSee('fa-times-circle', false)   // sin factura impresa: sin cruz roja
+            ->assertDontSee('fa-sync-alt', false);      // sin botón de guardar: se guarda solo
 
         $this->actingAs($this->user)->put("/distribucion_reparto/{$pedido->id}", [
             'fechaFactura' => '2026-10-14', 'nroFactura' => '16683', 'totalFactura' => 1105,
@@ -169,6 +171,22 @@ class DistribucionPedidoTest extends TestCase
         $pedido->refresh();
         $this->assertSame(['16683', 'H', 3], [$pedido->nroFactura, $pedido->chofer, (int) $pedido->orden]);
         $this->actingAs($this->user)->get('/distribucion_reparto?fecha=2026-10-15')->assertSee('value="16683"', false);
+
+        // Guardado automático al salir del campo: responde JSON, sin redirigir
+        $this->actingAs($this->user)->putJson("/distribucion_reparto/{$pedido->id}", [
+            'fechaFactura' => '2026-10-14', 'nroFactura' => '16684', 'totalFactura' => 1105,
+            'chofer' => 'J', 'orden' => 4, 'fecha' => '2026-10-15',
+        ])->assertOk()->assertExactJson(['ok' => true]);
+        $this->assertSame(['16684', 'J', 4], [$pedido->fresh()->nroFactura, $pedido->fresh()->chofer, (int) $pedido->fresh()->orden]);
+
+        // Dato inválido: no se guarda y devuelve el error para mostrarlo
+        $this->actingAs($this->user)->putJson("/distribucion_reparto/{$pedido->id}", ['chofer' => 'XYZ'])
+            ->assertStatus(422)->assertJsonValidationErrors('chofer');
+        $this->assertSame('J', $pedido->fresh()->chofer);
+
+        // Cliente que lleva factura impresa: impresora para imprimir
+        DB::table('distribucions')->where('id', $this->clienteId)->update(['fac_imp' => 'SI']);
+        $this->actingAs($this->user)->get('/distribucion_reparto?fecha=2026-10-15')->assertSee('Imprimir factura');
     }
 
     public function test_indicadores_si_no_del_cliente(): void

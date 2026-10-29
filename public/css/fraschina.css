@@ -301,7 +301,7 @@ input.form-control[type="number"] { text-align: right; }
   .reparto-tabla td.c-recibo { grid-area: recibo; }
   .reparto-tabla td.c-ver { grid-area: ver; }
   .reparto-tabla td.c-editar { grid-area: editar; }
-  .reparto-tabla td.c-guardar { grid-area: guardar; }
+  .reparto-tabla td.c-guardar { grid-area: guardar; display: flex !important; align-items: center; justify-content: center; }
   /* Rótulo arriba de cada campo */
   .reparto-tabla td[data-label]::before {
     content: attr(data-label); display: block; font-size: .7rem; font-weight: 600;
