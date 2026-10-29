@@ -62,6 +62,8 @@ use App\Http\Controllers\TransportePersonalController;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\VerazController;
 use App\Http\Controllers\ZonaController;
+use App\Http\Controllers\DepositoController;
+use App\Http\Controllers\ChoferController;
 use Illuminate\Support\Facades\Route;
 
 // La raíz lleva al inicio (o al ingreso si no hay sesión)
@@ -133,6 +135,8 @@ Route::middleware(['auth', 'permission:permiso_2', 'accion'])->group(function ()
     ->name('distribucion_reparto.imprimirReparto');
   Route::get('/distribucion/reparto/control', [DistribucionRepartoController::class, 'imprimirControl'])
     ->name('distribucion_reparto.imprimirControl');
+  Route::post('/distribucion/reparto/sugerir-orden', [DistribucionRepartoController::class, 'sugerirOrden'])
+    ->name('distribucion_reparto.sugerirOrden');
   Route::get('/distribucion/pedidos/{id}/imprimirRecibo', [DistribucionRepartoController::class, 'imprimirRecibo'])
     ->name('distribucion_reparto.imprimirRecibo');
   Route::get('/convertir-letras/{numero}/{moneda}', [DistribucionRepartoController::class, 'convertirNumeroALetras']);
@@ -246,6 +250,8 @@ Route::middleware(['auth', 'permission:permiso_9', 'accion'])->group(function ()
   Route::resource('/tools/ciudades_municipios', MunicipioController::class);
   Route::resource('/tools/localidades', LocalidadController::class);
   Route::resource('/tools/zonas', ZonaController::class);
+  Route::resource('/tools/depositos', DepositoController::class);
+  Route::resource('/tools/choferes', ChoferController::class);
   Route::resource('/tools/familias', FamiliaController::class);
   Route::resource('/tools/rubros', RubroController::class);
   Route::resource('/tools/cargos', CargoController::class);

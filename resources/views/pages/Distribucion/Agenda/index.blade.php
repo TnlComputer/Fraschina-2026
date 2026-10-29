@@ -78,13 +78,13 @@
           </td> --}}
           <td class="d-flex justify-content-center">
             <!-- Botón de Ver Más -->
-            <button class="btn btn-info btn-xs d-inline mr-2" data-toggle="modal" data-target="#modal{{ $agenda->id }}">
-              <i class="fas fa-eye fs-sm"></i>
+            <button class="btn btn-info btn-xs d-inline mr-2" title="Ver" data-toggle="modal" data-target="#modal{{ $agenda->id }}">
+              <i class="fa-regular fa-eye fa-sm"></i>
             </button>
             @can('permiso_12')
             <!-- Botón de Editar -->
-            <a href="{{ route('distribucion_agenda.edit', $agenda->id) }}" class="btn btn-warning btn-xs d-inline mr-2">
-              <i class="fas fa-edit fa-sm"></i>
+            <a href="{{ route('distribucion_agenda.edit', $agenda->id) }}" class="btn btn-warning btn-xs d-inline mr-2" title="Editar">
+              <i class="fa-solid fa-pen-to-square fa-sm"></i>
             </a>
             @endcan
             @can('permiso_13')
@@ -92,9 +92,9 @@
             <form action="{{ route('distribucion_agenda.destroy', $agenda->id) }}" method="POST" class="d-inline">
               @csrf
               @method('DELETE')
-              <button type="submit" class="btn btn-danger btn-xs"
+              <button type="submit" class="btn btn-danger btn-xs" title="Eliminar"
                 onclick="return confirm('¿Estás seguro de que quieres desactivar este registro?')">
-                <i class="fas fa-trash-alt fa-sm"></i>
+                <i class="fa-solid fa-trash fa-sm"></i>
               </button>
             </form>
             @endcan

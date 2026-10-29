@@ -93,9 +93,9 @@
           </td>
           <td class="small">{{ $p->enviado_at?->format('d/m H:i') }}</td>
           <td class="text-nowrap">
-            <a href="{{ route('expedicion_pedido.show', $p) }}" class="btn btn-xs btn-info" title="Ver"><i class="fas fa-eye"></i></a>
+            <a href="{{ route('expedicion_pedido.show', $p) }}" class="btn btn-xs btn-info" title="Ver"><i class="fa-regular fa-eye"></i></a>
             @if ($p->esEditable())
-            <a href="{{ route('expedicion_pedido.edit', $p) }}" class="btn btn-xs btn-warning" title="Editar"><i class="fas fa-edit"></i></a>
+            <a href="{{ route('expedicion_pedido.edit', $p) }}" class="btn btn-xs btn-warning" title="Editar"><i class="fa-solid fa-pen-to-square"></i></a>
             @endif
           </td>
         </tr>

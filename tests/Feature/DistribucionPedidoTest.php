@@ -124,8 +124,8 @@ class DistribucionPedidoTest extends TestCase
 
         // Un solo botón por fila: abre el pedido recordando el día de Reparto
         $abrir = route('distribucion_reparto.show', ['distribucion_reparto' => $pedido->id, 'volver' => '2026-10-15']);
-        $this->actingAs($this->user)->get('/distribucion_reparto?fecha=2026-10-15')
-            ->assertSee(e($abrir), false)->assertDontSee('fa-eye', false);
+        $planilla = $this->actingAs($this->user)->get('/distribucion_reparto?fecha=2026-10-15')->assertSee(e($abrir), false);
+        $this->assertSame(1, substr_count($planilla->getContent(), 'title="Ver pedido"'));
 
         // Ver → Editar y Volver llevan ese día
         $this->actingAs($this->user)->get($abrir)->assertOk()

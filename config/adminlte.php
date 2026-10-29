@@ -494,6 +494,16 @@ return [
           ],
         ],
         [
+          'text' => 'Depósitos',
+          'icon' => 'fas fa-fw fa-warehouse',
+          'url' => 'tools/depositos',
+        ],
+        [
+          'text' => 'Choferes',
+          'icon' => 'fas fa-fw fa-truck',
+          'url' => 'tools/choferes',
+        ],
+        [
           'text' => 'Auxiliares',
           'icon' => 'fas fa-fw fa-question-circle',
           'can' => ['permiso_99', 'permiso_9'],
@@ -629,7 +639,7 @@ return [
         [
           'type' => 'css',
           'asset' => true,
-          'location' => 'css/fraschina.css?v=20261029j',
+          'location' => 'css/fraschina.css?v=20261029l',
         ],
         [
           'type' => 'js',

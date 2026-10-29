@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Chofer;
+use App\Models\Deposito;
 use App\Models\DistribucionNroPedidos;
+use App\Services\RutaReparto;
 use Dompdf\Dompdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -33,7 +36,54 @@ class DistribucionRepartoController extends Controller
       ->ordenReparto()
       ->get();
 
-    return view('pages.Distribucion.Reparto.index', compact('distribuciones', 'fecha'));
+    $choferes = Chofer::orderBy('codigo')->pluck('nombre', 'codigo');
+
+    return view('pages.Distribucion.Reparto.index', compact('distribuciones', 'fecha', 'choferes'));
+  }
+
+  /**
+   * Carga en Orden el recorrido sugerido de cada chofer del día: sale del depósito principal,
+   * respeta los horarios de entrega y busca el camino más corto (ver RutaReparto).
+   */
+  public function sugerirOrden(Request $request, RutaReparto $ruta)
+  {
+    $fecha = $this->fechaValida($request);
+    $deposito = Deposito::principal();
+    if (!$deposito?->tieneUbicacion()) {
+      return redirect()->route('distribucion_reparto.index', ['fecha' => $fecha])
+        ->with('error', 'Falta el depósito de salida: cárguelo con su ubicación en Tools → Depósitos.');
+    }
+
+    set_time_limit(300);  // la primera vez ubica en el mapa a cada cliente (uno por segundo)
+    $pedidos = DistribucionNroPedidos::with(self::DIRECCION)
+      ->where('status', 'A')->whereDate('fechaEntrega', $fecha)->conLineas()->ordenReparto()->get();
+
+    $km = 0;
+    $tarde = $sinUbicar = [];
+    foreach ($pedidos->groupBy(fn($p) => trim((string) $p->chofer)) as $delChofer) {
+      $sugerido = $ruta->sugerir($delChofer, [$deposito->latitud, $deposito->longitud]);
+      foreach ($delChofer as $pedido) {
+        if ((int) $pedido->orden !== $sugerido['orden'][$pedido->id]) {
+          $pedido->update(['orden' => $sugerido['orden'][$pedido->id]]);
+        }
+      }
+      $km += $sugerido['km'];
+      array_push($tarde, ...$sugerido['tarde']);
+      array_push($sinUbicar, ...$sugerido['sinUbicar']);
+    }
+
+    $choferes = $pedidos->pluck('chofer')->map(fn($c) => trim((string) $c))->unique()->count();
+    $mensaje = "Orden sugerido cargado: {$pedidos->count()} pedidos" . ($choferes > 1 ? " de $choferes choferes" : '')
+      . ', unos ' . numero($km) . ' km saliendo de ' . $deposito->nombre . '.';
+    if ($tarde) {
+      $mensaje .= ' No se llega en horario a: ' . implode(', ', $tarde) . '.';
+    }
+    if ($sinUbicar) {
+      $mensaje .= ' Sin ubicar en el mapa (quedaron al final): ' . implode(', ', $sinUbicar) . '.';
+    }
+
+    return redirect()->route('distribucion_reparto.index', ['fecha' => $fecha])
+      ->with($tarde || $sinUbicar ? 'warning' : 'success', $mensaje);
   }
 
   /**

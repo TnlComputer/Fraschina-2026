@@ -87,7 +87,7 @@
           <td>
             <form method="POST" action="{{ route('expedicion_avisos.destroy', $d) }}" class="d-inline" onsubmit="return confirm('¿Eliminar destinatario?');">
               @csrf @method('DELETE')
-              <button class="btn btn-xs btn-outline-danger"><i class="fas fa-trash"></i></button>
+              <button class="btn btn-xs btn-danger" title="Eliminar"><i class="fa-solid fa-trash"></i></button>
             </form>
           </td>
         </tr>

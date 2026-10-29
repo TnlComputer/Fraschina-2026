@@ -113,7 +113,8 @@ input.form-control[type="number"] { text-align: right; }
 @media (min-width: 768px) {
   .reparto-tabla td.c-pedido, .reparto-tabla td.c-tipo, .reparto-tabla td.c-chofer, .reparto-tabla td.c-orden, .reparto-tabla td.c-ffac, .reparto-tabla td.c-nfac, .reparto-tabla td.c-ifac { width: 1%; }
   .reparto-tabla td.c-imp, .reparto-tabla td.c-recibo, .reparto-tabla td.c-abrir, .reparto-tabla td.c-guardar { width: 1%; white-space: nowrap; padding-left: .2rem; padding-right: .2rem; }
-  .reparto-tabla td.c-recibo .btn, .reparto-tabla td.c-abrir .btn { padding: .1rem .35rem; font-size: .8rem; line-height: 1.2; }
+  /* Mismo cuadradito relleno que los botones de acción de los demás listados */
+  .reparto-tabla td.c-recibo .btn, .reparto-tabla td.c-abrir .btn { display: inline-flex; align-items: center; justify-content: center; min-width: 28px; height: 26px; padding: 0 .4rem; border: 0; font-size: .8rem; line-height: 1; }
   .reparto-tabla th.c-angosta { width: 1%; padding-left: .2rem; padding-right: .2rem; }
 }
 /* Flechitas de aumentar/disminuir separadas del número (Chrome / Edge) */
@@ -226,6 +227,10 @@ input.form-control[type="number"] { text-align: right; }
 .form-acciones { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; }
 .form-acciones .btn { margin: 0 !important; font-size: 1rem; padding: .375rem .9rem; }
 .btn > i + span, .btn > i:first-child:not(:only-child) { margin-right: .3rem; }
+/* Texto que solo se ve en el celular (d-md-none): en la computadora el ícono queda solo y centrado en su botón */
+@media (min-width: 768px) {
+  .btn > i:first-child:has(+ .d-md-none:last-child) { margin-right: 0; }
+}
 
 /* Barras de botones en pantallas angostas: que bajen de renglón en vez de salirse o pisarse */
 @media (max-width: 767.98px) {

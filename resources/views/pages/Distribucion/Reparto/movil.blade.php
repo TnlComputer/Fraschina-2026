@@ -90,7 +90,7 @@
     @if ($tel)
     <a href="tel:{{ $tel }}" class="btn btn-outline-success flex-fill"><i class="fas fa-phone"></i> Llamar</a>
     @endif
-    <a href="{{ route('distribucion_reparto.show', $p->id) }}" class="btn btn-outline-secondary flex-fill"><i class="fas fa-eye"></i> Detalle</a>
+    <a href="{{ route('distribucion_reparto.show', $p->id) }}" class="btn btn-outline-secondary flex-fill"><i class="fa-regular fa-eye"></i> Ver pedido</a>
   </div>
 </div>
 @empty

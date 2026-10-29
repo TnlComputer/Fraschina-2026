@@ -26,7 +26,7 @@
           <td>{{ $c->representacion?->razonsocial ?? '—' }}</td>
           <td class="small">{{ \Illuminate\Support\Str::limit(implode(' / ', $c->lineasTexto()), 120) }}</td>
           <td class="text-nowrap">
-            <a href="{{ route('expedicion_cliente.edit', $c) }}" class="btn btn-xs btn-warning"><i class="fas fa-edit"></i></a>
+            <a href="{{ route('expedicion_cliente.edit', $c) }}" class="btn btn-xs btn-warning" title="Editar"><i class="fa-solid fa-pen-to-square"></i></a>
             <a href="{{ route('expedicion_MTC.index', ['cliente_id' => $c->id]) }}" class="btn btn-xs btn-outline-secondary" title="Configuración por molino">Molinos</a>
           </td>
         </tr>

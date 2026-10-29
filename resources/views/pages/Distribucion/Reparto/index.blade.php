@@ -43,6 +43,16 @@
         title="Impresión Control" class="btn btn-secondary">
         <i class="fas fa-print"></i> Control
       </a>
+      @can('permiso_12')
+      @if ($distribuciones->isNotEmpty())
+      {{-- Recorrido sugerido: sale del depósito principal, respeta horarios y acorta el camino de cada chofer --}}
+      {{-- El botón está en el título de la columna Orden --}}
+      <form method="POST" action="{{ route('distribucion_reparto.sugerirOrden') }}" class="d-none" id="form-sugerir-orden">
+        @csrf
+        <input type="hidden" name="fecha" value="{{ $fecha }}">
+      </form>
+      @endif
+      @endcan
     </div>
     <!-- Formulario y Botones de Cambio de Fecha a la derecha -->
     <form method="GET" action="{{ route('distribucion_reparto.index') }}" id="fecha-form"
@@ -59,6 +69,13 @@
       <button type="button" class="btn btn-primary mx-1 h-100" id="hoy-btn">Hoy</button>
     </form>
   </div>
+
+  {{-- Choferes cargados en Tools → Choferes, para elegir en el campo Chofer --}}
+  <datalist id="lista-choferes">
+    @foreach ($choferes as $codigo => $nombre)
+    <option value="{{ $codigo }}">{{ $nombre }}</option>
+    @endforeach
+  </datalist>
 
   {{-- Un formulario por pedido, fuera de la tabla: los campos de cada fila se asocian con form="..." --}}
   @foreach ($distribuciones as $distribucion)
@@ -119,6 +136,9 @@
     </div>
     <div id="entrega-pedido-{{ $distribucion->id }}">
       <table class="table table-sm table-bordered mb-0 text-xs">
+        <tr><th>Dirección</th><td class="popover-texto">{{ $cli?->auxCalles?->calle }} {{ $cli?->dire_nro }}
+          @if ($barrio = unir($cli?->auxbarrio?->nombrebarrio, $cli?->auxlocalidad?->localidad))<br>{{ $barrio }}@endif
+          @if (trim((string) $cli?->auxzona?->nombre))<br>Zona {{ trim($cli->auxzona->nombre) }}@endif</td></tr>
         <tr><th>Horario Entrega</th><td>Mañana: {{ horario($cli?->desde, $cli?->hasta) }}<br>Tarde: {{ horario($cli?->desde1, $cli?->hasta1) }}</td></tr>
         <tr><th>Lun Cerrado</th><td>{{ $cli?->lunes ?: '—' }}</td></tr>
         <tr><th>Sáb Recibe</th><td>{{ $cli?->sabado ?: '—' }}</td></tr>
@@ -139,7 +159,16 @@
         <th class="text-left">Nombre Fantasía</th>
         <th class="text-left">Razón Social</th>
         <th class="text-center">Chofer</th>
-        <th class="text-center">Orden</th>
+        <th class="text-center text-nowrap">Orden
+          @can('permiso_12')
+          @if ($distribuciones->isNotEmpty())
+          <button type="submit" form="form-sugerir-orden" id="btn-sugerir-orden" class="btn btn-xs btn-warning ml-1"
+            title="Sugerir orden: calcula el recorrido de cada chofer según dirección y horario">
+            <i class="fas fa-route"></i>
+          </button>
+          @endif
+          @endcan
+        </th>
         <th class="text-center">Fecha Fac.</th>
         <th class="text-center">Nro. Fac.</th>
         <th class="text-center">Importe Fac.</th>
@@ -162,7 +191,8 @@
         </td>
         <td class="c-razon"><span class="reparto-cliente" data-pedido="{{ $distribucion->id }}">{{ $distribucion->distribucion->razonsocial }}</span></td>
         <td class="text-center c-chofer" data-label="Chofer">
-          <input type="text" name="chofer" form="{{ $form }}" value="{{ $distribucion->chofer }}" class="form-control form-control-sm text-center reparto-campo" maxlength="2" />
+          <input type="text" name="chofer" form="{{ $form }}" value="{{ $distribucion->chofer }}" class="form-control form-control-sm text-center reparto-campo" maxlength="2"
+            list="lista-choferes" title="{{ $choferes[mb_strtoupper(trim((string) $distribucion->chofer))] ?? '' }}" />
         </td>
         <td class="text-center c-orden" data-label="Orden">
           <input type="number" name="orden" form="{{ $form }}" value="{{ $distribucion->orden }}" class="form-control form-control-sm text-center reparto-campo reparto-entrega" data-pedido="{{ $distribucion->id }}" />
@@ -192,7 +222,7 @@
         </td>
         <td class="c-recibo text-center">
           <a href="{{ route('distribucion_reparto.imprimirRecibo', ['id' => $distribucion->id]) }}"
-            class="btn btn-sm btn-outline-info" title="Imprimir recibo" target="_blank">
+            class="btn btn-xs btn-secondary" title="Imprimir recibo" target="_blank">
             <i class="fas fa-receipt"></i><span class="d-md-none ml-1">Recibo</span>
           </a>
         </td>
@@ -206,8 +236,8 @@
         @endif
         {{-- Un solo botón para ver el pedido completo; desde ahí se edita y se vuelve a este día --}}
         <td class="c-abrir text-center">
-          <a href="{{ $abrir }}" class="btn btn-sm btn-outline-primary" title="Ver / editar pedido">
-            <i class="fas fa-pen-to-square"></i><span class="d-md-none ml-1">Ver / editar</span>
+          <a href="{{ $abrir }}" class="btn btn-xs btn-info" title="Ver pedido">
+            <i class="fa-regular fa-eye"></i><span class="d-md-none ml-1">Ver pedido</span>
           </a>
         </td>
         {{-- Factura, chofer y orden se guardan solos al salir del campo; acá se ve si se guardó --}}
@@ -352,6 +382,27 @@ function verificarDatos(event, url) {
     window.open(url, "_blank"); // Si todo está completo, abrir directamente
   }
 }
+
+// Sugerir orden reemplaza el orden cargado: se confirma antes
+document.getElementById("form-sugerir-orden")?.addEventListener("submit", function (event) {
+  event.preventDefault();
+  const form = this;
+  Swal.fire({
+    title: "Sugerir orden",
+    text: "Se reemplaza el orden de entrega de todos los pedidos del día por el recorrido sugerido de cada chofer, saliendo del depósito y respetando los horarios. La primera vez puede tardar un poco mientras ubica a los clientes en el mapa.",
+    icon: "question",
+    showCancelButton: true,
+    confirmButtonText: "Cargar el orden sugerido",
+    cancelButtonText: "Cancelar"
+  }).then((result) => {
+    if (result.isConfirmed) {
+      const boton = document.getElementById("btn-sugerir-orden");
+      boton.disabled = true;
+      boton.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+      form.submit();
+    }
+  });
+});
 
 
 

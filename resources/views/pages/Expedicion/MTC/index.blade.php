@@ -47,10 +47,10 @@
             · {{ $cfg->mostrar_especiales ? 'Especiales' : 'Sin especiales' }}
           </td>
           <td class="text-nowrap">
-            <a href="{{ route('expedicion_MTC.edit', $cfg) }}" class="btn btn-xs btn-warning"><i class="fas fa-edit"></i></a>
+            <a href="{{ route('expedicion_MTC.edit', $cfg) }}" class="btn btn-xs btn-warning" title="Editar"><i class="fa-solid fa-pen-to-square"></i></a>
             <form method="POST" action="{{ route('expedicion_MTC.destroy', $cfg) }}" class="d-inline" onsubmit="return confirm('¿Eliminar configuración?');">
               @csrf @method('DELETE')
-              <button class="btn btn-xs btn-outline-danger"><i class="fas fa-trash"></i></button>
+              <button class="btn btn-xs btn-danger" title="Eliminar"><i class="fa-solid fa-trash"></i></button>
             </form>
           </td>
         </tr>

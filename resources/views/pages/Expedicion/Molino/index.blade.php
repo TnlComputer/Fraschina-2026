@@ -28,7 +28,7 @@
           <td>{{ $m->muestraPrecio() ? 'Sí' : 'No' }}</td>
           <td>{{ $m->nroUPed }}</td>
           <td class="text-nowrap">
-            <a href="{{ route('expedicion_molino.edit', $m) }}" class="btn btn-xs btn-warning"><i class="fas fa-edit"></i></a>
+            <a href="{{ route('expedicion_molino.edit', $m) }}" class="btn btn-xs btn-warning" title="Editar"><i class="fa-solid fa-pen-to-square"></i></a>
             <a href="{{ route('expedicion_avisos.index') }}" class="btn btn-xs btn-outline-secondary">Avisos</a>
           </td>
         </tr>

@@ -20,7 +20,7 @@ $volver = preg_match('/^\d{4}-\d{2}-\d{2}$/', (string) request('volver')) ? requ
       @can('permiso_12')
       <a href="{{ route('distribucion_pedido.edit', ['distribucion_pedido' => $pedido->id, 'volver' => $volver]) }}"
         class="btn btn-sm btn-light" title="Editar Pedido">
-        <i class="fas fa-pen text-blue"></i> Editar
+        <i class="fa-solid fa-pen-to-square text-blue"></i> Editar
       </a>
       @endcan
     </div>

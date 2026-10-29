@@ -73,7 +73,7 @@ $pesos = fn($n) => '$' . number_format((float) $n, 2, ',', '.');
               <td>{{ $p->distribucion?->nomfantasia }}</td>
               <td>{{ $p->fechaEntrega ? \Carbon\Carbon::parse($p->fechaEntrega)->format('d/m/Y') : '—' }}</td>
               <td class="text-right">{{ $pesos($p->totalPedido) }}</td>
-              <td class="text-right"><a href="{{ route('distribucion_reparto.show', $p->id) }}" class="btn btn-xs btn-outline-primary" title="Ver"><i class="fas fa-eye"></i></a></td>
+              <td class="text-right"><a href="{{ route('distribucion_reparto.show', $p->id) }}" class="btn btn-xs btn-info" title="Ver"><i class="fa-regular fa-eye"></i></a></td>
             </tr>
             @empty
             <tr><td colspan="5" class="text-center text-muted">Sin pedidos.</td></tr>
