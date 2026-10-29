@@ -450,7 +450,7 @@ return [
               'text' => 'Auditoría',
               'icon' => 'fas fa-fw fa-clipboard-check',
               'url' => 'tools/auditoria',
-              'can' => ['permiso_99'],
+              'can' => ['permiso_14'],
             ],
             [
               'text' => 'Configuración',

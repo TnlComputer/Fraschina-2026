@@ -49,7 +49,7 @@ class DashboardController extends Controller
       ];
     }
 
-    if ($usuario->can('permiso_99')) {
+    if ($usuario->can('permiso_14')) {
       $datos['auditoria'] = Auditoria::latest('id')->limit(8)->get();
     }
 

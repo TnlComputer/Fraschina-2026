@@ -16,12 +16,13 @@ class RoleController extends Controller
 {
   public const SUPER = 'permiso_99';
   public const CONFIGURACION = 'permiso_10';
+  public const AUDITORIA = 'permiso_14';
 
   /**
    * Permisos reservados: no se asignan desde el formulario y los roles que los tienen (admin, supervisor)
    * solo los ve, modifica y asigna el Super Usuario.
    */
-  public const RESERVADOS = [self::SUPER, self::CONFIGURACION];
+  public const RESERVADOS = [self::SUPER, self::CONFIGURACION, self::AUDITORIA];
 
   /** Permisos de sección (a qué pantallas entra) y de acción (qué puede hacer con los registros). */
   public const SECCIONES = ['permiso_1', 'permiso_2', 'permiso_3', 'permiso_4', 'permiso_5', 'permiso_6', 'permiso_7', 'permiso_8', 'permiso_9'];

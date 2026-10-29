@@ -266,9 +266,13 @@ Route::middleware(['auth', 'permission:permiso_9', 'accion'])->group(function ()
   Route::post('/export/generate', [ExportarController::class, 'generate'])->name('export.generate');
 });
 
-// PERMISOS Y AUDITORIA (solo Super Usuario)
+// PERMISOS (solo Super Usuario)
 Route::middleware(['auth', 'permission:permiso_99'])->group(function () {
   Route::resource('/tools/permissions', PermissionController::class)->only(['index', 'edit', 'update']);
+});
+
+// AUDITORIA (Super Usuario y Supervisor: permiso_14)
+Route::middleware(['auth', 'permission:permiso_14'])->group(function () {
   Route::get('/tools/auditoria', [AuditoriaController::class, 'index'])->name('auditoria.index');
   Route::get('/tools/auditoria/export', [AuditoriaController::class, 'export'])->name('auditoria.export');
 });

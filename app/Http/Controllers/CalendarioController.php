@@ -36,7 +36,7 @@ class CalendarioController extends Controller
         ->whereDate('fecha', '>=', $d)->whereDate('fecha', '<=', $h), 'fecha')],
       'hist_control' => ['permiso_7', fn($d, $h) => $porDia(DB::table('exp_historial_control')
         ->whereDate('fecha', '>=', $d)->whereDate('fecha', '<=', $h), 'fecha')],
-      'auditoria' => ['permiso_99', fn($d, $h) => $porDia(DB::table('auditoria')
+      'auditoria' => ['permiso_14', fn($d, $h) => $porDia(DB::table('auditoria')
         ->where('created_at', '>=', "$d 00:00:00")->where('created_at', '<=', "$h 23:59:59"), 'created_at')],
     ];
   }

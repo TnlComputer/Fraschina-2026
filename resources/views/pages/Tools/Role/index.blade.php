@@ -44,6 +44,7 @@ $corto = ['permiso_1' => 'Repres.', 'permiso_2' => 'Distrib.', 'permiso_3' => 'M
             {{ $role->name }}
             @if ($super)<span class="badge badge-danger ml-1" title="Acceso total">Super Usuario</span>@endif
             @if (!$super && $role->permissions->contains('name', RoleController::CONFIGURACION))<span class="badge badge-info ml-1" title="Entra a Herramientas → Configuración">Configuración</span>@endif
+            @if (!$super && $role->permissions->contains('name', RoleController::AUDITORIA))<span class="badge badge-info ml-1" title="Entra a Herramientas → Auditoría">Auditoría</span>@endif
           </td>
           <td class="text-center">
             @if ($role->users_count)
