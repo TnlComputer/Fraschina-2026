@@ -30,7 +30,9 @@ Venta y reparto a clientes propios (panaderías, comercios, industrias).
   recepción (sobre el orden) y la ficha del cliente con CUIT, dirección y forma de cobro (sobre
   el nombre). *Ver pedido* muestra el pedido completo con los datos de facturación.
   Impresión de la planilla de reparto, de control y de recibos en PDF, y vista para el chofer
-  en el celular. En el celular cada pedido se ve como una tarjeta con los mismos campos.
+  en el celular. Si al imprimir la planilla de control falta algún dato de factura, un aviso lo
+  dice y nombra el primer pedido incompleto con los campos que le faltan; se puede imprimir
+  igual. En el celular cada pedido se ve como una tarjeta con los mismos campos.
 
 ### Expedición — Central de Pedidos
 Pedidos de clientes que se pasan a los molinos.
