@@ -117,7 +117,7 @@ input.form-control[type="number"] { text-align: right; }
   .reparto-tabla th.c-angosta { width: 1%; padding-left: .2rem; padding-right: .2rem; }
 }
 /* Flechitas de aumentar/disminuir separadas del número (Chrome / Edge) */
-.reparto-tabla input[type=number]::-webkit-inner-spin-button { margin-left: .5rem; }
+.reparto-tabla input[type=number]::-webkit-inner-spin-button { margin-left: 16px; }
 .popover-productos { max-width: 520px; }
 .popover-productos td, .popover-productos th { white-space: nowrap; padding: .15rem .35rem; }
 .popover-productos td.popover-texto { white-space: normal; min-width: 260px; }
