@@ -117,6 +117,30 @@ class DistribucionPedidoTest extends TestCase
         $this->assertEquals(2210.00, (float) $pedido->fresh()->totalPedido);
     }
 
+    public function test_abrir_y_editar_pedido_vuelve_al_dia_de_reparto(): void
+    {
+        $pedido = $this->crearPedido();
+        $lineaId = $pedido->lineasPedidos()->value('id');
+
+        // Un solo botón por fila: abre el pedido recordando el día de Reparto
+        $abrir = route('distribucion_reparto.show', ['distribucion_reparto' => $pedido->id, 'volver' => '2026-10-15']);
+        $this->actingAs($this->user)->get('/distribucion_reparto?fecha=2026-10-15')
+            ->assertSee(e($abrir), false)->assertDontSee('fa-eye', false);
+
+        // Ver → Editar y Volver llevan ese día
+        $this->actingAs($this->user)->get($abrir)->assertOk()
+            ->assertSee(e(route('distribucion_pedido.edit', ['distribucion_pedido' => $pedido->id, 'volver' => '2026-10-15'])), false)
+            ->assertSee(e(route('distribucion_reparto.index', ['fecha' => '2026-10-15'])), false);
+        $this->actingAs($this->user)->get("/distribucion_pedido/{$pedido->id}/edit?volver=2026-10-15")->assertOk()
+            ->assertSee('name="volver" value="2026-10-15"', false);
+
+        // Aunque se cambie la fecha de entrega, al guardar vuelve al día del que se salió
+        $this->actingAs($this->user)->put("/distribucion_pedido/{$pedido->id}", [
+            'fecha_entrega' => '2026-10-20', 'volver' => '2026-10-15',
+            'existing_product_line_ids' => [$lineaId], 'existing_precios' => [1000], 'existing_cantidades' => [1],
+        ])->assertRedirect(route('distribucion_reparto.index', ['fecha' => '2026-10-15']));
+    }
+
     public function test_pantallas_de_reparto_y_agenda_renderizan(): void
     {
         $pedido = $this->crearPedido();

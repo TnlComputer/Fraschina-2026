@@ -12,6 +12,8 @@
     <form action="{{ route('distribucion_pedido.update', $pedido->id) }}" method="POST" id="pedidoForm">
       @csrf
       @method('PUT')
+      @php $volver = preg_match('/^\d{4}-\d{2}-\d{2}$/', (string) old('volver', request('volver'))) ? old('volver', request('volver')) : null; @endphp
+      @if ($volver)<input type="hidden" name="volver" value="{{ $volver }}">@endif
 
       <!-- Información General -->
       <div class="row mb-3">
@@ -118,7 +120,7 @@
       <!-- Los nuevos ítems se agregarán dinámicamente a la tabla -->
       <div class="form-acciones mt-4 pt-3 border-top">
         <button type="submit" class="btn btn-primary">Guardar cambios</button>
-        <a href="{{ route('distribucion_reparto.index', ['fecha' => $pedido->fechaEntrega]) }}"
+        <a href="{{ route('distribucion_reparto.index', ['fecha' => $volver ?: $pedido->fechaEntrega]) }}"
           class="btn btn-outline-secondary">Cancelar</a>
       </div>
     </form>

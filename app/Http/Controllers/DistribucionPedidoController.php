@@ -150,6 +150,7 @@ class DistribucionPedidoController extends Controller
     $request->validate([
       'fecha_entrega' => 'required|date',
       'observaciones' => 'nullable|string',
+      'volver' => 'nullable|date_format:Y-m-d', // día de Reparto desde el que se abrió el pedido
       'existing_product_line_ids' => 'nullable|array',
       'existing_product_line_ids.*' => 'integer',
       'existing_precios' => 'nullable|array',
@@ -280,8 +281,9 @@ class DistribucionPedidoController extends Controller
       return redirect()->back()->withInput()->with('error', 'Error al actualizar el pedido. Intente nuevamente o contacte al administrador.');
     }
 
-    return redirect()->route('distribucion_reparto.index', ['fecha' => $pedido->fechaEntrega])
-      ->with('success', 'Pedido actualizado correctamente.');
+    // Vuelve al día de Reparto desde el que se abrió (aunque se haya cambiado la fecha de entrega)
+    return redirect()->route('distribucion_reparto.index', ['fecha' => $request->input('volver') ?: $pedido->fechaEntrega])
+      ->with('success', 'Pedido ' . $pedido->id . ' actualizado correctamente.');
   }
 
   public function getProductosTareas($distribucion_id)

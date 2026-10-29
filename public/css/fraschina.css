@@ -94,8 +94,20 @@ input.form-control[type="number"] { text-align: right; }
 .reparto-tabla td input { border: 1px solid #ced4da; border-radius: .2rem; padding: .1rem .25rem; }
 .reparto-tabla td input:focus { outline: none; border-color: #80a8d0; box-shadow: 0 0 0 .12rem rgba(31, 78, 121, .15); }
 .reparto-tabla td input.factura-difiere { background: #dc3545; color: #fff; border-color: #b02a37; font-weight: 700; }
-.reparto-tabla td.c-fantasia, .reparto-tabla td.c-razon { text-align: left; }
-.reparto-tabla td.c-fantasia .btn { text-align: left; padding-left: 0; }
+.reparto-titulo small { font-size: 1.1rem; }
+.reparto-tabla { font-size: .85rem; }
+.reparto-tabla th { white-space: nowrap; vertical-align: middle !important; }
+.reparto-tabla td { vertical-align: middle !important; }
+.reparto-tabla td.c-fantasia, .reparto-tabla td.c-razon { text-align: left; min-width: 9rem; }
+.reparto-tabla td.c-fantasia a { font-weight: 600; color: var(--fr-marca, #1f4e79); }
+.reparto-tabla td.c-pedido { white-space: nowrap; }
+.reparto-tabla .reparto-campo { height: auto; padding: .15rem .3rem; font-size: .85rem; }
+.reparto-tabla td.c-chofer .reparto-campo { width: 3rem; }
+.reparto-tabla td.c-orden .reparto-campo { width: 4rem; }
+.reparto-tabla td.c-ffac .reparto-campo { width: 8.5rem; }
+.reparto-tabla td.c-nfac .reparto-campo { width: 6.5rem; }
+.reparto-tabla td.c-ifac .reparto-campo { width: 7.5rem; }
+.reparto-tabla td.c-guardar { width: 1.5rem; }
 .popover-productos { max-width: 520px; }
 .popover-productos td, .popover-productos th { white-space: nowrap; padding: .15rem .35rem; }
 .popover-productos td.popover-texto { white-space: normal; min-width: 260px; }
@@ -256,6 +268,8 @@ input.form-control[type="number"] { text-align: right; }
 
 /* ---------- Reparto (oficina) en pantallas chicas: una tarjeta por pedido ---------- */
 @media (max-width: 767.98px) {
+  .reparto-titulo { font-size: 1.6rem; }
+  .reparto-titulo small { display: block; font-size: .95rem; margin-top: .2rem; }
   .reparto-barra { flex-direction: column; align-items: stretch !important; gap: .5rem; }
   .reparto-acciones { display: grid; grid-template-columns: repeat(2, 1fr); gap: .4rem; }
   .reparto-acciones .btn { margin: 0 !important; }
@@ -275,7 +289,7 @@ input.form-control[type="number"] { text-align: right; }
       "chofer orden imp imp"
       "ffac ffac nfac nfac"
       "ifac ifac ifac ifac"
-      "recibo ver editar guardar";
+      "recibo abrir abrir guardar";
     gap: .35rem .5rem;
     background: #fff;
     border: 1px solid var(--fr-borde, #dee2e6);
@@ -287,7 +301,7 @@ input.form-control[type="number"] { text-align: right; }
   .reparto-tabla tbody td { display: block; border: 0 !important; padding: 0 !important; text-align: left !important; background: none !important; }
   .reparto-tabla td.c-fecha, .reparto-tabla td.c-vacio { display: none; }
   .reparto-tabla td.c-fantasia { grid-area: fant; }
-  .reparto-tabla td.c-fantasia .btn { padding: 0; font-size: 1.05rem; font-weight: 700; text-align: left; white-space: normal; }
+  .reparto-tabla td.c-fantasia a { font-size: 1.05rem; font-weight: 700; }
   .reparto-tabla td.c-pedido { grid-area: ped; text-align: right !important; color: var(--fr-marca); font-size: .85rem; white-space: nowrap; }
   .reparto-tabla td.c-razon { grid-area: razon; color: #6c757d; font-weight: 400; font-size: .85rem; }
   .reparto-tabla td.c-tipo { grid-area: tipo; text-align: right !important; color: #6c757d; font-size: .85rem; }
@@ -299,8 +313,7 @@ input.form-control[type="number"] { text-align: right; }
   .reparto-tabla td.c-nfac { grid-area: nfac; }
   .reparto-tabla td.c-ifac { grid-area: ifac; }
   .reparto-tabla td.c-recibo { grid-area: recibo; }
-  .reparto-tabla td.c-ver { grid-area: ver; }
-  .reparto-tabla td.c-editar { grid-area: editar; }
+  .reparto-tabla td.c-abrir { grid-area: abrir; }
   .reparto-tabla td.c-guardar { grid-area: guardar; display: flex !important; align-items: center; justify-content: center; }
   /* Rótulo arriba de cada campo */
   .reparto-tabla td[data-label]::before {
@@ -311,7 +324,7 @@ input.form-control[type="number"] { text-align: right; }
   .reparto-tabla td input { width: 100% !important; font-size: 16px !important; padding: .3rem .4rem; text-align: left !important; }
   .reparto-tabla td.c-chofer input, .reparto-tabla td.c-orden input { text-align: center !important; }
   /* Botones de acción grandes para el dedo */
-  .reparto-tabla td.c-recibo .btn, .reparto-tabla td.c-ver .btn, .reparto-tabla td.c-editar .btn, .reparto-tabla td.c-guardar .btn {
+  .reparto-tabla td.c-recibo .btn, .reparto-tabla td.c-abrir .btn {
     display: flex; align-items: center; justify-content: center; width: 100%; min-height: 2.6rem; margin: 0 !important;
     border: 1px solid var(--fr-borde, #dee2e6); border-radius: .4rem; background: #f8f9fa;
   }

@@ -17,8 +17,8 @@
   .flatpickr-day.con-pedidos.selected::after { background: #fff; }
   .flatpickr-day { position: relative; }
 </style>
-<div class="container">
-  <h1>Distribución Reparto</h1>
+<div class="container-fluid">
+  <h1 class="reparto-titulo">Reparto <small class="text-muted">{{ ucfirst(\Carbon\Carbon::parse($fecha)->locale('es')->isoFormat('dddd D/MM/YYYY')) }} · {{ $distribuciones->count() }} pedidos</small></h1>
 
   <!-- Botones y fecha (en el celular se acomodan en dos renglones) -->
   <div class="mb-3 d-flex justify-content-between align-items-center reparto-barra">
@@ -127,191 +127,103 @@
     @endforeach
   </div>
 
-  <!-- Tabla de distribuciones -->
+  <!-- Tabla de pedidos del día: en la computadora una fila por pedido, en el celular una tarjeta -->
   <div class="reparto-scroll">
-  <table class="table table-sm text-xs table-bordered table-hover table-sticky w-100 reparto-tabla">
+  <table class="table table-sm table-bordered table-hover table-sticky w-100 reparto-tabla">
     <thead>
       <tr>
-        <th class="text-center">Reparto</th>
-        <th colspan="4"></th>
-        <th class="text-center">Fecha Fac</th>
-        <th class="text-center">Nro.Fac</th>
-        <th class="text-center">Imp.Fac</th>
-        <th><i class="fas fa-print"></i></th>
+        <th>Pedido</th>
+        <th class="text-center" title="P: productos · T: tareas · PT: ambos">Tipo</th>
+        <th class="text-left">Nombre Fantasía</th>
+        <th class="text-left">Razón Social</th>
         <th class="text-center">Chofer</th>
         <th class="text-center">Orden</th>
-        <th>Pedido</th>
-        <th>PT</th>
-        <th class="text-left">Nombre Fantasia</th>
-        <th class="text-left">Razón Social</th>
+        <th class="text-center">Fecha Fac.</th>
+        <th class="text-center">Nro. Fac.</th>
+        <th class="text-center">Importe Fac.</th>
+        <th class="text-center" title="Lleva factura impresa"><i class="fas fa-print"></i></th>
+        <th class="text-center" colspan="3">Acciones</th>
       </tr>
     </thead>
-    <tbody class="text-xs bold">
+    <tbody>
       @foreach ($distribuciones as $distribucion)
-      {{-- @if ($distribucion->tipo == 'P' || $distribucion->tipo == 'PT') --}}
-<tr>
-          <td class="text-center c-fecha">{{ fecha($distribucion->fechaEntrega) }}</td>
-          @if ($distribucion->tipo != 'T')
-          <td class="c-recibo">
-            <a href="{{ route('distribucion_reparto.imprimirRecibo', ['id' => $distribucion->id]) }}"
-              class="btn btn-xs mx-1" title="Impresi´on Recibo" target="_blank">
-              <i class="fas fa-print fs-xs text-info"></i>
-            </a>
-          </td>
-          <td class="c-ver">
-            <a href="{{ route('distribucion_reparto.show', ['distribucion_reparto' => $distribucion->id]) }}"
-              class="btn btn-xs" title="Ver Pedido">
-              <i class="fas fa-eye fs-xs text-success"></i>
-            </a>
-          </td>
-
-          <td class="c-editar">
-            <a href="{{ route('distribucion_pedido.edit', ['distribucion_pedido' => $distribucion->id]) }}"
-              class="btn btn-xs" title="Editar Pedido">
-              <i class="fas fa-pen fs-xs text-blue"></i>
-            </a>
-          </td>
-          @else
-          <td class="c-vacio"></td>
-          <td class="c-vacio"></td>
-          <td class="c-editar">
-            <a href="{{ route('distribucion_pedido.edit', ['distribucion_pedido' => $distribucion->id]) }}"
-              class="btn btn-xs" title="Editar Pedido">
-              <i class="fas fa-pen fs-xs text-blue"></i>
-            </a>
-            {{-- <a
-              href="{{ route('distribucion_pedido.edit', ['distribucion_pedido' => $distribucion->id, 'fecha' => $fecha]) }}"
-              class="btn btn-xs" title="Editar Pedido">
-              <i class="fas fa-pen fs-xs text-blue"></i>
-            </a> --}}
-          </td>
+      @php
+        $abrir = route('distribucion_reparto.show', ['distribucion_reparto' => $distribucion->id, 'volver' => $fecha]);
+        $form = 'distribucion-form-' . $distribucion->id;
+      @endphp
+      <tr>
+        <td class="c-pedido"><span class="d-md-none">N° </span>{{ $distribucion->id }}</td>
+        <td class="c-tipo text-center">{{ $distribucion->tipo }}</td>
+        {{-- Al pasar el mouse muestra la ficha del cliente; al hacer clic abre el pedido --}}
+        <td class="c-fantasia">
+          <a href="{{ $abrir }}" class="reparto-cliente" data-pedido="{{ $distribucion->id }}">{{ $distribucion->distribucion->nomfantasia ?: $distribucion->distribucion->razonsocial }}</a>
+        </td>
+        <td class="c-razon"><span class="reparto-cliente" data-pedido="{{ $distribucion->id }}">{{ $distribucion->distribucion->razonsocial }}</span></td>
+        <td class="text-center c-chofer" data-label="Chofer">
+          <input type="text" name="chofer" form="{{ $form }}" value="{{ $distribucion->chofer }}" class="form-control form-control-sm text-center reparto-campo" maxlength="2" />
+        </td>
+        <td class="text-center c-orden" data-label="Orden">
+          <input type="number" name="orden" form="{{ $form }}" value="{{ $distribucion->orden }}" class="form-control form-control-sm text-center reparto-campo reparto-entrega" data-pedido="{{ $distribucion->id }}" />
+        </td>
+        @if ($distribucion->tipo != 'T')
+        <td class="text-center c-ffac" data-label="Fecha factura">
+          <input type="date" name="fechaFactura" form="{{ $form }}" value="{{ $distribucion->fechaFactura }}"
+            class="form-control form-control-sm text-center reparto-campo factura-fecha" data-label="Fecha Factura" />
+        </td>
+        <td class="text-center c-nfac" data-label="Nro. factura">
+          <input type="text" name="nroFactura" form="{{ $form }}" value="{{ $distribucion->nroFactura }}"
+            class="form-control form-control-sm text-center reparto-campo factura-nro" data-label="Nro. Factura" maxlength="20" />
+        </td>
+        <td class="text-center c-ifac" data-label="Importe factura (pedido {{ pesos($distribucion->totalPedido) }})">
+          {{-- En rojo cuando el importe de la factura no coincide con el total del pedido; sin importe cargado no se marca --}}
+          <input type="number" name="totalFactura" form="{{ $form }}" value="{{ $distribucion->totalFactura }}"
+            data-total-pedido="{{ $distribucion->totalPedido }}" data-pedido="{{ $distribucion->id }}"
+            title="Diferencia: $ {{ numero($distribucion->totalFactura - $distribucion->totalPedido, 2) }}"
+            class="form-control form-control-sm text-right reparto-campo factura-importe reparto-productos {{ (float) $distribucion->totalFactura != 0 && abs($distribucion->totalFactura - $distribucion->totalPedido) > 0.01 ? 'factura-difiere' : '' }}"
+            data-label="Importe Factura" step="0.01" />
+        </td>
+        {{-- Solo se marca el cliente que lleva la factura impresa; si no, la celda queda vacía --}}
+        <td class="text-center c-imp {{ \App\Models\Distribucion::esSi($distribucion->distribucion->fac_imp) ? 'reparto-imprimir' : '' }}">
+          @if (\App\Models\Distribucion::esSi($distribucion->distribucion->fac_imp))
+          <i class="fas fa-print text-success" title="Imprimir factura"></i><span class="d-md-none small ml-1 text-success">Imprimir factura</span>
           @endif
-          {{-- Factura, chofer y orden se guardan solos al salir del campo; acá se ve si se guardó --}}
-          <td class="c-guardar text-center"><span class="reparto-estado" id="estado-pedido-{{ $distribucion->id }}" title="Se guarda solo al salir del campo"></span></td>
-          @if ($distribucion->tipo != 'T')
-          <td class="text-center c-ffac" data-label="Fecha factura">
-            <input type="date" name="fechaFactura" form="distribucion-form-{{ $distribucion->id }}" value="{{ $distribucion->fechaFactura }}"
-              class="text-center text-xs factura-fecha" data-label="Fecha Factura" style="width: 100px;" />
-          </td>
-          <td class="text-center c-nfac" data-label="Nro. factura">
-            <input type="text" name="nroFactura" form="distribucion-form-{{ $distribucion->id }}" value="{{ $distribucion->nroFactura }}"
-              class=" text-center text-xs factura-nro" data-label="Nro. Factura" style="width: 60px;" />
-          </td>
-          <td class="text-center c-ifac" data-label="Importe factura">
-            {{-- En rojo cuando el importe de la factura no coincide con el total del pedido; sin importe cargado no se marca --}}
-            <input type="number" name="totalFactura" form="distribucion-form-{{ $distribucion->id }}" value="{{ $distribucion->totalFactura }}"
-              data-total-pedido="{{ $distribucion->totalPedido }}" data-pedido="{{ $distribucion->id }}"
-              title="Diferencia: $ {{ numero($distribucion->totalFactura - $distribucion->totalPedido, 2) }}"
-              class="text-center text-xs factura-importe reparto-productos {{ (float) $distribucion->totalFactura != 0 && abs($distribucion->totalFactura - $distribucion->totalPedido) > 0.01 ? 'factura-difiere' : '' }}"
-              data-label="Importe Factura" step="0.01" style="width: 90px;" />
-          </td>
-          {{-- Solo se marca el cliente que lleva la factura impresa; si no, la celda queda vacía --}}
-          <td class="text-center c-imp {{ \App\Models\Distribucion::esSi($distribucion->distribucion->fac_imp) ? 'reparto-imprimir' : '' }}">
-            @if (\App\Models\Distribucion::esSi($distribucion->distribucion->fac_imp))
-            <i class="fas fa-print text-success" title="Imprimir factura"></i><span class="d-md-none small ml-1 text-success">Imprimir factura</span>
-            @endif
-          </td>
-          @else
-          <td class="c-vacio"></td>
-          <td class="c-vacio"></td>
-          <td class="c-vacio"></td>
-          <td class="c-vacio"></td>
-          @endif
-          <td class="text-center c-chofer" data-label="Chofer">
-            <input type="text" name="chofer" form="distribucion-form-{{ $distribucion->id }}" value="{{ $distribucion->chofer }}" class="text-center text-xs"
-              style="width: 30px;" />
-          </td>
-          <td class="text-center c-orden" data-label="Orden">
-            <input type="number" name="orden" form="distribucion-form-{{ $distribucion->id }}" value="{{ $distribucion->orden }}" class="text-center text-xs reparto-entrega" data-pedido="{{ $distribucion->id }}"
-              style="width: 40px;" />
-          </td>
-          {{-- @else
-          <td colspan="11"></td>
-          @endif --}}
-          <td class="c-pedido"><span class="d-md-none">N° </span>{{ $distribucion->id }}</td>
-          <td class="c-tipo">{{ $distribucion->tipo }}</td>
-          <!-- En la vista donde quieres mostrar el modal -->
-          <td class="c-fantasia">
-            <button type="button" class="btn btn-xs reparto-cliente" data-toggle="modal" data-pedido="{{ $distribucion->id }}"
-              data-target="#infoModal_{{ $distribucion->id }}">
-              {{ $distribucion->distribucion->nomfantasia }}
-            </button>
-          </td>
-
-          <!-- Modal para mostrar la información del pedido -->
-          <div class="modal fade" id="infoModal_{{ $distribucion->id }}" tabindex="-1" role="dialog"
-            aria-labelledby="infoModalLabel_{{ $distribucion->id }}" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-              <div class="modal-content">
-                <!-- Encabezado del Modal -->
-                <div class="modal-header">
-                  <h5 class="modal-title" id="infoModalLabel_{{ $distribucion->id }}">Información del Cliente</h5>
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                  </button>
-                </div>
-                <!-- Cuerpo del Modal -->
-                <div class="modal-body">
-                  <strong>Razón Social:</strong> {{ $distribucion->distribucion->nomfantasia }}<br>
-                  <strong>Dirección:</strong> {{ $distribucion->distribucion->auxCalles?->calle }} {{
-                  $distribucion->distribucion->dire_nro }}
-                  {{ $distribucion->distribucion->piso }}
-                  {{ $distribucion->distribucion->dpto }} <br>
-                  {{ unir($distribucion->distribucion->auxbarrio?->nombrebarrio, $distribucion->distribucion->auxlocalidad?->localidad,
-                  $distribucion->distribucion->auxmunicipio?->ciudadmunicipio) }} <br>
-                  <strong>Horarios:</strong><br> Mañana: {{ horario($distribucion->distribucion->desde, $distribucion->distribucion->hasta) }}<br>
-                  Tarde: {{ horario($distribucion->distribucion->desde1, $distribucion->distribucion->hasta1) }}<br>
-                  <strong>Observaciones:</strong><br>
-                  {{$distribucion->distribucion->obsrecep }}<br>
-                </div>
-                <!-- Pie del Modal -->
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <td class="c-razon"><span class="reparto-cliente" data-pedido="{{ $distribucion->id }}">{{ $distribucion->distribucion->razonsocial }}</span></td>
-        </tr>
-        @endforeach
-
-      
+        </td>
+        <td class="c-recibo text-center">
+          <a href="{{ route('distribucion_reparto.imprimirRecibo', ['id' => $distribucion->id]) }}"
+            class="btn btn-sm btn-outline-info" title="Imprimir recibo" target="_blank">
+            <i class="fas fa-receipt"></i><span class="d-md-none ml-1">Recibo</span>
+          </a>
+        </td>
+        @else
+        {{-- Solo tareas: sin factura ni recibo --}}
+        <td class="c-vacio"></td>
+        <td class="c-vacio"></td>
+        <td class="c-vacio"></td>
+        <td class="c-vacio"></td>
+        <td class="c-vacio"></td>
+        @endif
+        {{-- Un solo botón para ver el pedido completo; desde ahí se edita y se vuelve a este día --}}
+        <td class="c-abrir text-center">
+          <a href="{{ $abrir }}" class="btn btn-sm btn-outline-primary" title="Ver / editar pedido">
+            <i class="fas fa-pen-to-square"></i><span class="d-md-none ml-1">Ver / editar</span>
+          </a>
+        </td>
+        {{-- Factura, chofer y orden se guardan solos al salir del campo; acá se ve si se guardó --}}
+        <td class="c-guardar text-center"><span class="reparto-estado" id="estado-pedido-{{ $distribucion->id }}" title="Se guarda solo al salir del campo"></span></td>
+      </tr>
+      @endforeach
     </tbody>
     <tfoot>
       <tr class="font-weight-bold">
-        <td colspan="7" class="text-right">{{ $distribuciones->count() }} pedidos · Total pedidos {{ pesos($distribuciones->sum('totalPedido')) }}</td>
-        <td class="text-center"><span class="d-md-none">Facturado </span>{{ pesos($distribuciones->sum('totalFactura')) }}</td>
-        <td colspan="7" class="text-muted font-weight-normal">Facturado del día. Los pedidos sin chofer van primero.</td>
+        <td colspan="8" class="text-right">{{ $distribuciones->count() }} pedidos · Total pedidos {{ pesos($distribuciones->sum('totalPedido')) }}</td>
+        <td class="text-right"><span class="d-md-none">Facturado </span>{{ pesos($distribuciones->sum('totalFactura')) }}</td>
+        <td colspan="4" class="text-muted font-weight-normal">Facturado del día. Los pedidos sin chofer van primero.</td>
       </tr>
     </tfoot>
   </table>
   </div>
 
 </div>
-<!-- Paginación -->
-<div class="d-flex justify-content-center">
-
-</div>
-
-</div>
-
-<!-- Modal -->
-<div class="modal fade" id="modalInfo" tabindex="-1" aria-labelledby="modalInfoLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="modalInfoLabel">Información del Pedido</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <div id="modal-content-body"></div> <!-- Aquí se insertará el contenido dinámico -->
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-      </div>
-    </div>
-  </div>
 </div>
 
 <!-- Scripts -->
@@ -519,44 +431,5 @@ function verificarDatos(event, url) {
     });
   });
 
-  // Evitar que el formulario se envíe al presionar Enter accidentalmente
-  document.querySelector('form').addEventListener('keydown', function(event) {
-  if (event.key === 'Enter') {
-  event.preventDefault(); // Evita el envío del formulario
-  }
-  });
-
-  $(document).ready(function(){
-    // Al hacer clic en el nombre de fantasía, abrir el modal y cargar contenido
-    $('#openModal').on('click', function(e) {
-      e.preventDefault();
-
-      var id = $(this).data('id');
-      var calle = $(this).data('calle');
-      var direccion = $(this).data('direccion');
-      var piso = $(this).data('piso');
-      var dpto = $(this).data('dpto');
-      var barrio = $(this).data('barrio');
-      var localidad = $(this).data('localidad');
-      var desde = $(this).data('desde');
-      var hasta = $(this).data('hasta');
-      var desde1 = $(this).data('desde1');
-      var hasta1 = $(this).data('hasta1');
-      var nomfantasia = $(this).data('nomfantasia');
-
-      // Crear el contenido del modal
-      var modalContent = `
-        <p><strong>Dirección:</strong> ${calle} ${direccion} ${piso} ${dpto} ${barrio} - ${localidad}</p>
-        <p><strong>Horarios:</strong> Mañana: ${desde} - ${hasta} | Tarde: ${desde1} - ${hasta1}</p>
-        <p><strong>Nombre de Fantasía:</strong> ${nomfantasia}</p>
-      `;
-
-      // Insertar el contenido en el cuerpo del modal
-      $('#modal-content-body').html(modalContent);
-
-      // Mostrar el modal
-      $('#modalInfo').modal('show');
-    });
-  });
 </script>
 @endsection

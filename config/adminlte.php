@@ -629,7 +629,7 @@ return [
         [
           'type' => 'css',
           'asset' => true,
-          'location' => 'css/fraschina.css?v=20261029b',
+          'location' => 'css/fraschina.css?v=20261029c',
         ],
         [
           'type' => 'js',

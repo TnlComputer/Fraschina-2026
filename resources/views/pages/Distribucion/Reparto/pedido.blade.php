@@ -8,6 +8,8 @@ $total = 0;
 $cliente = $pedido->distribucion;
 // Cambiar / retirar se guardan como '*' o 'SI' (igual que el sistema anterior)
 $marcado = fn($v) => in_array(strtoupper(trim((string) $v)), ['*', 'SI', 'S'], true);
+// Día de Reparto desde el que se abrió el pedido: Editar y Volver regresan ahí
+$volver = preg_match('/^\d{4}-\d{2}-\d{2}$/', (string) request('volver')) ? request('volver') : $pedido->fechaEntrega;
 @endphp
 <div class="container">
   <h1>Detalles del Pedido</h1>
@@ -15,10 +17,12 @@ $marcado = fn($v) => in_array(strtoupper(trim((string) $v)), ['*', 'SI', 'S'], t
   <div class="card">
     <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
       <span>Pedido {{ $pedido->id }} · Entrega {{ fecha($pedido->fechaEntrega) }}</span>
-      <a href="{{ route('distribucion_pedido.edit', ['distribucion_pedido' => $pedido->id, 'fecha' => $pedido->fechaEntrega]) }}"
-        class="btn btn-xs btn-light" title="Editar Pedido">
-        <i class="fas fa-pen fs-xs text-blue"></i> Editar
+      @can('permiso_12')
+      <a href="{{ route('distribucion_pedido.edit', ['distribucion_pedido' => $pedido->id, 'volver' => $volver]) }}"
+        class="btn btn-sm btn-light" title="Editar Pedido">
+        <i class="fas fa-pen text-blue"></i> Editar
       </a>
+      @endcan
     </div>
     <div class="card-body">
       <div class="row">
@@ -156,7 +160,7 @@ $marcado = fn($v) => in_array(strtoupper(trim((string) $v)), ['*', 'SI', 'S'], t
   @endif
 
   <div class="mt-4">
-    <a href="{{ route('distribucion_reparto.index', ['fecha' => $pedido->fechaEntrega]) }}" class="btn btn-secondary">
+    <a href="{{ route('distribucion_reparto.index', ['fecha' => $volver]) }}" class="btn btn-secondary">
       <i class="fas fa-arrow-left"></i> Volver
     </a>
   </div>
