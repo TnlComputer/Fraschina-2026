@@ -323,18 +323,18 @@
 function verificarDatos(event, url) {
   event.preventDefault(); // Evita que el enlace se abra directamente
 
-  let faltanDatos = false;
-  let mensaje = "Faltan los siguientes datos:\n\n";
+  // Alcanza con avisar que faltan datos y nombrar el primer pedido incompleto
+  const vacio = [...document.querySelectorAll(".factura-fecha, .factura-nro, .factura-importe")]
+    .find(input => input.value.trim() === "");
 
-  document.querySelectorAll(".factura-fecha, .factura-nro, .factura-importe").forEach(input => {
-    if (input.value.trim() === "") {
-      faltanDatos = true;
-      mensaje += `- ${input.getAttribute("data-label")}\n`;
-    }
-  });
-
-  if (faltanDatos) {
-    mensaje += "\n"; // Agregar una línea en blanco después de la lista de datos faltantes
+  if (vacio) {
+    const fila = vacio.closest("tr");
+    const faltan = [...fila.querySelectorAll(".factura-fecha, .factura-nro, .factura-importe")]
+      .filter(input => input.value.trim() === "")
+      .map(input => input.getAttribute("data-label"));
+    const cliente = fila.querySelector(".c-fantasia a")?.textContent.trim() ?? "";
+    const pedido = fila.querySelector(".c-pedido")?.textContent.replace("N°", "").trim() ?? "";
+    const mensaje = `Faltan datos. Por ejemplo, en el pedido ${pedido} (${cliente}): ${faltan.join(", ")}.`;
 
     Swal.fire({
       title: "¡Atención!",
