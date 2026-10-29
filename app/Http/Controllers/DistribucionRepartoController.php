@@ -58,6 +58,16 @@ class DistribucionRepartoController extends Controller
     $pedidos = DistribucionNroPedidos::with(self::DIRECCION)
       ->where('status', 'A')->whereDate('fechaEntrega', $fecha)->conLineas()->ordenReparto()->get();
 
+    // Con un solo chofer cargado en Tools → Choferes, los pedidos sin chofer pasan a ser suyos
+    $asignados = 0;
+    $cargados = Chofer::pluck('codigo');
+    if ($cargados->count() === 1) {
+      foreach ($pedidos->filter(fn($p) => trim((string) $p->chofer) === '') as $pedido) {
+        $pedido->update(['chofer' => $cargados->first()]);
+        $asignados++;
+      }
+    }
+
     $km = 0;
     $tarde = $sinUbicar = [];
     foreach ($pedidos->groupBy(fn($p) => trim((string) $p->chofer)) as $delChofer) {
@@ -74,7 +84,8 @@ class DistribucionRepartoController extends Controller
 
     $choferes = $pedidos->pluck('chofer')->map(fn($c) => trim((string) $c))->unique()->count();
     $mensaje = "Orden sugerido cargado: {$pedidos->count()} pedidos" . ($choferes > 1 ? " de $choferes choferes" : '')
-      . ', unos ' . numero($km) . ' km saliendo de ' . $deposito->nombre . '.';
+      . ', unos ' . numero($km) . ' km saliendo de ' . $deposito->nombre . '.'
+      . ($asignados ? " Se asignó el chofer {$cargados->first()} a $asignados pedido" . ($asignados > 1 ? 's' : '') . ' sin chofer.' : '');
     if ($tarde) {
       $mensaje .= ' No se llega en horario a: ' . implode(', ', $tarde) . '.';
     }

@@ -86,6 +86,25 @@ class SugerirOrdenTest extends TestCase
     $this->assertSame(1, $this->orden($otroChofer));
   }
 
+  public function test_con_un_solo_chofer_se_asigna_a_los_pedidos_sin_chofer(): void
+  {
+    Deposito::create(['nombre' => 'Depósito', 'direccion' => 'X 1', 'localidad' => 'Y', 'principal' => true, 'latitud' => -34.6637, 'longitud' => -58.5201]);
+    $sinChofer = $this->pedido('Cerca');
+    $otro = $this->pedido('Medio', 'J');
+
+    // La migración deja cargado solo a H
+    $this->actingAs($this->user)->post('/distribucion/reparto/sugerir-orden', ['fecha' => '2026-10-28'])
+      ->assertSessionHas('success', fn($m) => str_contains($m, 'Se asignó el chofer H a 1 pedido'));
+    $this->assertSame('H', DB::table('distribucion_nropedidos')->where('id', $sinChofer)->value('chofer'));
+    $this->assertSame('J', DB::table('distribucion_nropedidos')->where('id', $otro)->value('chofer'));
+
+    // Con dos choferes cargados no asigna nada
+    DB::table('choferes')->insert(['codigo' => 'J', 'nombre' => 'Otro']);
+    $nuevo = $this->pedido('Lejos');
+    $this->actingAs($this->user)->post('/distribucion/reparto/sugerir-orden', ['fecha' => '2026-10-28']);
+    $this->assertNull(DB::table('distribucion_nropedidos')->where('id', $nuevo)->value('chofer'));
+  }
+
   public function test_sin_deposito_avisa_y_no_cambia_nada(): void
   {
     $pedido = $this->pedido('Cerca');
