@@ -119,17 +119,21 @@ class UsuarioController extends Controller
     $request->validate([
       'name' => 'required|string|max:255',
       'email' => 'required|email|unique:users,email,' . $id,
-      'password' => 'nullable|string|min:8|confirmed',
+      // La contraseña solo se valida y cambia si se marcó «Cambiar contraseña»
+      'password' => 'exclude_unless:cambiar_password,1|required|string|min:8|confirmed',
       'role' => ['required', \Illuminate\Validation\Rule::in($this->rolesAsignables($request)->pluck('id')->all())],
     ], ['role.in' => 'El rol elegido no es válido.']);
 
     $usuario = $this->usuarioModificable($request, $id);
+    if ($usuario->is($request->user()) && !$request->boolean('is_active')) {
+      return back()->withInput()->withErrors(['is_active' => 'No puede desactivar su propio usuario.']);
+    }
 
     // Actualiza los datos del usuario
     $usuario->update([
       'name' => $request->name,
       'email' => $request->email,
-      'password' => $request->password ? Hash::make($request->password) : $usuario->password,
+      'password' => $request->boolean('cambiar_password') ? Hash::make($request->password) : $usuario->password,
     ]);
 
     // Actualiza el rol del usuario
@@ -144,7 +148,7 @@ class UsuarioController extends Controller
     }
 
     // Actualiza el estado activo del usuario
-    $usuario->is_active = $request->has('is_active') ? true : false;
+    $usuario->is_active = $request->boolean('is_active');
     $usuario->save();
 
     return redirect()->route('usuarios.index')->with('success', 'Usuario actualizado exitosamente.');
@@ -173,23 +177,36 @@ class UsuarioController extends Controller
     return redirect()->route('usuarios.index')->with('success', 'Usuario activado correctamente');
   }
 
-  /**
-   * Roles que puede asignar quien está usando la pantalla: los que tienen permisos reservados
-   * (Super Usuario, Configuración) solo el Super Usuario.
-   */
+  /** Roles que puede asignar quien está usando la pantalla. */
   private function rolesAsignables(Request $request)
   {
     return Role::with('permissions')->orderBy('name')->get()
-      ->filter(fn($rol) => $request->user()->can('permiso_99') || !RoleController::esReservado($rol))
+      ->filter(fn($rol) => $this->puedeGestionar($request, $rol))
       ->values();
   }
 
-  /** A los usuarios con roles reservados (admin, supervisor) solo los modifica el Super Usuario. */
+  /**
+   * El rol del Super Usuario solo lo maneja el Super Usuario. Los roles con Configuración o Auditoría
+   * (supervisor, gerencia) los manejan también el Supervisor y Gerencia (permiso_10); el resto, quien tenga Tools.
+   */
+  private function puedeGestionar(Request $request, Role $rol): bool
+  {
+    $actor = $request->user();
+    if ($actor->can(RoleController::SUPER)) {
+      return true;
+    }
+    if ($rol->permissions->contains('name', RoleController::SUPER)) {
+      return false;
+    }
+    return $actor->can(RoleController::CONFIGURACION) || !RoleController::esReservado($rol);
+  }
+
   private function usuarioModificable(Request $request, $id): User
   {
-    $usuario = User::findOrFail($id);
-    $reservado = $usuario->roles->contains(fn($rol) => RoleController::esReservado($rol)) || $usuario->checkPermissionTo('permiso_99');
-    abort_if($reservado && !$request->user()->can('permiso_99'), 403, 'Este usuario solo lo modifica el Super Usuario.');
+    $usuario = User::with('roles.permissions')->findOrFail($id);
+    $permitido = $request->user()->can(RoleController::SUPER)
+      || (!$usuario->checkPermissionTo(RoleController::SUPER) && $usuario->roles->every(fn($rol) => $this->puedeGestionar($request, $rol)));
+    abort_unless($permitido, 403, 'Este usuario solo lo modifica el Super Usuario.');
     return $usuario;
   }
 }

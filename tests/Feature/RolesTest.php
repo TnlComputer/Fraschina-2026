@@ -15,7 +15,7 @@ class RolesTest extends TestCase
   protected function setUp(): void
   {
     parent::setUp();
-    foreach (['permiso_3', 'permiso_9', 'permiso_11', 'permiso_12', 'permiso_13', 'permiso_99'] as $p) {
+    foreach (['permiso_3', 'permiso_9', 'permiso_10', 'permiso_11', 'permiso_12', 'permiso_13', 'permiso_99'] as $p) {
       Permission::firstOrCreate(['name' => $p, 'guard_name' => 'web'], ['description' => $p]);
     }
   }
@@ -59,6 +59,53 @@ class RolesTest extends TestCase
     $this->actingAs($gerente)->put("/tools/usuarios/{$gerente->id}", ['name' => $gerente->name, 'email' => $gerente->email, 'role' => $admin->id, 'is_active' => 1])
       ->assertSessionHasErrors('role');
     $this->actingAs($gerente)->get("/tools/usuarios/{$super->id}/edit")->assertForbidden();
+  }
+
+  public function test_cambiar_el_rol_no_pide_la_contrasena(): void
+  {
+    $gerente = $this->usuarioConRol('gerencia', ['permiso_9', 'permiso_11', 'permiso_12', 'permiso_13']);
+    $usuario = $this->usuarioConRol('externo', ['permiso_3']);
+    $distribucion = Role::create(['name' => 'distribucion', 'guard_name' => 'web']);
+    $clave = $usuario->password;
+
+    // Aunque el navegador autocomplete la contraseña, sin «Cambiar contraseña» no se valida ni se cambia
+    $this->actingAs($gerente)->put("/tools/usuarios/{$usuario->id}", ['name' => $usuario->name, 'email' => $usuario->email,
+      'password' => 'autocompletada', 'role' => $distribucion->id, 'is_active' => 0])->assertSessionHasNoErrors();
+    $usuario->refresh();
+    $this->assertSame(['distribucion'], $usuario->getRoleNames()->all());
+    $this->assertSame($clave, $usuario->password);
+    $this->assertFalse((bool) $usuario->is_active);
+
+    $this->actingAs($gerente)->put("/tools/usuarios/{$usuario->id}", ['name' => $usuario->name, 'email' => $usuario->email,
+      'cambiar_password' => 1, 'password' => 'nueva-clave', 'role' => $distribucion->id])->assertSessionHasErrors('password');
+  }
+
+  public function test_supervisor_y_gerencia_gestionan_usuarios_salvo_al_super_y_a_si_mismos(): void
+  {
+    $permisosGerencia = ['permiso_9', 'permiso_10', 'permiso_11', 'permiso_12', 'permiso_13'];
+    $gerente = $this->usuarioConRol('gerencia', $permisosGerencia);
+    $otroGerente = $this->usuarioConRol('gerencia', $permisosGerencia);
+    $supervisor = Role::create(['name' => 'supervisor', 'guard_name' => 'web']);
+    $supervisor->syncPermissions($permisosGerencia);
+    $admin = Role::create(['name' => 'admin', 'guard_name' => 'web']);
+    $admin->syncPermissions(['permiso_99']);
+    $super = User::factory()->create()->assignRole($admin);
+
+    // Edita a otro gerente y le asigna supervisor, sin tocar la contraseña
+    $this->actingAs($gerente)->get("/tools/usuarios/{$otroGerente->id}/edit")->assertOk()->assertSee('supervisor')->assertDontSee('>admin<', false);
+    $this->actingAs($gerente)->put("/tools/usuarios/{$otroGerente->id}", ['name' => $otroGerente->name, 'email' => $otroGerente->email,
+      'role' => $supervisor->id, 'is_active' => 1])->assertSessionHasNoErrors();
+    $this->assertSame(['supervisor'], $otroGerente->fresh()->getRoleNames()->all());
+
+    // No asigna el rol del Super Usuario ni lo edita
+    $this->actingAs($gerente)->put("/tools/usuarios/{$otroGerente->id}", ['name' => $otroGerente->name, 'email' => $otroGerente->email,
+      'role' => $admin->id, 'is_active' => 1])->assertSessionHasErrors('role');
+    $this->actingAs($gerente)->get("/tools/usuarios/{$super->id}/edit")->assertForbidden();
+
+    // No se desactiva a sí mismo
+    $this->actingAs($gerente)->put("/tools/usuarios/{$gerente->id}", ['name' => $gerente->name, 'email' => $gerente->email,
+      'role' => Role::where('name', 'gerencia')->value('id'), 'is_active' => 0])->assertSessionHasErrors('is_active');
+    $this->assertTrue((bool) $gerente->fresh()->is_active);
   }
 
   public function test_el_super_usuario_conserva_su_permiso_al_editar_su_rol(): void

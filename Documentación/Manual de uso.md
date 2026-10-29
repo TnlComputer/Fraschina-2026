@@ -307,9 +307,9 @@ El Administrador y el Supervisor manejan quién entra al sistema, qué puede hac
 4. Dejá tildado **Activo** y tocá **Crear Usuario**.
 5. Pasale al usuario su correo y su contraseña. Después la puede cambiar desde su Perfil.
 
-**Modificar un usuario:** tocá el lápiz. Ahí podés cambiarle el rol o ponerle una contraseña nueva si se la olvidó.
+**Modificar un usuario:** tocá el lápiz. Ahí podés cambiarle el nombre, el correo o el rol sin tocar la contraseña. Para ponerle una contraseña nueva (si se la olvidó), tildá **Cambiar contraseña** y escribila dos veces. El Supervisor y Gerencia pueden modificar a cualquier usuario, también a otros supervisores y gerentes; al Super Usuario solo lo modifica el Administrador.
 
-**Desactivar un usuario:** tocá el botón rojo. El usuario ya no puede entrar, pero sus datos y su historial quedan. Se puede volver a activar. Nadie puede desactivar su propio usuario.
+**Desactivar un usuario:** tocá el botón rojo, o destildá **Activo** al modificarlo. El usuario ya no puede entrar, pero sus datos y su historial quedan. Se puede volver a activar. Nadie puede desactivar su propio usuario.
 
 ## Roles
 
@@ -331,7 +331,7 @@ Cada usuario tiene **un rol**. El rol define a qué secciones entra y si puede d
 4. En **Acciones** tildá lo que puede hacer: **Alta registros**, **Editar registros**, **Eliminar registros**. Sin ninguna de las tres, el usuario solo consulta.
 5. Tocá **Guardar**. El cambio vale para todos los usuarios con ese rol.
 
-Un rol que tiene usuarios no se puede eliminar: primero asigná otro rol a esos usuarios. Los roles admin, supervisor y gerencia solo los modifica el Administrador.
+Un rol que tiene usuarios no se puede eliminar: primero asigná otro rol a esos usuarios. Los permisos de los roles admin, supervisor y gerencia solo los modifica el Administrador.
 
 ## Configuración
 

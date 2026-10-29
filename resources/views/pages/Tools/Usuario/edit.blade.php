@@ -21,14 +21,22 @@
         required>
     </div>
 
-    <div class="form-group">
-      <label for="password">Contraseña (Dejar en blanco para no cambiarla)</label>
-      <input type="password" name="password" id="password" class="form-control">
+    {{-- La contraseña solo se toca si se pide: así el navegador no la autocompleta al cambiar el rol --}}
+    <div class="custom-control custom-checkbox mb-3">
+      <input type="checkbox" class="custom-control-input" name="cambiar_password" id="cambiar_password" value="1" @checked(old('cambiar_password'))>
+      <label class="custom-control-label font-weight-normal" for="cambiar_password">Cambiar contraseña</label>
     </div>
 
-    <div class="form-group">
-      <label for="password_confirmation">Confirmar Contraseña</label>
-      <input type="password" name="password_confirmation" id="password_confirmation" class="form-control">
+    <div id="grupo-password" style="display: none">
+      <div class="form-group">
+        <label for="password">Nueva contraseña</label>
+        <input type="password" name="password" id="password" class="form-control" autocomplete="new-password" disabled>
+      </div>
+
+      <div class="form-group">
+        <label for="password_confirmation">Confirmar contraseña</label>
+        <input type="password" name="password_confirmation" id="password_confirmation" class="form-control" autocomplete="new-password" disabled>
+      </div>
     </div>
 
     <!-- Roles -->
@@ -48,9 +56,16 @@
     <!-- Campo para is_active -->
     <div class="form-group">
       <label for="is_active">Activo</label>
+      @if ($usuario->is(auth()->user()))
+      {{-- Nadie se desactiva a sí mismo --}}
+      <input type="hidden" name="is_active" value="1">
+      <input type="checkbox" id="is_active" checked disabled>
+      <small class="text-muted ml-1">No puede desactivar su propio usuario.</small>
+      @else
       <input type="hidden" name="is_active" value="0"> <!-- Campo oculto para el valor falso -->
       <input type="checkbox" name="is_active" id="is_active" value="1" {{ old('is_active', $usuario->is_active) ?
       'checked' : '' }}>
+      @endif
     </div>
 
     @if ($errors->any())
@@ -67,3 +82,22 @@
   </form>
 </div>
 @endsection
+
+@push('js')
+<script>
+  (function () {
+    var casilla = document.getElementById('cambiar_password');
+    var grupo = document.getElementById('grupo-password');
+    var actualizar = function () {
+      grupo.style.display = casilla.checked ? '' : 'none';
+      grupo.querySelectorAll('input').forEach(function (i) {
+        i.disabled = !casilla.checked;
+        i.required = casilla.checked;
+        if (!casilla.checked) i.value = '';
+      });
+    };
+    casilla.addEventListener('change', actualizar);
+    actualizar();
+  })();
+</script>
+@endpush
