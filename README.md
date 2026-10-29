@@ -84,7 +84,7 @@ buscar (`data-buscador`).
   queda en la base.
 - **Auditoría:** cada alta, modificación y eliminación queda registrada con usuario, fecha,
   sector y valores anteriores y nuevos, además de ingresos, salidas e intentos fallidos. El
-  Administrador y el Supervisor la consultan en *Tools → Auditoría* con filtros y exportación
+  Administrador, el Supervisor y Gerencia la consultan en *Tools → Auditoría* con filtros y exportación
   a Excel (permiso reservado `permiso_14`, como Configuración con `permiso_10`).
 
 ### Manual de uso

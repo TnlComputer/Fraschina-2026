@@ -2,7 +2,7 @@
 
 Actualizado al 29/10/2026
 
-Este manual explica cómo usar el sistema de Fraschina paso a paso. La **Parte 1** es para todos los usuarios. La **Parte 2** es para el Administrador y el Supervisor. La **Parte 3** explica la Auditoría, que ven el Administrador y el Supervisor.
+Este manual explica cómo usar el sistema de Fraschina paso a paso. La **Parte 1** es para todos los usuarios. La **Parte 2** es para el Administrador, el Supervisor y Gerencia. La **Parte 3** explica la Auditoría, que ven el Administrador, el Supervisor y Gerencia.
 
 ## Introducción
 
@@ -275,19 +275,19 @@ En **Perfil** (al final del menú) podés:
 2. Cambiar tu **correo electrónico** y tocar **Guardar correo**.
 3. Cambiar tu **contraseña**: escribí la actual, la nueva dos veces y guardá. El ojo al lado de cada campo muestra lo que escribiste.
 
-# Parte 2 — Administrador y Supervisor
+# Parte 2 — Administrador, Supervisor y Gerencia
 
-El Administrador y el Supervisor manejan quién entra al sistema, qué puede hacer cada uno, las tablas auxiliares y los parámetros generales. Los roles con la sección Tools (por ejemplo gerencia) también ven Usuarios, Roles y las tablas auxiliares, pero no Configuración ni Auditoría. Todo está en el menú **Tools**.
+El Administrador y el Supervisor manejan quién entra al sistema, qué puede hacer cada uno, las tablas auxiliares y los parámetros generales. El rol **gerencia** tiene el mismo acceso que el Supervisor: todo lo que dice esta parte para el Supervisor vale también para Gerencia. Todo está en el menú **Tools**.
 
 ## Qué puede hacer cada uno
 
-| Tarea | Administrador | Supervisor |
+| Tarea | Administrador | Supervisor y Gerencia |
 | --- | --- | --- |
 | Todas las secciones de uso diario | Sí | Sí |
 | Alta, edición y baja de usuarios comunes | Sí | Sí |
-| Modificar usuarios Administrador o Supervisor | Sí | No |
+| Modificar usuarios Administrador, Supervisor o Gerencia | Sí | No |
 | Crear y modificar roles comunes | Sí | Sí |
-| Modificar los roles admin y supervisor | Sí | No |
+| Modificar los roles admin, supervisor y gerencia | Sí | No |
 | Pantalla Permiso | Sí | No |
 | Configuración | Sí | Sí |
 | Auditoría | Sí | Sí |
@@ -318,8 +318,8 @@ Cada usuario tiene **un rol**. El rol define a qué secciones entra y si puede d
 ![Roles y sus permisos](img/roles.png)
 
 - **admin** (Super Usuario) tiene acceso total.
-- **supervisor** entra a todas las secciones y además a **Configuración** y **Auditoría**.
-- Los demás roles (gerencia, distribucion, administracion, expedicion, etc.) tienen solo las secciones tildadas.
+- **supervisor** y **gerencia** entran a todas las secciones y además a **Configuración** y **Auditoría**.
+- Los demás roles (distribucion, administracion, expedicion, etc.) tienen solo las secciones tildadas.
 
 **Crear o modificar un rol:**
 
@@ -331,7 +331,7 @@ Cada usuario tiene **un rol**. El rol define a qué secciones entra y si puede d
 4. En **Acciones** tildá lo que puede hacer: **Alta registros**, **Editar registros**, **Eliminar registros**. Sin ninguna de las tres, el usuario solo consulta.
 5. Tocá **Guardar**. El cambio vale para todos los usuarios con ese rol.
 
-Un rol que tiene usuarios no se puede eliminar: primero asigná otro rol a esos usuarios. Los roles admin y supervisor solo los modifica el Administrador.
+Un rol que tiene usuarios no se puede eliminar: primero asigná otro rol a esos usuarios. Los roles admin, supervisor y gerencia solo los modifica el Administrador.
 
 ## Configuración
 
@@ -362,9 +362,9 @@ En cada tabla hay una fila sin nombre que se ve como **(sin dato)**. Es intencio
 
 ![Exportar tablas](img/exportar.png)
 
-# Parte 3 — Auditoría (Administrador y Supervisor)
+# Parte 3 — Auditoría (Administrador, Supervisor y Gerencia)
 
-La Auditoría registra todo lo que se hace en el sistema: quién, cuándo, en qué sector y qué valores cambió. La ven el Administrador y el Supervisor en **Tools → Usuarios → Auditoría**. Nadie puede modificarla ni borrarla.
+La Auditoría registra todo lo que se hace en el sistema: quién, cuándo, en qué sector y qué valores cambió. La ven el Administrador, el Supervisor y Gerencia en **Tools → Usuarios → Auditoría**. Nadie puede modificarla ni borrarla.
 
 ![Auditoría con los cambios abiertos](img/auditoria.png)
 
@@ -404,4 +404,4 @@ En las modificaciones, la columna **Cambios** dice cuántos campos cambiaron. To
 
 **Exportar a Excel** (arriba a la derecha) descarga lo que estás viendo con los filtros aplicados, hasta 50.000 movimientos.
 
-En la pantalla de inicio, el Administrador y el Supervisor ven además los últimos movimientos de la auditoría.
+En la pantalla de inicio, el Administrador, el Supervisor y Gerencia ven además los últimos movimientos de la auditoría.

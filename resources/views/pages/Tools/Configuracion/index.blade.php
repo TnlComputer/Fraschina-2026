@@ -14,7 +14,7 @@ $activas = old('_token') ? (bool) old('consultas_activas') : (bool) $c('expedici
 @endphp
 
 @section('content')
-<p class="text-muted mb-2">Parámetros de la app. Solo los modifican el Administrador y el Supervisor, y cada cambio queda en la auditoría.</p>
+<p class="text-muted mb-2">Parámetros de la app. Solo los modifican el Administrador, el Supervisor y Gerencia, y cada cambio queda en la auditoría.</p>
 
 <form method="POST" action="{{ route('configuracion.update') }}">
   @csrf

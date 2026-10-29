@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
 /**
- * Herramientas → Configuración: parámetros de la app editables por el Administrador y el Supervisor
+ * Herramientas → Configuración: parámetros de la app editables por el Administrador, el Supervisor y Gerencia
  * (permiso_10). Cada cambio queda en la auditoría.
  */
 class ConfiguracionController extends Controller
