@@ -163,7 +163,7 @@
           @can('permiso_12')
           @if ($distribuciones->isNotEmpty())
           <button type="submit" form="form-sugerir-orden" id="btn-sugerir-orden" class="btn btn-xs btn-warning ml-1"
-            title="Sugerir orden: calcula el recorrido de cada chofer según dirección y horario">
+            title="Sugerir orden: calcula el recorrido de cada chofer según dirección y horario, saliendo del depósito.&#10;• Un solo chofer cargado en Tools → Choferes: se le asignan los pedidos sin chofer.&#10;• Más de un chofer: asigne el chofer de cada pedido antes; se arma un recorrido por chofer.">
             <i class="fas fa-route"></i>
           </button>
           @endif
@@ -389,7 +389,7 @@ document.getElementById("form-sugerir-orden")?.addEventListener("submit", functi
   const form = this;
   Swal.fire({
     title: "Sugerir orden",
-    text: "Se reemplaza el orden de entrega de todos los pedidos del día por el recorrido sugerido de cada chofer, saliendo del depósito y respetando los horarios. La primera vez puede tardar un poco mientras ubica a los clientes en el mapa.",
+    text: "Se reemplaza el orden de entrega de todos los pedidos del día por el recorrido sugerido de cada chofer, saliendo del depósito y respetando los horarios. Con un solo chofer cargado, los pedidos sin chofer pasan a ser suyos; con más de uno, cada chofer tiene su propio recorrido. La primera vez puede tardar un poco mientras ubica a los clientes en el mapa.",
     icon: "question",
     showCancelButton: true,
     confirmButtonText: "Cargar el orden sugerido",
