@@ -108,7 +108,7 @@ input.form-control[type="number"] { text-align: right; }
 .reparto-tabla td.c-ffac .reparto-campo { width: 8.5rem; }
 .reparto-tabla td.c-nfac .reparto-campo { width: 6.5rem; }
 .reparto-tabla td.c-ifac .reparto-campo { width: 8.5rem; }
-.reparto-tabla td.c-ifac .reparto-campo { padding-right: .9rem; } /* el número no queda pegado al borde */
+.reparto-tabla td.c-ifac .reparto-campo { padding-right: calc(.3rem + 2px); } /* flechitas un poco separadas del borde */
 /* En la computadora: campos, impresora y acciones al ancho justo; el resto del ancho queda para los nombres */
 @media (min-width: 768px) {
   .reparto-tabla td.c-pedido, .reparto-tabla td.c-tipo, .reparto-tabla td.c-chofer, .reparto-tabla td.c-orden, .reparto-tabla td.c-ffac, .reparto-tabla td.c-nfac, .reparto-tabla td.c-ifac { width: 1%; }
