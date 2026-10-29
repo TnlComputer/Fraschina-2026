@@ -27,7 +27,7 @@
                     <form method="get" action="{{ route('distribucion.index') }}" class="form__buscar d-flex">
                       @csrf
                       <input type="hidden" name="ver" value="{{ $ver }}">
-                      <input type="text" placeholder="Buscar por nombre o N.º de cliente" name="name" value="{{ $name }}"
+                      <input type="text" placeholder="Nombre de fantasía, razón social o N.º de cliente" name="name" value="{{ $name }}"
                         class="form-control me-2" style="max-width: 350px;">
                       <input type="submit" value="Buscar" class="btn btn-secondary">
                     </form>

@@ -142,8 +142,8 @@
         <th class="text-center">Orden</th>
         <th>Pedido</th>
         <th>PT</th>
-        <th>Nombre Fantasia</th>
-        <th>Razón Social</th>
+        <th class="text-left">Nombre Fantasia</th>
+        <th class="text-left">Razón Social</th>
       </tr>
     </thead>
     <tbody class="text-xs bold">
@@ -207,11 +207,10 @@
               class="text-center text-xs factura-importe reparto-productos {{ (float) $distribucion->totalFactura != 0 && abs($distribucion->totalFactura - $distribucion->totalPedido) > 0.01 ? 'factura-difiere' : '' }}"
               data-label="Importe Factura" step="0.01" style="width: 90px;" />
           </td>
+          {{-- Solo se marca el cliente que lleva la factura impresa; si no, la celda queda vacía --}}
           <td class="text-center c-imp {{ \App\Models\Distribucion::esSi($distribucion->distribucion->fac_imp) ? 'reparto-imprimir' : '' }}">
             @if (\App\Models\Distribucion::esSi($distribucion->distribucion->fac_imp))
-            <i class="fas fa-print text-success" title="Factura Impresa"></i><span class="d-md-none small ml-1 text-success">Impresa</span>
-            @else
-            <i class="fas fa-times-circle text-danger" title="Factura No Impresa"></i><span class="d-md-none small ml-1 text-danger">No impresa</span>
+            <i class="fas fa-print text-success" title="Imprimir factura"></i><span class="d-md-none small ml-1 text-success">Imprimir factura</span>
             @endif
           </td>
           @else

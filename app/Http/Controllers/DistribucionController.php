@@ -51,15 +51,23 @@ class DistribucionController extends Controller
       ->when($ver !== 'todos', fn($q) => $q->where('d.status', '=', $ver === 'eliminados' ? 'D' : 'A'))
       ->orderByRaw("COALESCE(NULLIF(d.nomfantasia, ''), d.razonsocial)"); // Por nombre de fantasía (como se los conoce)
 
-    if ($name) {
+    if (ctype_digit($name)) {
+      // Número de cliente (código con el que lo llaman), Nro. GS o números dentro del nombre
       $query->where(function ($subQuery) use ($name) {
-        if (ctype_digit($name)) {
-          $subQuery->orWhere('d.id', (int) $name);   // número de cliente (código con el que lo llaman)
-        }
-        $subQuery->orWhere('d.nomfantasia', 'like', '%' . $name . '%')
-          ->orWhere('d.razonsocial', 'like', '%' . $name . '%')
-          ->orWhere('d.clisg_id', 'like', '%' . $name . '%');
+        $subQuery->where('d.id', (int) $name)
+          ->orWhere('d.clisg_id', 'like', '%' . $name . '%')
+          ->orWhere('d.nomfantasia', 'like', '%' . $name . '%')
+          ->orWhere('d.razonsocial', 'like', '%' . $name . '%');
       });
+    } elseif ($name !== '') {
+      // Palabra por palabra: cada una puede estar en el nombre de fantasía o en la razón social,
+      // en cualquier orden (p. ej. "rosa panaderia" encuentra "Panadería La Rosa" / "La Rosa S.R.L.")
+      foreach (preg_split('/\s+/', $name) as $palabra) {
+        $query->where(function ($subQuery) use ($palabra) {
+          $subQuery->where('d.nomfantasia', 'like', '%' . $palabra . '%')
+            ->orWhere('d.razonsocial', 'like', '%' . $palabra . '%');
+        });
+      }
     }
 
     $distribuciones = $query->paginate(15)->withQueryString();
