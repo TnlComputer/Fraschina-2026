@@ -107,7 +107,11 @@ input.form-control[type="number"] { text-align: right; }
 .reparto-tabla td.c-ffac .reparto-campo { width: 8.5rem; }
 .reparto-tabla td.c-nfac .reparto-campo { width: 6.5rem; }
 .reparto-tabla td.c-ifac .reparto-campo { width: 7.5rem; }
-.reparto-tabla td.c-guardar { width: 1.5rem; }
+/* Impresora y acciones: lo justo para el ícono, el resto del ancho queda para los nombres */
+.reparto-tabla td.c-pedido, .reparto-tabla td.c-tipo, .reparto-tabla td.c-chofer, .reparto-tabla td.c-orden, .reparto-tabla td.c-ffac, .reparto-tabla td.c-nfac, .reparto-tabla td.c-ifac { width: 1%; }
+.reparto-tabla td.c-imp, .reparto-tabla td.c-recibo, .reparto-tabla td.c-abrir, .reparto-tabla td.c-guardar { width: 1%; white-space: nowrap; padding-left: .2rem; padding-right: .2rem; }
+.reparto-tabla td.c-recibo .btn, .reparto-tabla td.c-abrir .btn { padding: .1rem .35rem; font-size: .8rem; line-height: 1.2; }
+.reparto-tabla th.c-angosta { width: 1%; padding-left: .2rem; padding-right: .2rem; }
 .popover-productos { max-width: 520px; }
 .popover-productos td, .popover-productos th { white-space: nowrap; padding: .15rem .35rem; }
 .popover-productos td.popover-texto { white-space: normal; min-width: 260px; }

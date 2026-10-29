@@ -141,8 +141,8 @@
         <th class="text-center">Fecha Fac.</th>
         <th class="text-center">Nro. Fac.</th>
         <th class="text-center">Importe Fac.</th>
-        <th class="text-center" title="Lleva factura impresa"><i class="fas fa-print"></i></th>
-        <th class="text-center" colspan="3">Acciones</th>
+        <th class="text-center c-angosta" title="Lleva factura impresa"><i class="fas fa-print"></i></th>
+        <th class="c-angosta" colspan="3"></th>
       </tr>
     </thead>
     <tbody>
