@@ -18,7 +18,9 @@
   .flatpickr-day { position: relative; }
 </style>
 <div class="container-fluid">
-  <h1 class="reparto-titulo">Reparto <small class="text-muted">{{ ucfirst(\Carbon\Carbon::parse($fecha)->locale('es')->isoFormat('dddd D/MM/YYYY')) }} · {{ $distribuciones->count() }} pedidos</small></h1>
+  @php $diaReparto = ucfirst(\Carbon\Carbon::parse($fecha)->locale('es')->isoFormat('dddd D/MM/YYYY')); @endphp
+  {{-- El día del reparto bien a la vista: todo lo de la pantalla es de ese día --}}
+  <h1 class="reparto-titulo">Reparto <span class="reparto-fecha">{{ $diaReparto }}</span> <small class="text-muted">{{ $distribuciones->count() }} pedidos</small></h1>
 
   <!-- Botones y fecha (en el celular se acomodan en dos renglones) -->
   <div class="mb-3 d-flex justify-content-between align-items-center reparto-barra">
@@ -215,9 +217,9 @@
     </tbody>
     <tfoot>
       <tr class="font-weight-bold">
-        <td colspan="8" class="text-right">{{ $distribuciones->count() }} pedidos · Total pedidos {{ pesos($distribuciones->sum('totalPedido')) }}</td>
+        <td colspan="8" class="text-right">Reparto {{ $diaReparto }} · {{ $distribuciones->count() }} pedidos · Total pedidos {{ pesos($distribuciones->sum('totalPedido')) }}</td>
         <td class="text-right"><span class="d-md-none">Facturado </span>{{ pesos($distribuciones->sum('totalFactura')) }}</td>
-        <td colspan="4" class="text-muted font-weight-normal">Facturado del día. Los pedidos sin chofer van primero.</td>
+        <td colspan="4" class="text-muted font-weight-normal">Facturado</td>
       </tr>
     </tfoot>
   </table>
