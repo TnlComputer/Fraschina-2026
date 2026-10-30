@@ -210,7 +210,11 @@ class DistribucionAgendaController extends Controller
       ->orderBy('nomfantasia', 'asc')
       ->get();
 
-    $personal = DistribucionPersonal::where('distribucion_id', $agenda->distribucion_id)->get();
+    $personal = DistribucionPersonal::where('distribucion_id', $agenda->distribucion_id)
+      ->orderByRaw('COALESCE((SELECT categoria_id FROM auxcargos WHERE auxcargos.id = distribucion_personal.cargo_id), 999)') // jerarquía del cargo
+      ->orderBy('apellido')
+      ->orderBy('nombre')
+      ->get();
 
     $agenda->hs = Carbon::parse($agenda->hs)->format('H:i');
 
@@ -230,8 +234,9 @@ class DistribucionAgendaController extends Controller
     // Lista de personal relacionada con la distribución filtrada por status = 'A'
     $personal = DistribucionPersonal::where('distribucion_id', $id)
       ->where('status', 'A')
-      ->orderBy('nombre', 'asc')
-      ->orderBy('apellido', 'asc')
+      ->orderByRaw('COALESCE((SELECT categoria_id FROM auxcargos WHERE auxcargos.id = distribucion_personal.cargo_id), 999)') // jerarquía del cargo
+      ->orderBy('apellido')
+      ->orderBy('nombre')
       ->get();
 
     // Devuelve los datos como JSON para ser usados en AJAX

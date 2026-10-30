@@ -137,6 +137,9 @@ class MolinoController extends Controller
         )
         ->where('dp.molino_id', '=', $id)
         ->where('dp.status', '=', 'A')
+        ->orderByRaw('COALESCE(c.categoria_id, 999)') // jerarquía del cargo
+        ->orderBy('dp.apellido')
+        ->orderBy('dp.nombre')
         ->get();
 
       // dd($molino, $personal);

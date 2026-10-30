@@ -189,6 +189,9 @@ class AgroController extends Controller
         )
         ->where('dp.agro_id', '=', $id)
         ->where('dp.status', '=', 'A')
+        ->orderByRaw('COALESCE(c.categoria_id, 999)') // jerarquía del cargo
+        ->orderBy('dp.apellido')
+        ->orderBy('dp.nombre')
         ->get();
 
       // dd($agro, $personal);

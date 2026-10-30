@@ -161,6 +161,10 @@ class ProveedorController extends Controller
         'localidad:id,localidad',           // Relación con localidad
         'municipio:id,ciudadmunicipio',     // Relación con municipio
         'rubro:id,nombre',                  // Relación con rubro
+        'personal' => fn ($q) => $q         // Ordenado por jerarquía del cargo
+          ->orderByRaw('COALESCE((SELECT categoria_id FROM auxcargos WHERE auxcargos.id = proveedor_personal.cargo_id), 999)')
+          ->orderBy('apellido')
+          ->orderBy('nombre'),
         'personal.area:id,area',            // Relación con area
         'personal.cargo:id,cargo',          // Relación con cargo
         'personal.profesion:id,nombreprofesion', // Relación con profesion

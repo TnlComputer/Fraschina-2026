@@ -158,9 +158,12 @@ class RepresentacionController extends Controller
     // Cargar relaciones necesarias con filtro en 'personal' para excluir registros con 'status' igual a 'D'
     $representacion = Representacion::with([
       'personal' => function ($query) {
-        $query->where('status', '!=', 'D'); // Filtrar solo registros activos
+        $query->where('status', '!=', 'D') // Filtrar solo registros activos
+          ->orderByRaw('COALESCE((SELECT categoria_id FROM auxcargos WHERE auxcargos.id = representacion_personal.cargo_id), 999)') // jerarquía del cargo
+          ->orderBy('apellido')
+          ->orderBy('nombre');
       },
-      'personal.area',          // Carga el área del personal
+      'personal.area',         // Carga el área del personal
       'personal.cargo',         // Carga el cargo del personal
       'personal.profesion',     // Carga la profesión del personal
       'zona',                   // Carga la zona de la representación
