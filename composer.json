@@ -4,7 +4,7 @@
     "type": "project",
     "description": "Sistema de gestión de Fraschina S.R.L. (software propietario)",
     "keywords": ["laravel", "framework"],
-    "license": "proprietary",
+    "license": "AGPL-3.0-or-later",
     "require": {
         "php": "^8.2",
         "dompdf/dompdf": "^3.1.6",

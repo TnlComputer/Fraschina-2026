@@ -16,7 +16,7 @@ return [
   /*
   | Remitente de los mails de pedidos y consultas a molinos.
   */
-  'mail_remitente' => env('EXPEDICION_MAIL_REMITENTE', 'pedidos@example.com'),
+  'mail_remitente' => env('EXPEDICION_MAIL_REMITENTE', env('MAIL_FROM_ADDRESS', 'pedidos@example.com')),
   'mail_remitente_nombre' => env('EXPEDICION_MAIL_REMITENTE_NOMBRE', 'Fraschina - Control de Pedidos'),
 
   /*
