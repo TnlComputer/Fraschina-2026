@@ -54,4 +54,26 @@ class ExpedicionGeneralTest extends TestCase
 
         $this->assertDatabaseHas('expedicion_general', ['fecha' => '2025-04-01', 'gi' => 27]);
     }
+
+    public function test_guarda_fuera_de_rango_y_avisa_cuales(): void
+    {
+        $this->actingAs($this->user)->post('/expedicion_general', [
+            'fecha' => '2025-04-02', 'mo' => 'LUJ', 'cl' => 'ARG', 'w' => 2360, 'hum' => 14.5, 'cz' => 7.2,
+        ])->assertRedirect(route('expedicion_general.index'))
+            ->assertSessionHas('warning', 'Quedaron fuera de rango: W, CZ.');
+
+        $this->assertDatabaseHas('expedicion_general', ['fecha' => '2025-04-02', 'w' => 2360]);
+    }
+
+    public function test_dentro_de_rango_no_avisa_y_el_listado_marca_en_rojo(): void
+    {
+        $this->actingAs($this->user)->post('/expedicion_general', [
+            'fecha' => '2025-04-03', 'mo' => 'LUJ', 'cl' => 'ARG', 'w' => 300, 'hum' => 14.5,
+        ])->assertSessionMissing('warning');
+
+        DB::table('expedicion_general')->insert(['fecha' => '2025-04-04', 'mo' => 'LUJ', 'cl' => 'ARG', 'w' => 2360, 'status' => 'A']);
+        $this->actingAs($this->user)->get('/expedicion_general?fecha=20250404')
+            ->assertOk()
+            ->assertSee('<td class="text-danger font-weight-bold">2360</td>', false);
+    }
 }

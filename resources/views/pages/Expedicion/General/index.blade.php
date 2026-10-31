@@ -123,19 +123,19 @@
                     <td>{{ $expedicion_gral->cl }}</td>
                     <td>{{ $expedicion_gral->modo }}</td>
                     <td>{{ $expedicion_gral->prod }}</td>
-                    <td>{{ $expedicion_gral->p }}</td>
-                    <td>{{ $expedicion_gral->l }}</td>
-                    <td>{{ $expedicion_gral->pl }}</td>
-                    <td>{{ $expedicion_gral->w }}</td>
-                    <td>{{ $expedicion_gral->gh }}</td>
-                    <td>{{ $expedicion_gral->gs }}</td>
-                    <td>{{ $expedicion_gral->gi }}</td>
-                    <td>{{ $expedicion_gral->hum }}</td>
-                    <td>{{ $expedicion_gral->cz }}</td>
-                    <td>{{ $expedicion_gral->est }}</td>
-                    <td>{{ $expedicion_gral->abs }}</td>
-                    <td>{{ $expedicion_gral->fn }}</td>
-                    <td>{{ $expedicion_gral->punt }}</td>
+                    <td class="{{ $expedicion_gral->fueraDeRango('p') ? 'text-danger font-weight-bold' : '' }}">{{ $expedicion_gral->p }}</td>
+                    <td class="{{ $expedicion_gral->fueraDeRango('l') ? 'text-danger font-weight-bold' : '' }}">{{ $expedicion_gral->l }}</td>
+                    <td class="{{ $expedicion_gral->fueraDeRango('pl') ? 'text-danger font-weight-bold' : '' }}">{{ $expedicion_gral->pl }}</td>
+                    <td class="{{ $expedicion_gral->fueraDeRango('w') ? 'text-danger font-weight-bold' : '' }}">{{ $expedicion_gral->w }}</td>
+                    <td class="{{ $expedicion_gral->fueraDeRango('gh') ? 'text-danger font-weight-bold' : '' }}">{{ $expedicion_gral->gh }}</td>
+                    <td class="{{ $expedicion_gral->fueraDeRango('gs') ? 'text-danger font-weight-bold' : '' }}">{{ $expedicion_gral->gs }}</td>
+                    <td class="{{ $expedicion_gral->fueraDeRango('gi') ? 'text-danger font-weight-bold' : '' }}">{{ $expedicion_gral->gi }}</td>
+                    <td class="{{ $expedicion_gral->fueraDeRango('hum') ? 'text-danger font-weight-bold' : '' }}">{{ $expedicion_gral->hum }}</td>
+                    <td class="{{ $expedicion_gral->fueraDeRango('cz') ? 'text-danger font-weight-bold' : '' }}">{{ $expedicion_gral->cz }}</td>
+                    <td class="{{ $expedicion_gral->fueraDeRango('est') ? 'text-danger font-weight-bold' : '' }}">{{ $expedicion_gral->est }}</td>
+                    <td class="{{ $expedicion_gral->fueraDeRango('abs') ? 'text-danger font-weight-bold' : '' }}">{{ $expedicion_gral->abs }}</td>
+                    <td class="{{ $expedicion_gral->fueraDeRango('fn') ? 'text-danger font-weight-bold' : '' }}">{{ $expedicion_gral->fn }}</td>
+                    <td class="{{ $expedicion_gral->fueraDeRango('punt') ? 'text-danger font-weight-bold' : '' }}">{{ $expedicion_gral->punt }}</td>
                     <td class="text-left" style="min-width: 100px; max-width: 200px; word-wrap: break-word;">
                       {{ $expedicion_gral->particularidades }}
                     </td>

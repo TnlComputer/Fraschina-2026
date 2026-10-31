@@ -41,9 +41,9 @@ class ExpedicionGeneralController extends Controller
   {
     $validated = $request->validate($this->reglas());
 
-    ExpedicionGeneral::create($validated);
+    $registro = ExpedicionGeneral::create($validated);
 
-    return redirect()->route('expedicion_general.index')->with('success', 'Expedición creada exitosamente.');
+    return $this->volver($registro, 'Expedición creada exitosamente.');
   }
 
   public function show(ExpedicionGeneral $expedicionGeneral)
@@ -66,7 +66,17 @@ class ExpedicionGeneralController extends Controller
     $expedicionGeneral = $this->activos()->findOrFail($id);
     $expedicionGeneral->update($validated);
 
-    return redirect()->route('expedicion_general.index')->with('success', 'Expedición actualizada exitosamente.');
+    return $this->volver($expedicionGeneral, 'Expedición actualizada exitosamente.');
+  }
+
+  /**
+   * Vuelve al listado. Si quedaron valores fuera de los mínimos y máximos se guarda igual y se avisa cuáles.
+   */
+  private function volver(ExpedicionGeneral $registro, string $mensaje)
+  {
+    $redireccion = redirect()->route('expedicion_general.index')->with('success', $mensaje);
+    $fuera = $registro->camposFueraDeRango();
+    return $fuera ? $redireccion->with('warning', 'Quedaron fuera de rango: ' . implode(', ', $fuera) . '.') : $redireccion;
   }
 
   public function destroy($id)
