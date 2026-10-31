@@ -34,3 +34,6 @@ yarn-error.log
 *.rar
 *.zip
 *.7z
+
+# Capturas del manual: tienen datos reales de clientes, quedan solo locales
+/Documentación/img/
