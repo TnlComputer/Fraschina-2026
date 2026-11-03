@@ -286,6 +286,21 @@ class DistribucionPedidoController extends Controller
       ->with('success', 'Pedido ' . $pedido->id . ' actualizado correctamente.');
   }
 
+  /**
+   * Baja lógica (status 'D', igual que el sistema anterior): sale del reparto, las impresiones y
+   * los totales, pero el pedido y sus líneas quedan en la base y la baja en la auditoría.
+   */
+  public function destroy(Request $request, $id)
+  {
+    $request->validate(['volver' => 'nullable|date_format:Y-m-d']);
+
+    $pedido = DistribucionNroPedidos::findOrFail($id);
+    $pedido->update(['status' => 'D']);
+
+    return redirect()->route('distribucion_reparto.index', ['fecha' => $request->input('volver') ?: $pedido->fechaEntrega])
+      ->with('success', 'Pedido ' . $pedido->id . ' eliminado.');
+  }
+
   public function getProductosTareas($distribucion_id)
   {
     // Productos activos del cliente con nombre, precio e IVA

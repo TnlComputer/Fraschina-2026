@@ -122,7 +122,7 @@ Route::middleware(['auth', 'permission:permiso_2', 'accion'])->group(function ()
 
   // Pedidos
   Route::resource('distribucion_pedido', DistribucionPedidoController::class)
-    ->only(['create', 'store', 'edit', 'update']);
+    ->only(['create', 'store', 'edit', 'update', 'destroy']);
   Route::get('/productos-y-tareas-por-cliente/{clienteId}', [DistribucionPedidoController::class, 'getProductosYTareasPorCliente']);
   Route::get('/distribucion/{id}/productos-tareas', [DistribucionPedidoController::class, 'getProductosTareas']);
 

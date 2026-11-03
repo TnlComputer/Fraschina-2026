@@ -141,6 +141,32 @@ class DistribucionPedidoTest extends TestCase
         ])->assertRedirect(route('distribucion_reparto.index', ['fecha' => '2026-10-15']));
     }
 
+    public function test_eliminar_pedido_es_baja_logica(): void
+    {
+        $pedido = $this->crearPedido();
+        $abrir = route('distribucion_reparto.show', ['distribucion_reparto' => $pedido->id, 'volver' => '2026-10-15']);
+        $this->actingAs($this->user)->get($abrir)->assertOk()->assertSee('title="Eliminar Pedido', false);
+
+        $this->actingAs($this->user)->delete("/distribucion_pedido/{$pedido->id}?volver=2026-10-15")
+            ->assertRedirect(route('distribucion_reparto.index', ['fecha' => '2026-10-15']));
+
+        // Queda en la base con sus líneas, pero fuera del reparto
+        $this->assertSame('D', $pedido->fresh()->status);
+        $this->assertSame(1, $pedido->lineasPedidos()->count());
+        $this->actingAs($this->user)->get('/distribucion_reparto?fecha=2026-10-15')
+            ->assertDontSee(e(route('distribucion_reparto.show', ['distribucion_reparto' => $pedido->id, 'volver' => '2026-10-15'])), false);
+        $this->actingAs($this->user)->get($abrir)->assertOk()->assertSee('Eliminado')->assertDontSee('title="Eliminar Pedido', false);
+    }
+
+    public function test_sin_permiso_de_eliminar_no_se_elimina_el_pedido(): void
+    {
+        $pedido = $this->crearPedido();
+        $this->user->revokePermissionTo('permiso_13');
+
+        $this->actingAs($this->user)->delete("/distribucion_pedido/{$pedido->id}")->assertForbidden();
+        $this->assertSame('A', $pedido->fresh()->status);
+    }
+
     public function test_pantallas_de_reparto_y_agenda_renderizan(): void
     {
         $pedido = $this->crearPedido();

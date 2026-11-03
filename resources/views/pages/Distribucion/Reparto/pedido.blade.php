@@ -16,13 +16,30 @@ $volver = preg_match('/^\d{4}-\d{2}-\d{2}$/', (string) request('volver')) ? requ
 
   <div class="card">
     <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-      <span>Pedido {{ $pedido->id }} · Entrega {{ fecha($pedido->fechaEntrega) }}</span>
-      @can('permiso_12')
-      <a href="{{ route('distribucion_pedido.edit', ['distribucion_pedido' => $pedido->id, 'volver' => $volver]) }}"
-        class="btn btn-sm btn-light" title="Editar Pedido">
-        <i class="fa-solid fa-pen-to-square text-blue"></i> Editar
-      </a>
-      @endcan
+      <span>Pedido {{ $pedido->id }} · Entrega {{ fecha($pedido->fechaEntrega) }}
+        @if ($pedido->status === 'D')<span class="badge badge-secondary ml-2">Eliminado</span>@endif
+      </span>
+      @if ($pedido->status !== 'D')
+      <div class="d-flex">
+        @can('permiso_12')
+        <a href="{{ route('distribucion_pedido.edit', ['distribucion_pedido' => $pedido->id, 'volver' => $volver]) }}"
+          class="btn btn-sm btn-light" title="Editar Pedido">
+          <i class="fa-solid fa-pen-to-square text-blue"></i> Editar
+        </a>
+        @endcan
+        @can('permiso_13')
+        {{-- Baja lógica: el pedido sale del reparto pero queda en la base --}}
+        <form method="POST" action="{{ route('distribucion_pedido.destroy', ['distribucion_pedido' => $pedido->id, 'volver' => $volver]) }}"
+          class="ml-2" onsubmit="return confirm('¿Eliminar el pedido {{ $pedido->id }}? Sale del reparto y de las impresiones (queda guardado en el historial).');">
+          @csrf
+          @method('DELETE')
+          <button type="submit" class="btn btn-sm btn-danger" title="Eliminar Pedido (por ejemplo, si se cargó dos veces)">
+            <i class="fa-solid fa-trash"></i> Eliminar
+          </button>
+        </form>
+        @endcan
+      </div>
+      @endif
     </div>
     <div class="card-body">
       <div class="row">
