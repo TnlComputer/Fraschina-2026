@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Console\Commands\Concerns\ConvierteLegado;
 use App\Models\MigracionDuda;
 use App\Services\Auditoria;
 use Illuminate\Console\Command;
@@ -23,6 +24,8 @@ use Illuminate\Support\Facades\Schema;
  */
 class LegadoSincronizar extends Command
 {
+  use ConvierteLegado;
+
   protected $signature = 'legado:sincronizar
     {--origen= : Base del sistema anterior (por defecto config legado.origen)}
     {--base= : Arma la línea base desde esta base (copia del sistema anterior usada para cargar la app) y termina}
@@ -102,65 +105,6 @@ class LegadoSincronizar extends Command
     $this->table(['Tabla', 'Nuevas', 'Modificadas', 'Bajas', 'Conflictos'], array_map(fn($t, $r) => [$t, ...$r], array_keys($this->resumen), $this->resumen));
     $this->info(sprintf('Listo en %.0f s%s. Conflictos: %d', microtime(true) - $inicio, $this->option('simular') ? ' (simulación, no se aplicó nada)' : '', count($this->conflictos)));
     return self::SUCCESS;
-  }
-
-  /** Tablas de la app que arman los scripts (en orden). */
-  private function tablasDelScript(): array
-  {
-    static $tablas = null;
-    if ($tablas === null) {
-      $tablas = [];
-      foreach (config('legado.scripts') as $s) {
-        preg_match_all('/INTO\s+(?:fraschina_2024\.)?`?(\w+)`?\s*\(/i', file_get_contents(base_path("conversion_tablas/$s")), $m);
-        $tablas = array_merge($tablas, $m[1]);
-      }
-      $tablas = array_values(array_unique($tablas));
-    }
-    return $tablas;
-  }
-
-  /** Corre los scripts de conversión desde $origen hacia tablas $prefijo* de la base de la app. */
-  private function convertir(string $origen, string $prefijo): void
-  {
-    if (!preg_match('/^\w+$/', $origen) || !DB::selectOne('SELECT COUNT(*) n FROM information_schema.schemata WHERE schema_name = ?', [$origen])->n) {
-      throw new \RuntimeException("No existe la base $origen.");
-    }
-    // Tablas de trabajo: las que escriben los scripts y las que leen (copiadas de la app)
-    $escritas = $this->tablasDelScript();
-    $leidas = [];
-    foreach (config('legado.scripts') as $s) {
-      preg_match_all('/fraschina_2024\.`?(\w+)`?/i', file_get_contents(base_path("conversion_tablas/$s")), $m);
-      $leidas = array_merge($leidas, $m[1]);
-    }
-    foreach (array_unique(array_merge($escritas, $leidas)) as $t) {
-      DB::statement("DROP TABLE IF EXISTS `{$prefijo}{$t}`");
-      DB::statement("CREATE TABLE `{$prefijo}{$t}` LIKE `$t`");
-      if (!in_array($t, $escritas, true)) {
-        DB::statement("INSERT INTO `{$prefijo}{$t}` SELECT * FROM `$t`");
-      }
-    }
-
-    // Nombres reales de las tablas del sistema anterior: en Linux distinguen mayúsculas (auxChofer, CDagenda...)
-    $nombres = [];
-    foreach (DB::select('SELECT table_name t FROM information_schema.tables WHERE table_schema = ?', [$origen]) as $r) {
-      $nombres[strtolower($r->t)] = $r->t;
-    }
-
-    $modo = DB::selectOne('SELECT @@SESSION.sql_mode m')->m;
-    DB::statement("SET SESSION sql_mode = 'NO_ENGINE_SUBSTITUTION'");
-    try {
-      foreach (config('legado.scripts') as $s) {
-        $sql = file_get_contents(base_path("conversion_tablas/$s"));
-        $sql = preg_replace_callback('/\bfraschin_backup\.`?(\w+)`?/i',
-          fn($m) => "`$origen`.`" . ($nombres[strtolower($m[1])] ?? $m[1]) . '`', $sql);
-        $sql = preg_replace('/\bfraschina_2024\./i', "`{$this->app}`.{$prefijo}", $sql);
-        // tablas que algún script escribe sin indicar la base
-        $sql = preg_replace('/(INTO\s+)(proveedor_aux_productos|representacion_aux_productos)\b/i', "$1`{$this->app}`.{$prefijo}$2", $sql);
-        DB::unprepared($sql);
-      }
-    } finally {
-      DB::statement('SET SESSION sql_mode = ?', [$modo]);
-    }
   }
 
   private function sincronizarTabla(string $tabla): void
@@ -259,16 +203,5 @@ class LegadoSincronizar extends Command
       'detalle' => ['columnas' => ['Tabla', 'Id', 'Motivo', 'Fecha'], 'filas' => array_merge($previas, $this->conflictos)],
       'resuelta_at' => null,
     ])->save();
-  }
-
-  private function rotarBase(): void
-  {
-    $hoy = config('legado.prefijo_hoy');
-    $base = config('legado.prefijo_base');
-    foreach (DB::select("SELECT table_name t FROM information_schema.tables WHERE table_schema = DATABASE() AND table_name LIKE ?", [str_replace('_', '\\_', $hoy) . '%']) as $r) {
-      $t = substr($r->t, strlen($hoy));
-      DB::statement("DROP TABLE IF EXISTS `{$base}{$t}`");
-      DB::statement("RENAME TABLE `{$hoy}{$t}` TO `{$base}{$t}`");
-    }
   }
 }
