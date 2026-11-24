@@ -86,7 +86,9 @@ class DistribucionProductosClienteTest extends TestCase
         $this->assertNull(DistribucionLineaPedidos::where('producto_id', $this->harina)->value('cambiar'));
         $this->assertSame('*', DistribucionLineaPedidos::where('producto_id', $this->aceite)->value('cambiar'));
         $this->assertSame('*', DistribucionLineaPedidos::where('producto_id', $this->harina)->value('bandera'));
-        $this->get('/distribucion_reparto?fecha=2026-11-30')->assertOk()->assertSee('1.000,00*');
+        // El Flag figura en el pedido pero no en el reparto
+        $this->get('/distribucion_reparto/' . DistribucionNroPedidos::value('id'))->assertOk()->assertSee('1.000,00*');
+        $this->get('/distribucion_reparto?fecha=2026-11-30')->assertOk()->assertSee('1.000,00')->assertDontSee('1.000,00*');
         // Lo sin cargo no cuenta como última entrega; y no retrocede con un pedido anterior
         $this->assertSame('2026-11-30', (string) DistribucionProducto::where('producto_id', $this->harina)->value('fechaUEnt'));
         $this->assertNull(DistribucionProducto::where('producto_id', $this->aceite)->value('fechaUEnt'));

@@ -172,7 +172,7 @@
       <tr>
         <td>{{ $linea->producto->productoCDA }}</td>
         <td class="text-center">{{ $linea->cantidad }}</td>
-        <td class="text-right">$ {{ numero($linea->precio_unitario, 2) }}{{ \App\Models\DistribucionLineaPedidos::marcado($linea->bandera) ? '*' : '' }}</td>
+        <td class="text-right">$ {{ numero($linea->precio_unitario, 2) }}</td>
       </tr>
       @php
       $totalPorChofer[$distribucion->chofer] = ($totalPorChofer[$distribucion->chofer] ?? 0) + $linea->cantidad;
