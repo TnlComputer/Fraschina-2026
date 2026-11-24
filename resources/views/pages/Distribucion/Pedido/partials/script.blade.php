@@ -71,7 +71,7 @@
       <td>Producto</td>
       <td>${esc(p.nombre)}
         <input type="hidden" name="${n.id}[]" value="${p.producto_id}">
-        ${alta ? '<input type="hidden" name="tipos[]" value="P">' : ''}
+        ${alta ? '<input type="hidden" name="tipos[]" value="P"><input type="hidden" name="detalles[]" value="">' : ''}
       </td>
       <td><input type="number" step="0.01" min="0" name="${n.precio}[]" value="${p.precio ?? ''}" class="form-control" required></td>
       <td><input type="number" min="0" name="${n.cantidad}[]" value="${cantidad}" class="form-control" required></td>
@@ -94,6 +94,7 @@
     tr.innerHTML = `
       <td>Tarea</td>
       <td>${esc(sel.options[sel.selectedIndex].text)}
+        <input type="text" name="${alta ? 'detalles' : 'new_tarea_detalles'}[]" value="${esc($('tarea_detalle').value)}" class="form-control form-control-sm" placeholder="Detalle">
         ${alta
           ? `<input type="hidden" name="productos[]" value="${sel.value}"><input type="hidden" name="tipos[]" value="T">
              <input type="hidden" name="precios[]" value=""><input type="hidden" name="cantidades[]" value="">
@@ -103,7 +104,7 @@
       <td></td><td></td><td></td><td></td><td></td><td></td>
       <td><button type="button" class="btn btn-danger remove-row">X</button></td>`;
     detalle.appendChild(tr);
-    sel.value = '';
+    sel.value = $('tarea_detalle').value = '';
   }
 
   function actualizarTotales() {
@@ -118,33 +119,43 @@
     $('total-pedido').textContent = pesos(total);
   }
 
+  function mostrarCrear() {
+    const crear = $('catalogo_crear').checked;
+    $('catalogo_existente').classList.toggle('d-none', crear);
+    document.querySelectorAll('[data-catalogo-nuevo]').forEach(c => c.classList.toggle('d-none', !crear));
+  }
+
   // Alta del producto en la lista del cliente, sin salir del pedido
   async function agregarAlCliente() {
     const error = $('catalogo_error'), sel = $('catalogo_id'), boton = $('catalogo_agregar');
     if (boton.disabled) return;
     error.textContent = '';
     if (!clienteId()) { error.textContent = 'Primero seleccione el cliente.'; return; }
-    if (!sel.value || $('catalogo_precio').value === '') { error.textContent = 'Seleccione el producto e ingrese el precio.'; return; }
-    const productoId = sel.value;
+    const crear = $('catalogo_crear').checked;
+    if (crear && (!$('catalogo_nombre').value.trim() || !$('catalogo_iva').value)) { error.textContent = 'Ingrese el nombre y el IVA del producto nuevo.'; return; }
+    if ((!crear && !sel.value) || $('catalogo_precio').value === '') { error.textContent = 'Seleccione el producto e ingrese el precio.'; return; }
     boton.disabled = true;
     try {
       const r = await fetch(@json(route('distribucion_producto.store', [], false)), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Accept: 'application/json', 'X-CSRF-TOKEN': @json(csrf_token()) },
         body: JSON.stringify({
-          distribucion_id: clienteId(), producto_id: productoId,
+          distribucion_id: clienteId(),
+          ...(crear ? { producto_nuevo: $('catalogo_nombre').value.trim(), ivacda: $('catalogo_iva').value } : { producto_id: sel.value }),
           precio: $('catalogo_precio').value, fecha: $('catalogo_fecha').value,
         }),
       });
+      const d = await r.json().catch(() => ({}));
       if (!r.ok) {
-        const d = await r.json().catch(() => ({}));
         error.textContent = d.errors ? Object.values(d.errors).flat().join(' ') : (d.message || 'No se pudo agregar el producto.');
         return;
       }
       if (sel.tomselect) sel.tomselect.clear(); else sel.value = '';
-      $('catalogo_precio').value = '';
+      $('catalogo_precio').value = $('catalogo_nombre').value = $('catalogo_iva').value = '';
+      $('catalogo_crear').checked = false;
+      mostrarCrear();
       await cargarLista();
-      cuerpoLista.querySelector(`tr[data-producto="${productoId}"] .lista-cantidad`)?.focus();
+      cuerpoLista.querySelector(`tr[data-producto="${d.producto_id}"] .lista-cantidad`)?.focus();
     } catch (e) {
       error.textContent = 'No se pudo agregar el producto: revise la conexión.';
     } finally {
@@ -162,7 +173,11 @@
   });
   $('tarea_agregar').addEventListener('click', agregarTarea);
   $('catalogo_agregar')?.addEventListener('click', agregarAlCliente);
-  ['catalogo_precio', 'catalogo_fecha'].forEach(id => $(id)?.addEventListener('keydown', e => {
+  $('catalogo_crear')?.addEventListener('change', mostrarCrear);
+  $('tarea_detalle').addEventListener('keydown', e => {
+    if (e.key === 'Enter') { e.preventDefault(); agregarTarea(); }
+  });
+  ['catalogo_nombre', 'catalogo_precio', 'catalogo_fecha'].forEach(id => $(id)?.addEventListener('keydown', e => {
     if (e.key === 'Enter') { e.preventDefault(); agregarAlCliente(); }
   }));
   detalle.addEventListener('click', e => {

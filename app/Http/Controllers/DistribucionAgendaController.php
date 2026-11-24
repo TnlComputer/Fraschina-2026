@@ -34,7 +34,7 @@ class DistribucionAgendaController extends Controller
     $agendas = DistribucionAgenda::with([
       'auxprioridades:id,nombre,color',
       'auxacciones:id,accion,colorAcc',
-      'distribucion:id,razonsocial,nomfantasia,telefono,auto,info,productoCDA,desde,hasta,desde1,hasta1,lunes,sabado,obsrecep,fac_imp,dire_calle_id,piso,dpto,dire_nro,barrio_id,municipio_id,localidad_id,zona_id,rubro_id,tamanio_id,modo_id,contacto_id,estado_id,veraz_id',
+      'distribucion:id,status,razonsocial,nomfantasia,telefono,auto,info,productoCDA,desde,hasta,desde1,hasta1,lunes,sabado,obsrecep,fac_imp,dire_calle_id,piso,dpto,dire_nro,barrio_id,municipio_id,localidad_id,zona_id,rubro_id,tamanio_id,modo_id,contacto_id,estado_id,veraz_id',
       'distribucion.auxcontacto:id,contacto',
       'distribucion.auxveraz:id,estado', // Relación con Veraz desde Distribucion
       'distribucion.auxestado:id,nomEstado', // Relación con Estado desde Distribucion

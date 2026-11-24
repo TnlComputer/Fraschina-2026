@@ -77,6 +77,12 @@
             </button>
           </td> --}}
           <td class="d-flex justify-content-center">
+@if ($agenda->distribucion?->status === 'A')
+@can('permiso_11')
+<a href="{{ route('distribucion_pedido.create', ['cliente' => $agenda->distribucion_id]) }}" class="btn btn-info btn-xs d-inline mr-2" title="Pedido"><i class="fas fa-cart-plus"></i></a>
+<a href="{{ route('distribucion_pedido.create', ['cliente' => $agenda->distribucion_id]) }}#tareas" class="btn btn-info btn-xs d-inline mr-2" title="Tarea"><i class="fas fa-list-check"></i></a>
+@endcan
+@endif
             <!-- Botón de Ver Más -->
             <button class="btn btn-info btn-xs d-inline mr-2" title="Ver" data-toggle="modal" data-target="#modal{{ $agenda->id }}">
               <i class="fa-regular fa-eye fa-sm"></i>
@@ -211,6 +217,12 @@
           </table>
         </div>
         <div class="modal-footer">
+@if ($agenda->distribucion?->status === 'A')
+@can('permiso_11')
+<a href="{{ route('distribucion_pedido.create', ['cliente' => $agenda->distribucion_id]) }}" class="btn btn-info " title="Pedido"><i class="fas fa-cart-plus"></i> Pedido</a>
+<a href="{{ route('distribucion_pedido.create', ['cliente' => $agenda->distribucion_id]) }}#tareas" class="btn btn-info " title="Tarea"><i class="fas fa-list-check"></i> Tarea</a>
+@endcan
+@endif
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
         </div>
       </div>

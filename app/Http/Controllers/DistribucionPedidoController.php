@@ -40,6 +40,8 @@ class DistribucionPedidoController extends Controller
       'cantidades.*' => 'nullable|numeric|min:0',
       'precios' => 'required|array',
       'precios.*' => 'nullable|numeric|min:0',
+      'detalles' => 'nullable|array',
+      'detalles.*' => 'nullable|string|max:1000',
       'flag' => 'nullable|array',
       'sin_cargo' => 'nullable|array',
       'retirar' => 'nullable|array',
@@ -116,6 +118,7 @@ class DistribucionPedidoController extends Controller
             'fechaEntrega' => $fechaEntrega,
             'linea' => $lineaNumeroT++,
             'tarea_id' => $productoId,
+            'detalles' => $request->detalles[$index] ?? null,
             'status' => 'A',
           ]);
         }
@@ -164,6 +167,10 @@ class DistribucionPedidoController extends Controller
       'new_precios.*' => 'required|numeric|min:0',
       'new_cantidades' => 'nullable|array',
       'new_cantidades.*' => 'required|numeric|min:0',
+      'existing_tarea_detalles' => 'nullable|array',
+      'existing_tarea_detalles.*' => 'nullable|string|max:1000',
+      'new_tarea_detalles' => 'nullable|array',
+      'new_tarea_detalles.*' => 'nullable|string|max:1000',
       'existing_tarea_ids' => 'nullable|array',
       'existing_tarea_ids.*' => 'integer',
       'new_tareas' => 'nullable|array',
@@ -270,9 +277,17 @@ class DistribucionPedidoController extends Controller
         $existingTareaIds = array_map('intval', $request->input('existing_tarea_ids', []));
         $pedido->lineasTareas()->whereNotIn('id', $existingTareaIds)->delete();
 
+        $detalles = $request->input('existing_tarea_detalles', []);
+        foreach ($pedido->lineasTareas()->get() as $tarea) {
+          $pos = array_search($tarea->id, $existingTareaIds);
+          if (array_key_exists($pos, $detalles) && (string) $detalles[$pos] !== (string) $tarea->detalles) {
+            $tarea->update(['detalles' => $detalles[$pos]]);
+          }
+        }
+
         // 5. Nuevas tareas
         $maxLinea = (int) $pedido->lineasTareas()->max('linea');
-        foreach ($request->input('new_tareas', []) as $tareaId) {
+        foreach ($request->input('new_tareas', []) as $index => $tareaId) {
           DistribucionLineaTareas::create([
             'pedido_id'       => $pedido->id,
             'distribucion_id' => $pedido->distribucion_id,
@@ -280,6 +295,7 @@ class DistribucionPedidoController extends Controller
             'fechaEntrega'    => $pedido->fechaEntrega,
             'linea'           => ++$maxLinea,
             'tarea_id'        => $tareaId,
+            'detalles'        => $request->input('new_tarea_detalles', [])[$index] ?? null,
             'status'          => 'A',
           ]);
         }

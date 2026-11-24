@@ -130,6 +130,37 @@ class DistribucionProductosClienteTest extends TestCase
         $this->get("/distribucion/{$this->cliente}/productos/imprimir")->assertOk()->assertHeader('Content-Type', 'application/pdf');
     }
 
+    public function test_crea_producto_nuevo_al_agregarlo(): void
+    {
+        $datos = ['distribucion_id' => $this->cliente, 'producto_nuevo' => 'Semolín', 'ivacda' => '10.5', 'precio' => 700, 'fecha' => '2026-11-24'];
+        $id = $this->postJson('/distribucion/distribucion_producto', $datos)->assertCreated()->json('producto_id');
+        $this->assertSame('Semolín', DB::table('productos_c_d_a')->where('id', $id)->value('productoCDA'));
+        $this->assertTrue(DistribucionProducto::where(['distribucion_id' => $this->cliente, 'producto_id' => $id])->exists());
+        $this->postJson('/distribucion/distribucion_producto', $datos)->assertStatus(422)->assertJsonValidationErrors('producto_nuevo');
+        $this->postJson('/distribucion/distribucion_producto', ['producto_nuevo' => 'Otro', 'ivacda' => null] + $datos)->assertStatus(422)->assertJsonValidationErrors('ivacda');
+        $this->postJson('/distribucion/distribucion_producto', ['producto_nuevo' => null] + $datos)->assertStatus(422)->assertJsonValidationErrors('producto_id');
+    }
+
+    public function test_tarea_con_detalle_desde_ficha_y_agenda(): void
+    {
+        $tarea = DB::table('distribucion_tareas')->insertGetId(['tarea' => 'Cobrar', 'status' => 'A']);
+        $this->pedir(['productos' => [$tarea], 'tipos' => ['T'], 'cantidades' => [''], 'precios' => [''], 'detalles' => ['Factura 10']])->assertSessionHasNoErrors();
+        $pedido = DistribucionNroPedidos::firstOrFail();
+        $linea = $pedido->lineasTareas()->firstOrFail();
+        $this->assertSame('Factura 10', $linea->detalles);
+        $this->put("/distribucion_pedido/{$pedido->id}", [
+            'fecha_entrega' => '2026-11-30', 'existing_tarea_ids' => [$linea->id], 'existing_tarea_detalles' => ['Factura 11'],
+            'new_tareas' => [$tarea], 'new_tarea_detalles' => ['Cheque'],
+        ])->assertSessionHasNoErrors();
+        $this->assertSame(['Factura 11', 'Cheque'], $pedido->lineasTareas()->orderBy('id')->pluck('detalles')->all());
+
+        $agenda = DB::table('distribucion_agenda')->insertGetId(['fecha' => '2026-11-24', 'distribucion_id' => $this->cliente, 'temas' => 'x', 'status' => 'A']);
+        $url = route('distribucion_pedido.create', ['cliente' => $this->cliente]);
+        foreach (["/distribucion/{$this->cliente}", '/distribucion_agenda', "/distribucion_agenda/$agenda/edit"] as $pantalla) {
+            $this->get($pantalla)->assertOk()->assertSee($url . '"', false)->assertSee($url . '#tareas', false);
+        }
+    }
+
     public function test_catalogo(): void
     {
         $this->get('/distribucion_catalogo')->assertOk()->assertSee('Harina 000');

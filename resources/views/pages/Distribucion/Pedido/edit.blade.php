@@ -73,6 +73,7 @@
             <td>
               {{ $linea->tarea?->tarea }}
               <input type="hidden" name="existing_tarea_ids[]" value="{{ $linea->id }}">
+              <input type="text" name="existing_tarea_detalles[]" value="{{ $linea->detalles }}" class="form-control form-control-sm" placeholder="Detalle">
             </td>
             <td></td>
             <td></td>

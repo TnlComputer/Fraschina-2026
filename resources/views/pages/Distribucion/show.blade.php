@@ -7,7 +7,8 @@
   <h1>Detalle de Distribución</h1>
   <div>
     @if ($distribucion->status === 'A')
-    @can('permiso_11')<a href="{{ route('distribucion_pedido.create', ['cliente' => $distribucion->id]) }}" class="btn btn-info btn-sm"><i class="fas fa-cart-plus"></i> Pedido</a>@endcan
+    @can('permiso_11')<a href="{{ route('distribucion_pedido.create', ['cliente' => $distribucion->id]) }}" class="btn btn-info btn-sm"><i class="fas fa-cart-plus"></i> Pedido</a>
+    <a href="{{ route('distribucion_pedido.create', ['cliente' => $distribucion->id]) }}#tareas" class="btn btn-info btn-sm"><i class="fas fa-list-check"></i> Tarea</a>@endcan
     @endif
     <a href="{{ route('distribucion.index') }}" class="btn btn-secondary btn-sm">Volver</a>
   </div>
@@ -255,12 +256,31 @@
       <form method="POST" action="{{ route('distribucion_producto.store') }}" class="form-row align-items-end mb-2">
         @csrf
         <input type="hidden" name="distribucion_id" value="{{ $distribucion->id }}">
-        <div class="form-group col-md-5 mb-2">
+        <div class="col-12">
+  <div class="custom-control custom-checkbox mb-1">
+    <input type="checkbox" class="custom-control-input" id="ficha_crear" data-crear-producto name="crear" value="1" @checked(old('crear'))>
+    <label class="custom-control-label font-weight-normal" for="ficha_crear">No está en el catálogo: crear producto nuevo</label>
+  </div>
+        </div>
+        <div class="form-group col-md-5 mb-2" data-existente>
           <label for="producto_id" class="mb-0">Agregar producto</label>
           <select name="producto_id" id="producto_id" class="form-control" required data-buscador>
             <option value="">Seleccione un producto</option>
             @foreach ($catalogo as $p)
             <option value="{{ $p->id }}" @selected(old('producto_id') == $p->id)>{{ $p->nombre() }}</option>
+            @endforeach
+          </select>
+        </div>
+        <div class="form-group col-8 col-md-3 mb-2 d-none" data-nuevo>
+          <label for="producto_nuevo" class="mb-0">Producto nuevo</label>
+          <input type="text" maxlength="150" name="producto_nuevo" id="producto_nuevo" class="form-control" value="{{ old('producto_nuevo') }}" disabled required>
+        </div>
+        <div class="form-group col-4 col-md-2 mb-2 d-none" data-nuevo>
+          <label for="ivacda" class="mb-0">IVA</label>
+          <select name="ivacda" id="ivacda" class="form-control" disabled required>
+            <option value="">Seleccione</option>
+            @foreach (['10.5' => '10,5 %', '21' => '21 %'] as $valor => $texto)
+            <option value="{{ $valor }}" @selected(old('ivacda') === (string) $valor)>{{ $texto }}</option>
             @endforeach
           </select>
         </div>
@@ -276,6 +296,22 @@
           <button type="submit" class="btn btn-primary btn-block"><i class="fas fa-plus"></i> Agregar</button>
         </div>
       </form>
+      <script>
+        (function () {
+          const crear = document.querySelector('[data-crear-producto]');
+          const f = crear.form;
+          function mostrar() {
+            f.querySelector('[data-existente]').classList.toggle('d-none', crear.checked);
+            f.elements.producto_id.disabled = crear.checked;
+            f.querySelectorAll('[data-nuevo]').forEach(function (c) {
+              c.classList.toggle('d-none', !crear.checked);
+              c.querySelector('input, select').disabled = !crear.checked;
+            });
+          }
+          crear.addEventListener('change', mostrar);
+          mostrar();
+        })();
+      </script>
       @endcan
       @endif
       <div class="table-responsive">

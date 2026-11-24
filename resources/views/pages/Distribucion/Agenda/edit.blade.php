@@ -7,6 +7,14 @@
 @stop
 
 @section('content')
+<div class="mb-2">
+@if ($agenda->distribucion?->status === 'A')
+@can('permiso_11')
+<a href="{{ route('distribucion_pedido.create', ['cliente' => $agenda->distribucion_id]) }}" class="btn btn-info btn-sm" title="Pedido"><i class="fas fa-cart-plus"></i> Pedido</a>
+<a href="{{ route('distribucion_pedido.create', ['cliente' => $agenda->distribucion_id]) }}#tareas" class="btn btn-info btn-sm" title="Tarea"><i class="fas fa-list-check"></i> Tarea</a>
+@endcan
+@endif
+</div>
 <div class="card">
   <div class="card-header">
     <h3 class="card-title">Formulario de Edición de Agenda</h3>
