@@ -138,7 +138,7 @@
 
     if (distribucionId) {
     // Realizar la solicitud AJAX
-    fetch(`/distribucion/${distribucionId}/personal`)
+    fetch(`/distribucion_agenda/${distribucionId}/personal`)
     .then(response => response.json())
     .then(data => {
     // Agregar las opciones al select de persona

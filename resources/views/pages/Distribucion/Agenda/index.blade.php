@@ -58,7 +58,7 @@
           <td class=" text-center text-nowrap">{{ fecha($agenda->fecha) }}</td>
           <td class="text-center">@if (trim((string) $agenda->auxprioridades?->nombre) !== '')<span class="badge" style="background: {{ $colorPrioridad ?? '#e2e3e5' }}">{{ $agenda->auxprioridades->nombre }}</span>@endif</td>
           <td class="text-center">
-            {{ $agenda->hs ? \Carbon\Carbon::createFromFormat('H:i:s', $agenda->hs)->format('H:i') : '' }}
+            {{ hora($agenda->hs) }}
           </td>
           <td class=" text-center">{{ $agenda->distribucion->auto }}</td>
           <td>

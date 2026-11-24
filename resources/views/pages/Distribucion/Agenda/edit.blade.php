@@ -162,7 +162,7 @@ loadingOption.disabled = true;
 personaSelect.appendChild(loadingOption);
 
 // Realizar la solicitud AJAX
-fetch(`/distribucion/${distribucionId}/personal`)
+fetch(`/distribucion_agenda/${distribucionId}/personal`)
 .then(response => {
 if (!response.ok) {
 throw new Error('Error en la solicitud.');

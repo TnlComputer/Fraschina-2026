@@ -15,13 +15,21 @@ las planillas Excel que se usaban para la operación diaria.
 Venta y reparto a clientes propios (panaderías, comercios, industrias).
 - **Clientes:** datos comerciales, dirección, horarios de entrega, días que reciben, forma de
   cobro, situación crediticia, productos y precios por cliente.
+- **Productos del cliente:** la ficha muestra los productos que compra, con precio, última
+  cotización y última entrega (esta se actualiza al guardar cada pedido, sin contar lo sin cargo ni
+  lo a retirar). Se agregan del catálogo o se crean en el momento, y la lista se imprime en PDF.
+- **Catálogo** (*Distribuciones → Productos*): alta, modificación y baja lógica, con su IVA.
 - **Agenda:** registro de llamados y contactos con cada cliente, con prioridad, acción,
-  cotización y sus últimos pedidos a la vista.
+  cotización y sus últimos pedidos a la vista. Desde cada contacto se cargan pedidos y tareas.
 - **Elegir cliente:** en pedidos, agenda y personal el cliente se busca escribiendo parte del
   nombre de fantasía, de la razón social o el número de cliente; la lista se filtra mientras se
   escribe y sin escribir nada se despliega completa.
-- **Pedidos:** alta y modificación de pedidos con productos y tareas (cambios, retiros). Los
-  totales se calculan con IVA (10,5 % o 21 % según el producto).
+- **Pedidos:** alta y modificación de pedidos con productos y tareas (cada tarea con su detalle),
+  desde la ficha del cliente, la Agenda o el Reparto. Muestra la lista de productos del cliente y
+  permite sumarle los que no tiene. Cada línea puede llevar las marcas *Flag*, *S/C* y *Retirar*
+  (columnas `bandera`, `cambiar` y `retirar`); el Flag figura en el pedido y no en el reparto. Los
+  totales se calculan con IVA (10,5 % o 21 % según el producto) e incluyen las líneas marcadas,
+  igual que el sistema anterior.
 - **Reparto:** planilla del día ordenada por chofer y orden de entrega, con datos de factura
   (fecha, número, importe), aviso de factura impresa y calendario que resalta los días con
   pedidos. El importe de factura se marca en rojo cuando no coincide con el total del pedido

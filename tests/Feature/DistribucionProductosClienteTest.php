@@ -161,6 +161,13 @@ class DistribucionProductosClienteTest extends TestCase
         }
     }
 
+    public function test_agenda_carga_las_personas_del_cliente(): void
+    {
+        DB::table('distribucion_personal')->insert(['distribucion_id' => $this->cliente, 'nombre' => 'Ana', 'apellido' => 'Paz', 'status' => 'A']);
+        $this->get('/distribucion_agenda/create')->assertOk()->assertSee('/distribucion_agenda/${distribucionId}/personal', false);
+        $this->getJson("/distribucion_agenda/{$this->cliente}/personal")->assertOk()->assertJsonPath('0.nombre', 'Ana');
+    }
+
     public function test_catalogo(): void
     {
         $this->get('/distribucion_catalogo')->assertOk()->assertSee('Harina 000');

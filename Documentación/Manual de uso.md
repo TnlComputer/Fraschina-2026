@@ -64,7 +64,7 @@ Todas las pantallas se adaptan al celular. Los listados se ven como **tarjetas**
 
 ## Distribución
 
-Distribución es la venta y el reparto a clientes propios: panaderías, comercios e industrias. Está en el menú **Distribuciones**, con cuatro pantallas: Distribución (clientes), Agenda, Reparto y Stock.
+Distribución es la venta y el reparto a clientes propios: panaderías, comercios e industrias. Está en el menú **Distribuciones**, con cinco pantallas: Distribución (clientes), Productos, Agenda, Reparto y Stock.
 
 ### Clientes
 
@@ -75,23 +75,39 @@ Distribución es la venta y el reparto a clientes propios: panaderías, comercio
 1. Para encontrar un cliente, escribí en el buscador parte del nombre de fantasía, la razón social o el número.
 2. Tocá el **ojo** para ver la ficha completa: datos comerciales, dirección, horarios y días que recibe, forma de cobro, situación crediticia, el **personal** de contacto y los **productos con su precio** para ese cliente.
 3. Tocá el **lápiz** para modificar los datos.
-4. Desde la ficha podés agregar contactos con **Nuevo Personal** y productos con **Nuevo Producto**.
+4. Desde la ficha podés agregar contactos con **Nuevo Personal**, y cargar un **Pedido** o una **Tarea** para ese cliente con los botones de arriba.
 5. **Nuevo cliente** da de alta un cliente. Mientras convivan los dos sistemas, los clientes nuevos se crean en el sistema anterior, porque su número es el código con el que se los llama.
 
 Los botones **Visibles / Eliminados / Todos** muestran los clientes activos, los dados de baja o ambos.
+
+**Productos que compra.** En la ficha, debajo del personal, está la lista de productos del cliente con precio, fecha de la última cotización y de la última entrega. La última entrega se actualiza sola al guardar un pedido (no cuentan las líneas S/C ni Retirar).
+
+- **Agregar producto:** elegilo de la lista, cargá el precio y la fecha de cotización y tocá **Agregar**.
+- **Si no está en el catálogo:** marcá **No está en el catálogo: crear producto nuevo**, cargá el nombre, el IVA, el precio y la fecha. Queda en el catálogo y en la lista del cliente.
+- **Cambiar el precio o quitarlo:** con el lápiz o el tacho de cada producto.
+- **Imprimir** genera el PDF con los productos y precios del cliente.
+
+### Productos
+
+**Distribuciones → Productos** es el catálogo del que se eligen los productos de los clientes. Muestra el IVA de cada uno y cuántos clientes lo compran. Con **Nuevo producto** se da de alta, con el lápiz se modifica y con el tacho se elimina: deja de ofrecerse en los pedidos, pero queda guardado.
 
 ### Cargar un pedido
 
 ![Nuevo pedido de Distribución](img/pedido-nuevo.png)
 
-1. Tocá **Nuevo Pedido** (desde Distribución, Agenda, Reparto o el inicio).
+1. Tocá **Nuevo Pedido** (desde Distribución, Agenda, Reparto o el inicio), o **Pedido** en la ficha del cliente o en un contacto de la Agenda: en ese caso el cliente ya viene elegido.
 2. En **Cliente**, escribí parte del nombre o el número y elegilo de la lista.
 3. Elegí la **Fecha de Entrega**. La fecha del pedido se pone sola.
-4. En **Agregar Producto o Tarea**, elegí el tipo (Producto o Tarea, por ejemplo un cambio o un retiro), el producto, el precio y la cantidad, y tocá **Agregar**. Repetí por cada producto.
-5. Revisá la tabla **Detalles del Pedido**. Para quitar una línea, usá el botón de la columna Acción.
-6. Si hace falta, escribí **Observaciones** y tocá **Guardar Pedido**.
+4. En **Productos que compra el cliente**, escribí la cantidad del producto y tocá **Agregar** (o Enter). Repetí por cada producto. Si corresponde, marcá antes:
+   - **Flag:** figura en el pedido y no en la planilla de reparto; las unidades cuentan para el volumen de la camioneta.
+   - **S/C:** sin cargo.
+   - **Retirar:** mercadería a retirar.
+5. **Si el producto no está en la lista del cliente**, agregalo en **¿No está en la lista?**: elegilo del catálogo o marcá **crear producto nuevo**, cargá el precio y tocá **Agregar a la lista**. Queda guardado para los próximos pedidos.
+6. Para una **tarea**, elegila, escribí el **Detalle** y tocá **Agregar tarea**. Un pedido puede tener solo tareas.
+7. Revisá la tabla **Detalles del Pedido**: ahí podés corregir precio, cantidad, marcas y detalle. Para quitar una línea, usá la **X**.
+8. Si hace falta, escribí **Observaciones** y tocá **Guardar Pedido**.
 
-Los totales incluyen IVA: 10,5 % o 21 % según el producto, igual que en el sistema anterior.
+Los totales incluyen IVA: 10,5 % o 21 % según el producto, igual que en el sistema anterior. Las líneas con Flag, S/C o Retirar también suman su precio al total.
 
 ### Agenda
 
@@ -102,7 +118,7 @@ Los totales incluyen IVA: 10,5 % o 21 % según el producto, igual que en el sist
 1. Con **Todos / Hoy / Mañana** ves todos los contactos o solo los de ese día.
 2. **Nuevo contacto** agenda un llamado: cliente, fecha, hora, prioridad, acción (llamada, mensaje, etc.) y los temas a hablar.
 3. Mientras cargás el contacto ves los últimos pedidos del cliente.
-4. **Nuevo pedido** carga el pedido directamente desde la agenda.
+4. En cada contacto, los botones **Pedido** y **Tarea** abren la carga con ese cliente y su lista de productos. **Nuevo pedido** la abre sin cliente elegido.
 5. Los contactos con prioridad tienen una marca amarilla a la izquierda.
 
 ### Reparto
