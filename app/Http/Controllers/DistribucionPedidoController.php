@@ -15,12 +15,16 @@ use Illuminate\Support\Facades\DB;
 
 class DistribucionPedidoController extends Controller
 {
-  public function create()
+  public function create(Request $request)
   {
     $clientes = Distribucion::where('status', 'A')
       ->orderBy('nomfantasia')
       ->get(['id', 'nomfantasia', 'razonsocial']);
-    return view('pages.Distribucion.Pedido.create', compact('clientes'));
+    return view('pages.Distribucion.Pedido.create', [
+      'clientes' => $clientes,
+      'clienteId' => (int) old('cliente_id', $request->query('cliente')), // desde la ficha del cliente
+      'catalogo' => $this->catalogo(),
+    ]);
   }
 
   public function store(Request $request)
@@ -36,6 +40,9 @@ class DistribucionPedidoController extends Controller
       'cantidades.*' => 'nullable|numeric|min:0',
       'precios' => 'required|array',
       'precios.*' => 'nullable|numeric|min:0',
+      'flag' => 'nullable|array',
+      'sin_cargo' => 'nullable|array',
+      'retirar' => 'nullable|array',
       'observaciones' => 'nullable|string',
     ]);
 
@@ -50,10 +57,10 @@ class DistribucionPedidoController extends Controller
     // Productos del cliente en una sola consulta, indexados por producto_id
     $productosCliente = $this->productosDelCliente($clienteId);
 
-    // Validar todos los productos antes de escribir nada
+    // Validar todos los productos antes de escribir nada: tienen que estar activos en la lista del cliente
     foreach ($productos as $index => $productoId) {
-      if (in_array($tipos[$index] ?? null, ['P', 'PT']) && !$productosCliente->has($productoId)) {
-        return back()->withInput()->withErrors(['error' => "El producto con ID $productoId no se encuentra en la distribución."]);
+      if (in_array($tipos[$index] ?? null, ['P', 'PT']) && $productosCliente->get($productoId)?->status !== 'A') {
+        return back()->withInput()->withErrors(['error' => 'El producto ' . (productoCDA::find($productoId)?->nombre() ?? $productoId) . ' no está en la lista del cliente.']);
       }
     }
 
@@ -94,6 +101,9 @@ class DistribucionPedidoController extends Controller
             'cantidad' => $cantidad,
             'precio_unitario' => $precioUnitario,
             'totalLinea' => $totalLinea,
+            'bandera' => ($request->flag[$index] ?? null) ? '*' : null,
+            'cambiar' => ($request->sin_cargo[$index] ?? null) ? '*' : null,
+            'retirar' => ($request->retirar[$index] ?? null) ? '*' : null,
             'status' => 1,
           ]);
         }
@@ -112,6 +122,7 @@ class DistribucionPedidoController extends Controller
       }
 
       $pedido->update(['totalPedido' => round($totalPedido, 2)]);
+      $this->actualizarUltimaEntrega($pedido);
     });
 
     return redirect()->route('distribucion_agenda.index')->with('success', 'Pedido creado correctamente');
@@ -119,30 +130,14 @@ class DistribucionPedidoController extends Controller
 
   public function getProductosYTareasPorCliente($clienteId)
   {
-    // Obtener productos activos del cliente con status 'A' en ambas tablas
-    $productos = DistribucionProducto::join('productos_c_d_a', 'distribucion_productos.producto_id', '=', 'productos_c_d_a.id')
-      ->where('distribucion_productos.distribucion_id', $clienteId)
-      ->where('distribucion_productos.status', 'A') // Filtra productos activos en DistribucionProducto
-      ->where('productos_c_d_a.status', 'A') // Filtra productos activos en productos_c_d_a
-      ->select('productos_c_d_a.id', 'productos_c_d_a.productoCDA as nombre', 'productos_c_d_a.ivacda', 'distribucion_productos.precio')
-      ->get();
-
-    // Obtener tareas activas con status 'A'
-    $tareas = DistribucionTareas::where('status', 'A')
-      ->select('id', 'tarea')
-      ->get();
-
-    return response()->json([
-      'productos' => $productos,
-      'tareas' => $tareas
-    ]);
+    return $this->getProductosTareas($clienteId);
   }
 
   public function edit($id)
   {
     $pedido = DistribucionNroPedidos::with(['distribucion', 'lineasPedidos.producto', 'lineasTareas.tarea'])->findOrFail($id);
 
-    return view('pages.Distribucion.Pedido.edit', compact('pedido'));
+    return view('pages.Distribucion.Pedido.edit', ['pedido' => $pedido, 'catalogo' => $this->catalogo()]);
   }
 
   public function update(Request $request, $id)
@@ -157,6 +152,12 @@ class DistribucionPedidoController extends Controller
       'existing_precios.*' => 'required|numeric|min:0',
       'existing_cantidades' => 'nullable|array',
       'existing_cantidades.*' => 'required|numeric|min:0',
+      'existing_flag' => 'nullable|array',
+      'new_flag' => 'nullable|array',
+      'existing_sin_cargo' => 'nullable|array',
+      'existing_retirar' => 'nullable|array',
+      'new_sin_cargo' => 'nullable|array',
+      'new_retirar' => 'nullable|array',
       'new_productos' => 'nullable|array',
       'new_productos.*' => 'integer',
       'new_precios' => 'nullable|array',
@@ -168,6 +169,14 @@ class DistribucionPedidoController extends Controller
       'new_tareas' => 'nullable|array',
       'new_tareas.*' => 'integer|exists:distribucion_tareas,id',
     ]);
+
+    // Los productos nuevos tienen que estar activos en la lista del cliente
+    $delCliente = $this->productosDelCliente(DistribucionNroPedidos::findOrFail($id)->distribucion_id);
+    foreach ($request->input('new_productos', []) as $productoId) {
+      if ($delCliente->get($productoId)?->status !== 'A') {
+        return back()->withInput()->withErrors(['error' => 'El producto ' . (productoCDA::find($productoId)?->nombre() ?? $productoId) . ' no está en la lista del cliente.']);
+      }
+    }
 
     try {
       $pedido = DB::transaction(function () use ($request, $id) {
@@ -186,6 +195,7 @@ class DistribucionPedidoController extends Controller
         $existingProductLineIds = array_map('intval', $request->input('existing_product_line_ids', []));
         $existingPrecios    = $request->input('existing_precios', []);
         $existingCantidades = $request->input('existing_cantidades', []);
+        $marcas = ['bandera' => $request->input('existing_flag', []), 'cambiar' => $request->input('existing_sin_cargo', []), 'retirar' => $request->input('existing_retirar', [])];
         foreach ($existingProductLineIds as $index => $lineaId) {
           $linea = $lineas->get($lineaId);
           if (!$linea) {
@@ -196,8 +206,14 @@ class DistribucionPedidoController extends Controller
           $linea->totalLinea      = productoCDA::calcularTotalLinea(
             $linea->precio_unitario,
             $linea->cantidad,
-            $this->ivaDe($productosCliente->get($linea->producto_id))
+            $linea->producto?->porcentajeIva() ?? 21.0
           );
+          // Flag / sin cargo / retirar: solo se escribe si cambió (lo migrado puede estar como '' o 'SI')
+          foreach ($marcas as $campo => $valores) {
+            if (isset($valores[$index]) && (bool) $valores[$index] !== DistribucionLineaPedidos::marcado($linea->$campo)) {
+              $linea->$campo = $valores[$index] ? '*' : null;
+            }
+          }
           $linea->save();
         }
 
@@ -215,7 +231,14 @@ class DistribucionPedidoController extends Controller
         $proximaLinea  = (int) $lineas->max('linea');
         foreach ($newProductos as $index => $productoId) {
           $iva = $this->ivaDe($productosCliente->get($productoId));
-          $lineaExistente = $lineas->firstWhere('producto_id', $productoId);
+          $flag = (bool) ($request->input('new_flag', [])[$index] ?? false);
+          $sinCargo = (bool) ($request->input('new_sin_cargo', [])[$index] ?? false);
+          $retirar = (bool) ($request->input('new_retirar', [])[$index] ?? false);
+          // Se suma a la línea del mismo producto solo si tiene las mismas marcas (una bolsa sin cargo va aparte)
+          $lineaExistente = $lineas->first(fn($l) => (int) $l->producto_id === (int) $productoId
+            && DistribucionLineaPedidos::marcado($l->bandera) === $flag
+            && DistribucionLineaPedidos::marcado($l->cambiar) === $sinCargo
+            && DistribucionLineaPedidos::marcado($l->retirar) === $retirar);
 
           if ($lineaExistente) {
             // Sumar la nueva cantidad a la existente y actualizar precio
@@ -234,6 +257,9 @@ class DistribucionPedidoController extends Controller
               'cantidad'        => $newCantidades[$index],
               'precio_unitario' => $newPrecios[$index],
               'totalLinea'      => productoCDA::calcularTotalLinea($newPrecios[$index], $newCantidades[$index], $iva),
+              'bandera'         => $flag ? '*' : null,
+              'cambiar'         => $sinCargo ? '*' : null,
+              'retirar'         => $retirar ? '*' : null,
               'status'          => 1,
             ]);
             $lineas->put($nueva->id, $nueva);
@@ -273,6 +299,7 @@ class DistribucionPedidoController extends Controller
           default => null,
         };
         $pedido->save();
+        $this->actualizarUltimaEntrega($pedido);
 
         return $pedido;
       });
@@ -301,25 +328,56 @@ class DistribucionPedidoController extends Controller
       ->with('success', 'Pedido ' . $pedido->id . ' eliminado.');
   }
 
+  /**
+   * Productos que compra el cliente (con precio, IVA y fechas) y tareas, para armar el pedido.
+   */
   public function getProductosTareas($distribucion_id)
   {
-    // Productos activos del cliente con nombre, precio e IVA
     $productos = DistribucionProducto::join('productos_c_d_a', 'distribucion_productos.producto_id', '=', 'productos_c_d_a.id')
       ->where('distribucion_productos.distribucion_id', $distribucion_id)
       ->where('distribucion_productos.status', 'A')
-      ->select('distribucion_productos.producto_id', 'productos_c_d_a.productoCDA as nombre', 'productos_c_d_a.ivacda', 'distribucion_productos.precio')
+      ->where('productos_c_d_a.status', 'A')
       ->orderBy('productos_c_d_a.productoCDA')
-      ->get();
+      ->get([
+        'distribucion_productos.producto_id', 'productos_c_d_a.productoCDA as nombre', 'productos_c_d_a.ivacda',
+        'distribucion_productos.precio', 'distribucion_productos.fecha', 'distribucion_productos.fechaUEnt',
+      ])
+      ->map(fn($p) => [
+        'producto_id' => $p->producto_id,
+        'nombre' => trim((string) $p->nombre) !== '' ? $p->nombre : '(sin dato)',
+        'ivacda' => $p->ivacda,
+        'precio' => $p->precio,
+        'fecha' => $p->fecha ? fecha($p->fecha) : '',
+        'fechaUEnt' => $p->fechaUEnt ? fecha($p->fechaUEnt) : '',
+      ]);
 
-    // Tareas activas
-    $tareas = DistribucionTareas::where('status', 'A')
-      ->select('id', 'tarea')
-      ->get();
+    $tareas = DistribucionTareas::where('status', 'A')->get(['id', 'tarea']);
 
-    return response()->json([
-      'productos' => $productos,
-      'tareas' => $tareas
-    ]);
+    return response()->json(['productos' => $productos, 'tareas' => $tareas]);
+  }
+
+  /** Productos del catálogo que se le pueden agregar a un cliente. */
+  private function catalogo()
+  {
+    return productoCDA::where('status', 'A')->orderBy('productoCDA')->get();
+  }
+
+  /**
+   * Fecha de última entrega de los productos del cliente, como el sistema anterior al confirmar el pedido:
+   * no cuentan las líneas sin cargo ni a retirar, y nunca retrocede.
+   */
+  private function actualizarUltimaEntrega(DistribucionNroPedidos $pedido): void
+  {
+    $entregados = $pedido->lineasPedidos()->get()
+      ->reject(fn($l) => DistribucionLineaPedidos::marcado($l->cambiar) || DistribucionLineaPedidos::marcado($l->retirar))
+      ->pluck('producto_id');
+
+    DistribucionProducto::where('distribucion_id', $pedido->distribucion_id)
+      ->where('status', 'A')
+      ->whereIn('producto_id', $entregados)
+      ->where(fn($q) => $q->whereNull('fechaUEnt')->orWhere('fechaUEnt', '<', $pedido->fechaEntrega))
+      ->get()
+      ->each->update(['fechaUEnt' => $pedido->fechaEntrega]);
   }
 
   /**
@@ -327,8 +385,10 @@ class DistribucionPedidoController extends Controller
    */
   protected function productosDelCliente($clienteId)
   {
+    // Los activos al final: si el producto está repetido (uno dado de baja), keyBy se queda con el activo
     return DistribucionProducto::with('producto')
       ->where('distribucion_id', $clienteId)
+      ->orderByRaw("CASE WHEN status = 'A' THEN 1 ELSE 0 END")
       ->get()
       ->keyBy('producto_id');
   }

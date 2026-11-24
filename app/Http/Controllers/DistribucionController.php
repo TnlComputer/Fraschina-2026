@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Distribucion;
+use App\Models\productoCDA;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -177,9 +178,16 @@ class DistribucionController extends Controller
       // Consulta para los productos
       $productos = DB::table('distribucion_productos as dp')
         ->leftJoin('productos_c_d_a as p', 'dp.producto_id', '=', 'p.id')
-        ->select('p.productoCDA as nomproducto', 'dp.precio', 'dp.fecha', 'dp.fechaUEnt', 'dp.id')
+        ->select('p.productoCDA as nomproducto', 'dp.precio', 'dp.fecha', 'dp.fechaUEnt', 'dp.id', 'dp.producto_id')
         ->where('dp.distribucion_id', '=', $id)
         ->where('dp.status', '=', 'A')
+        ->orderBy('p.productoCDA')
+        ->get();
+
+      // Catálogo, para agregarle productos que todavía no tiene
+      $catalogo = productoCDA::where('status', 'A')
+        ->whereNotIn('id', $productos->pluck('producto_id'))
+        ->orderBy('productoCDA')
         ->get();
 
       // Cliente eliminado: cuántos movimientos conserva (por eso no se borra)
@@ -188,7 +196,7 @@ class DistribucionController extends Controller
                 (SELECT MAX(fecha) FROM distribucion_nropedidos WHERE distribucion_id = ?) ultimo,
                 (SELECT COUNT(*) FROM distribucion_agenda WHERE distribucion_id = ?) agenda', [$id, $id, $id]) : null;
 
-      return view('pages.Distribucion.show', compact('distribucion', 'personal', 'productos', 'historial'));
+      return view('pages.Distribucion.show', compact('distribucion', 'personal', 'productos', 'catalogo', 'historial'));
     } catch (\Exception $e) {
       report($e);
       // Redirigir en caso de error

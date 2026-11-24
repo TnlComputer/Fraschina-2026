@@ -330,6 +330,12 @@ return [
           'can' => ['permiso_99', 'permiso_2'],
         ],
         [
+          'text' => 'Productos',
+          'url' => 'distribucion_catalogo',
+          'icon' => 'fas fa-fw fa-box',
+          'can' => ['permiso_99', 'permiso_2'],
+        ],
+        [
           'text' => 'Agenda',
           'url' => 'distribucion_agenda',
           'icon' => 'fas fa-fw fa-truck',

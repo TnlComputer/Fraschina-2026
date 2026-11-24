@@ -32,6 +32,14 @@ class productoCDA extends Model
   }
 
   /**
+   * Nombre para listas y selectores: el registro en blanco de la migración se muestra como "(sin dato)".
+   */
+  public function nombre(): string
+  {
+    return trim((string) $this->productoCDA) !== '' ? $this->productoCDA : '(sin dato)';
+  }
+
+  /**
    * Alícuota de IVA del producto. Igual que el sistema anterior: 10.5 si ivacda es 10.5, si no 21.
    */
   public function porcentajeIva(): float

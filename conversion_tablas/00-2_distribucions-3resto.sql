@@ -158,6 +158,7 @@ INSERT INTO
         cantidad,
         precio_unitario,
         totalLinea,
+        bandera,
         cambiar,
         retirar,
         estado_pedido,
@@ -188,6 +189,7 @@ SELECT
         ELSE 0
     END,
     lp.totalPedidoN,
+    NULLIF(TRIM(lp.bandera), ''),
     lp.cambiar,
     lp.retirar,
     CAST(lp.estado_Ped AS CHAR(1)),

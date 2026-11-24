@@ -62,6 +62,12 @@ class Distribucion extends Model
     return $this->hasMany(DistribucionLineaPedidos::class, 'distribucion_id');
   }
 
+  /** Productos que compra el cliente. */
+  public function productosActivos()
+  {
+    return $this->hasMany(DistribucionProducto::class, 'distribucion_id')->where('status', 'A');
+  }
+
   public function personal()
   {
     return $this->hasMany(DistribucionPersonal::class, 'distribucion_id');

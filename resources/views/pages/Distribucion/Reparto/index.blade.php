@@ -104,7 +104,7 @@
               @if (in_array(trim((string) $linea->retirar), ['*', 'SI'], true)) <span class="badge badge-info">RETIRAR</span> @endif
             </td>
             <td class="text-center">{{ numero($linea->cantidad, 0) }}</td>
-            <td class="text-right">{{ pesos($linea->precio_unitario) }}</td>
+            <td class="text-right">{{ pesos($linea->precio_unitario) }}{{ \App\Models\DistribucionLineaPedidos::marcado($linea->bandera) ? '*' : '' }}</td>
             <td class="text-right">{{ pesos($linea->totalLinea) }}</td>
           </tr>
           @endforeach

@@ -14,6 +14,12 @@ class DistribucionLineaPedidos extends Model
 
   protected $guarded = [];
 
+  /** Flag (bandera) / sin cargo (cambiar) / retirar se guardan como '*' o 'SI' (igual que el sistema anterior). */
+  public static function marcado($valor): bool
+  {
+    return in_array(strtoupper(trim((string) $valor)), ['*', 'SI', 'S'], true);
+  }
+
   public function pedido()
   {
     return $this->belongsTo(DistribucionNroPedidos::class, 'pedido_id');

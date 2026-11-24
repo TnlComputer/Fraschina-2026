@@ -14,6 +14,7 @@ use App\Http\Controllers\CalendarioController;
 use App\Http\Controllers\ConfiguracionController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DistribucionAgendaController;
+use App\Http\Controllers\DistribucionCatalogoController;
 use App\Http\Controllers\DistribucionController;
 use App\Http\Controllers\DistribucionPedidoController;
 use App\Http\Controllers\DistribucionPersonalController;
@@ -111,8 +112,13 @@ Route::middleware(['auth', 'permission:permiso_2', 'accion'])->group(function ()
 
   Route::get('/distribucion/{distribucion}/distribucion_producto/create', [DistribucionProductoController::class, 'create'])
     ->name('distribucion_producto.create');
+  Route::get('/distribucion/{distribucion}/productos/imprimir', [DistribucionProductoController::class, 'imprimir'])
+    ->name('distribucion_producto.imprimir');
   Route::resource('/distribucion/distribucion_producto', DistribucionProductoController::class)
     ->except(['create']);
+
+  // Catálogo de productos de Distribución
+  Route::resource('distribucion_catalogo', DistribucionCatalogoController::class)->except(['show']);
 
   // Agenda
   Route::get('distribucion_agenda/create', [DistribucionAgendaController::class, 'create'])

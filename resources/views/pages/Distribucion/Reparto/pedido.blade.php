@@ -141,7 +141,7 @@ $volver = preg_match('/^\d{4}-\d{2}-\d{2}$/', (string) request('volver')) ? requ
         <tr>
           <td>{{ $detalle->producto?->productoCDA }}</td>
           <td class=" text-center">{{ numero($detalle->cantidad, 0) }}</td>
-          <td class=" text-right">${{ numero($detalle->precio_unitario, 2) }}</td>
+          <td class=" text-right">${{ numero($detalle->precio_unitario, 2) }}{{ $marcado($detalle->bandera) ? '*' : '' }}</td>
           <td class=" text-right">${{ numero($precio, 2) }}</td>
           <td class=" text-right">${{ numero($precioConIva, 2) }}</td>
           <td class=" text-center">

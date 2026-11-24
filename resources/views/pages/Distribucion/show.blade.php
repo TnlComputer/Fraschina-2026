@@ -5,7 +5,12 @@
 @section('content_header')
 <div class="d-flex justify-content-between align-items-center">
   <h1>Detalle de Distribución</h1>
-  <a href="{{ route('distribucion.index') }}" class="btn btn-secondary btn-sm">Volver</a>
+  <div>
+    @if ($distribucion->status === 'A')
+    @can('permiso_11')<a href="{{ route('distribucion_pedido.create', ['cliente' => $distribucion->id]) }}" class="btn btn-info btn-sm"><i class="fas fa-cart-plus"></i> Pedido</a>@endcan
+    @endif
+    <a href="{{ route('distribucion.index') }}" class="btn btn-secondary btn-sm">Volver</a>
+  </div>
 </div>
 @endsection
 @section('content')
@@ -125,7 +130,7 @@
                 </tr>
                 <tr>
                   <th>Productos</th>
-                  <td>{{ $distribucion->productoCDA ?? 'No disponibles' }}</td>
+                  <td>{{ $productos->pluck('nomproducto')->map(fn($n) => trim((string) $n))->filter()->unique()->implode(', ') ?: ($distribucion->productoCDA ?: 'No disponibles') }}</td>
                 </tr>
                 <tr>
                   <th>Observaciones Recepción</th>
@@ -238,12 +243,41 @@
 
       <!-- Productos Asociados -->
       <h4 class="d-flex justify-content-between align-items-center">
-        <span>Productos Asociados</span>
-        @can('permiso_11')<a href="{{ route('distribucion_producto.create', ['distribucion' => $distribucion->id]) }}"
-          class="btn btn-primary btn-sm">
-          <i class="fas fa-box"></i> Nuevo Producto
-        </a>@endcan
+        <span>Productos que compra</span>
+        <a href="{{ route('distribucion_producto.imprimir', ['distribucion' => $distribucion->id]) }}" target="_blank"
+          class="btn btn-outline-secondary btn-sm" title="Imprimir la lista de productos del cliente">
+          <i class="fas fa-print"></i> Imprimir
+        </a>
       </h4>
+      @if ($distribucion->status === 'A')
+      @can('permiso_11')
+      {{-- Como en el sistema anterior: se elige del catálogo lo que no está en la lista del cliente --}}
+      <form method="POST" action="{{ route('distribucion_producto.store') }}" class="form-row align-items-end mb-2">
+        @csrf
+        <input type="hidden" name="distribucion_id" value="{{ $distribucion->id }}">
+        <div class="form-group col-md-5 mb-2">
+          <label for="producto_id" class="mb-0">Agregar producto</label>
+          <select name="producto_id" id="producto_id" class="form-control" required data-buscador>
+            <option value="">Seleccione un producto</option>
+            @foreach ($catalogo as $p)
+            <option value="{{ $p->id }}" @selected(old('producto_id') == $p->id)>{{ $p->nombre() }}</option>
+            @endforeach
+          </select>
+        </div>
+        <div class="form-group col-6 col-md-2 mb-2">
+          <label for="precio" class="mb-0">Precio</label>
+          <input type="number" step="0.01" min="0" name="precio" id="precio" class="form-control" value="{{ old('precio') }}" required>
+        </div>
+        <div class="form-group col-6 col-md-3 mb-2">
+          <label for="fecha" class="mb-0">Fecha cotización</label>
+          <input type="date" name="fecha" id="fecha" class="form-control" value="{{ old('fecha', now()->toDateString()) }}" required>
+        </div>
+        <div class="form-group col-md-2 mb-2">
+          <button type="submit" class="btn btn-primary btn-block"><i class="fas fa-plus"></i> Agregar</button>
+        </div>
+      </form>
+      @endcan
+      @endif
       <div class="table-responsive">
         <table class="table table-sm table-bordered">
           <thead class="text-xs">
@@ -256,7 +290,7 @@
             </tr>
           </thead>
           <tbody class="text-xs">
-            @foreach($productos as $producto)
+            @forelse($productos as $producto)
             <tr>
               <td>{{ $producto->nomproducto }}</td>
               <td class=" text-right">{{ numero($producto->precio, 2) }}</td>
@@ -281,7 +315,11 @@
                 @endcan
               </td>
             </tr>
-            @endforeach
+            @empty
+            <tr>
+              <td colspan="5" class="text-center">Todavía no tiene productos cargados.</td>
+            </tr>
+            @endforelse
           </tbody>
         </table>
       </div>

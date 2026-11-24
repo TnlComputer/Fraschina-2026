@@ -47,6 +47,7 @@ class DistribucionAgendaController extends Controller
       'distribucion.auxrubro',
       'distribucion.auxtamanio',
       'distribucion.auxmodo',
+      'distribucion.productosActivos.producto:id,productoCDA',
       // Solo los últimos 7 pedidos de cada cliente, no todo el historial
       'distribucion.distribucionLineaPedidos' => fn($q) => $q->orderByDesc('fecha')->orderByDesc('id')->limit(7),
       'distribucion.distribucionLineaPedidos.producto:id,productoCDA',

@@ -162,7 +162,7 @@
           <strong>Rubro</strong> {{ $agenda->distribucion->auxrubro?->nombre }} <br>
           <strong>Tamaño</strong> {{ $agenda->distribucion->auxtamanio?->nombre }} <br>
           <strong>Modo</strong> {{ $agenda->distribucion->auxmodo?->nombre }} <br>
-          <strong>Productos</strong> {{ $agenda->distribucion->productoCDA }} <br>
+          <strong>Productos</strong> {{ $agenda->distribucion->productosActivos->map(fn($p) => $p->producto?->productoCDA)->filter()->unique()->sort()->implode(', ') ?: $agenda->distribucion->productoCDA }} <br>
           <strong>Contacto Inicial</strong> {{ $agenda->distribucion->auxcontacto?->contacto }} <br>
 
           <hr class="bg-blue-900">
